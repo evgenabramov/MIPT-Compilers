@@ -1,0 +1,4 @@
+[submodule "CompilersCourse"]
+	path = CompilersCourse
+	url = https://github.com/akhtyamovpavel/CompilersCourse
+	branch = master
