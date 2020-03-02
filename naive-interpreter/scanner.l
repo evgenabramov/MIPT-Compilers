@@ -54,10 +54,13 @@ blank [ \t\r]
 ")"        return yy::parser::make_RPAREN (loc);
 ":="       return yy::parser::make_ASSIGN (loc);
 
-{int}      return make_NUMBER(yytext, loc);
+{int}      {
+              // Example on how to override standard function
+              return make_NUMBER(yytext, loc);
+           }
 {id}       return yy::parser::make_IDENTIFIER(yytext, loc);
 .          {
-                throw yy::parser::syntax_error(loc, "invalid character: " + std::string(yytext));
+              throw yy::parser::syntax_error(loc, "invalid character: " + std::string(yytext));
            }
 <<EOF>>    return yy::parser::make_END (loc);
 %%

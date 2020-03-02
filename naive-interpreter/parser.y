@@ -48,35 +48,76 @@
 
 %token <std::string> IDENTIFIER "identifier"
 %token <int> NUMBER "number"
-%nterm <int> exp
+%nterm <int> expr
 
 %printer { yyo << $$; } <*>;
 
 %%
 %start unit;
-unit: assignments exp { driver.result_ = $2; };
+unit: 
+    assignments expr { driver.result_ = $2; };
+
+type_identifier:
+    IDENTIFIER;
+
+simple_type:
+    "int"
+    | "boolean"
+    | "void" 
+    | type_identifier;
+
+array_type:
+    simple_type "[" "]";
+
+type:
+    simple_type | array_type;
+
+variable_declaraion:
+    type IDENTIFIER ";" {};
 
 assignments:
     %empty {}
     | assignments assignment {};
 
 assignment:
-    "identifier" ":=" exp {
+    "identifier" ":=" expr {
         driver.variables_[$1] = $3;
         // std::cout << drv.location.begin.line << "-" << drv.location.end.line << std::endl;
     };
 
+method_arguments:
+    %empty
+    | expr 
+    | expr "," expr;
+
+method_invocaion:
+    expr "." IDENTIFIER "(" method_invocaion ")";
+
+binary_operator:
+    "&&" | "||" | "<" | ">" | "==" | "%";
+
 %left "+" "-";
 %left "*" "/";
 
-exp:
-    "number"
-    | "identifier" {$$ = driver.variables_[$1];}
-    | exp "+" exp {$$ = $1 + $3; }
-    | exp "-" exp {$$ = $1 - $3; }
-    | exp "*" exp {$$ = $1 * $3; }
-    | exp "/" exp {$$ = $1 / $3; }
-    | "(" exp ")" {$$ = $2; };
+expr:
+    expr binary_operator expr {}
+    | expr "[" expr "]" {}
+    | expr "." "length" {}
+    | "new" simple_type "[" expr "]" {}
+    | "new" type_identifier "(" ")" {}
+    | "!" expr {}
+    | "(" expr ")" {}
+    | NUMBER {}
+    | "this" {}
+    | "true" {$$ = 1;}
+    | "false" {$$ = 0;}
+    | method_invocaion {}
+    | IDENTIFIER {$$ = driver.variables_[$1];}
+    | expr "+" expr {$$ = $1 + $3;}
+    | expr "-" expr {$$ = $1 - $3;}
+    | expr "*" expr {$$ = $1 * $3;}
+    | expr "/" expr {$$ = $1 / $3;}
+    | "(" expr ")" {$$ = $2;};
 
 %%
 

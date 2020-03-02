@@ -253,7 +253,7 @@ namespace yy {
     switch (that.type_get ())
     {
       case 11: // "number"
-      case 13: // exp
+      case 33: // expr
         value.YY_MOVE_OR_COPY< int > (YY_MOVE (that.value));
         break;
 
@@ -277,7 +277,7 @@ namespace yy {
     switch (that.type_get ())
     {
       case 11: // "number"
-      case 13: // exp
+      case 33: // expr
         value.move< int > (YY_MOVE (that.value));
         break;
 
@@ -301,7 +301,7 @@ namespace yy {
     switch (that.type_get ())
     {
       case 11: // "number"
-      case 13: // exp
+      case 33: // expr
         value.copy< int > (that.value);
         break;
 
@@ -324,7 +324,7 @@ namespace yy {
     switch (that.type_get ())
     {
       case 11: // "number"
-      case 13: // exp
+      case 33: // expr
         value.move< int > (that.value);
         break;
 
@@ -383,7 +383,7 @@ namespace yy {
 #line 384 "/compilers/naive-interpreter/parser.cpp"
         break;
 
-      case 13: // exp
+      case 33: // expr
 #line 53 "parser.y"
                  { yyo << yysym.value.template as < int > (); }
 #line 390 "/compilers/naive-interpreter/parser.cpp"
@@ -605,7 +605,7 @@ namespace yy {
       switch (yyr1_[yyn])
     {
       case 11: // "number"
-      case 13: // exp
+      case 33: // expr
         yylhs.value.emplace< int > ();
         break;
 
@@ -634,76 +634,136 @@ namespace yy {
           switch (yyn)
             {
   case 2:
-#line 57 "parser.y"
-                      { driver.result_ = yystack_[0].value.as < int > (); }
+#line 58 "parser.y"
+                     { driver.result_ = yystack_[0].value.as < int > (); }
 #line 640 "/compilers/naive-interpreter/parser.cpp"
     break;
 
-  case 3:
-#line 60 "parser.y"
+  case 8:
+#line 79 "parser.y"
            {}
 #line 646 "/compilers/naive-interpreter/parser.cpp"
     break;
 
-  case 4:
-#line 61 "parser.y"
+  case 9:
+#line 80 "parser.y"
                              {}
 #line 652 "/compilers/naive-interpreter/parser.cpp"
     break;
 
-  case 5:
-#line 64 "parser.y"
-                          {
+  case 10:
+#line 83 "parser.y"
+                           {
         driver.variables_[yystack_[2].value.as < std::string > ()] = yystack_[0].value.as < int > ();
         // std::cout << drv.location.begin.line << "-" << drv.location.end.line << std::endl;
     }
 #line 661 "/compilers/naive-interpreter/parser.cpp"
     break;
 
-  case 6:
-#line 73 "parser.y"
-    { yylhs.value.as < int > () = yystack_[0].value.as < int > (); }
+  case 17:
+#line 103 "parser.y"
+                              {}
 #line 667 "/compilers/naive-interpreter/parser.cpp"
     break;
 
-  case 7:
-#line 74 "parser.y"
-                   {yylhs.value.as < int > () = driver.variables_[yystack_[0].value.as < std::string > ()];}
+  case 18:
+#line 104 "parser.y"
+                        {}
 #line 673 "/compilers/naive-interpreter/parser.cpp"
     break;
 
-  case 8:
-#line 75 "parser.y"
-                  {yylhs.value.as < int > () = yystack_[2].value.as < int > () + yystack_[0].value.as < int > (); }
+  case 19:
+#line 105 "parser.y"
+                        {}
 #line 679 "/compilers/naive-interpreter/parser.cpp"
     break;
 
-  case 9:
-#line 76 "parser.y"
-                  {yylhs.value.as < int > () = yystack_[2].value.as < int > () - yystack_[0].value.as < int > (); }
+  case 20:
+#line 106 "parser.y"
+                                     {}
 #line 685 "/compilers/naive-interpreter/parser.cpp"
     break;
 
-  case 10:
-#line 77 "parser.y"
-                  {yylhs.value.as < int > () = yystack_[2].value.as < int > () * yystack_[0].value.as < int > (); }
+  case 21:
+#line 107 "parser.y"
+                                    {}
 #line 691 "/compilers/naive-interpreter/parser.cpp"
     break;
 
-  case 11:
-#line 78 "parser.y"
-                  {yylhs.value.as < int > () = yystack_[2].value.as < int > () / yystack_[0].value.as < int > (); }
+  case 22:
+#line 108 "parser.y"
+               {}
 #line 697 "/compilers/naive-interpreter/parser.cpp"
     break;
 
-  case 12:
-#line 79 "parser.y"
-                  {yylhs.value.as < int > () = yystack_[1].value.as < int > (); }
+  case 23:
+#line 109 "parser.y"
+                   {}
 #line 703 "/compilers/naive-interpreter/parser.cpp"
     break;
 
+  case 24:
+#line 110 "parser.y"
+             {}
+#line 709 "/compilers/naive-interpreter/parser.cpp"
+    break;
 
-#line 707 "/compilers/naive-interpreter/parser.cpp"
+  case 25:
+#line 111 "parser.y"
+             {}
+#line 715 "/compilers/naive-interpreter/parser.cpp"
+    break;
+
+  case 26:
+#line 112 "parser.y"
+             {yylhs.value.as < int > () = 1;}
+#line 721 "/compilers/naive-interpreter/parser.cpp"
+    break;
+
+  case 27:
+#line 113 "parser.y"
+              {yylhs.value.as < int > () = 0;}
+#line 727 "/compilers/naive-interpreter/parser.cpp"
+    break;
+
+  case 28:
+#line 115 "parser.y"
+                 {yylhs.value.as < int > () = driver.variables_[yystack_[0].value.as < std::string > ()];}
+#line 733 "/compilers/naive-interpreter/parser.cpp"
+    break;
+
+  case 29:
+#line 116 "parser.y"
+                    {yylhs.value.as < int > () = yystack_[2].value.as < int > () + yystack_[0].value.as < int > ();}
+#line 739 "/compilers/naive-interpreter/parser.cpp"
+    break;
+
+  case 30:
+#line 117 "parser.y"
+                    {yylhs.value.as < int > () = yystack_[2].value.as < int > () - yystack_[0].value.as < int > ();}
+#line 745 "/compilers/naive-interpreter/parser.cpp"
+    break;
+
+  case 31:
+#line 118 "parser.y"
+                    {yylhs.value.as < int > () = yystack_[2].value.as < int > () * yystack_[0].value.as < int > ();}
+#line 751 "/compilers/naive-interpreter/parser.cpp"
+    break;
+
+  case 32:
+#line 119 "parser.y"
+                    {yylhs.value.as < int > () = yystack_[2].value.as < int > () / yystack_[0].value.as < int > ();}
+#line 757 "/compilers/naive-interpreter/parser.cpp"
+    break;
+
+  case 33:
+#line 120 "parser.y"
+                   {yylhs.value.as < int > () = yystack_[1].value.as < int > ();}
+#line 763 "/compilers/naive-interpreter/parser.cpp"
+    break;
+
+
+#line 767 "/compilers/naive-interpreter/parser.cpp"
 
             default:
               break;
@@ -974,74 +1034,113 @@ namespace yy {
   }
 
 
-  const signed char parser::yypact_ninf_ = -5;
+  const signed char parser::yypact_ninf_ = -20;
 
   const signed char parser::yytable_ninf_ = -1;
 
-  const signed char
+  const short
   parser::yypact_[] =
   {
-      -5,     5,     9,    -5,    13,    15,    -5,     8,    -5,    -5,
-      -3,    13,    13,    13,    13,    13,    -5,     8,    19,    19,
-      -5,    -5
+     -20,     2,    -2,   -20,    23,     0,   -20,     1,    23,   -20,
+     -20,   -20,   106,   -20,   -20,    40,    23,   -20,   -20,   -20,
+     -20,    -7,   -10,   106,    23,    23,    23,    23,    23,   -19,
+     -20,   -20,   -20,   -20,   -20,   -20,    23,   -20,   106,     7,
+      23,   117,   117,   128,   128,    62,   -20,   106,   -20,    84,
+     -20,   -20
   };
 
   const signed char
   parser::yydefact_[] =
   {
-       3,     0,     0,     1,     0,     7,     6,     2,     4,     7,
-       0,     0,     0,     0,     0,     0,    12,     5,     9,     8,
-      10,    11
+       8,     0,     0,     1,     0,    28,    24,     0,     0,    25,
+      26,    27,     2,     9,    28,     0,     0,     3,     4,     5,
+       6,     7,     0,    22,     0,     0,     0,     0,     0,     0,
+      11,    12,    13,    14,    15,    16,     0,    23,    10,     0,
+       0,    30,    29,    31,    32,     0,    19,    17,    21,     0,
+      18,    20
   };
 
   const signed char
   parser::yypgoto_[] =
   {
-      -5,    -4,    -5,    -5,    -5
+     -20,    -4,   -20,   -20,   -20,   -20,   -20,   -20
   };
 
   const signed char
   parser::yydefgoto_[] =
   {
-      -1,     7,     1,     2,     8
+      -1,    12,     1,    21,    22,     2,    13,    36
   };
 
   const signed char
   parser::yytable_[] =
   {
-      10,    12,    13,    14,    15,     3,    16,    17,    18,    19,
-      20,    21,    12,    13,    14,    15,     0,     4,    11,     5,
-       6,     4,     0,     9,     6,    14,    15
+      15,    39,     3,    16,    23,    40,     4,    46,     5,     6,
+       0,    17,    38,    18,    19,    20,    48,     0,     0,     0,
+      41,    42,    43,    44,    45,     7,     8,     9,    10,    11,
+       0,     4,    47,    14,     6,     0,    49,     0,     0,     0,
+       0,     0,     0,     0,    24,    25,    26,    27,     0,    37,
+       7,     8,     9,    10,    11,    28,     0,     0,     0,    29,
+      30,    31,    32,    33,    34,    35,    24,    25,    26,    27,
+       0,     0,     0,     0,     0,     0,     0,    28,    50,     0,
+       0,    29,    30,    31,    32,    33,    34,    35,    24,    25,
+      26,    27,     0,     0,     0,     0,     0,     0,     0,    28,
+      51,     0,     0,    29,    30,    31,    32,    33,    34,    35,
+      24,    25,    26,    27,     0,     0,     0,     0,     0,     0,
+       0,    28,     0,    26,    27,    29,    30,    31,    32,    33,
+      34,    35,    28,     0,     0,     0,    29,    30,    31,    32,
+      33,    34,    35,    28,     0,     0,     0,    29,    30,    31,
+      32,    33,    34,    35
   };
 
   const signed char
   parser::yycheck_[] =
   {
-       4,     4,     5,     6,     7,     0,     9,    11,    12,    13,
-      14,    15,     4,     5,     6,     7,    -1,     8,     3,    10,
-      11,     8,    -1,    10,    11,     6,     7
+       4,     8,     0,     3,     8,    15,     8,    26,    10,    11,
+      -1,    10,    16,    12,    13,    14,     9,    -1,    -1,    -1,
+      24,    25,    26,    27,    28,    27,    28,    29,    30,    31,
+      -1,     8,    36,    10,    11,    -1,    40,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,     4,     5,     6,     7,    -1,     9,
+      27,    28,    29,    30,    31,    15,    -1,    -1,    -1,    19,
+      20,    21,    22,    23,    24,    25,     4,     5,     6,     7,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    15,    16,    -1,
+      -1,    19,    20,    21,    22,    23,    24,    25,     4,     5,
+       6,     7,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    15,
+      16,    -1,    -1,    19,    20,    21,    22,    23,    24,    25,
+       4,     5,     6,     7,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    15,    -1,     6,     7,    19,    20,    21,    22,    23,
+      24,    25,    15,    -1,    -1,    -1,    19,    20,    21,    22,
+      23,    24,    25,    15,    -1,    -1,    -1,    19,    20,    21,
+      22,    23,    24,    25
   };
 
   const signed char
   parser::yystos_[] =
   {
-       0,    14,    15,     0,     8,    10,    11,    13,    16,    10,
-      13,     3,     4,     5,     6,     7,     9,    13,    13,    13,
-      13,    13
+       0,    34,    37,     0,     8,    10,    11,    27,    28,    29,
+      30,    31,    33,    38,    10,    33,     3,    10,    12,    13,
+      14,    35,    36,    33,     4,     5,     6,     7,    15,    19,
+      20,    21,    22,    23,    24,    25,    39,     9,    33,     8,
+      15,    33,    33,    33,    33,    33,    26,    33,     9,    33,
+      16,    16
   };
 
   const signed char
   parser::yyr1_[] =
   {
-       0,    12,    14,    15,    15,    16,    13,    13,    13,    13,
-      13,    13,    13
+       0,    32,    34,    35,    36,    36,    36,    36,    37,    37,
+      38,    39,    39,    39,    39,    39,    39,    33,    33,    33,
+      33,    33,    33,    33,    33,    33,    33,    33,    33,    33,
+      33,    33,    33,    33
   };
 
   const signed char
   parser::yyr2_[] =
   {
-       0,     2,     2,     0,     2,     3,     1,     1,     3,     3,
-       3,     3,     3
+       0,     2,     2,     1,     1,     1,     1,     1,     0,     2,
+       3,     1,     1,     1,     1,     1,     1,     3,     4,     3,
+       5,     4,     2,     3,     1,     1,     1,     1,     1,     3,
+       3,     3,     3,     3
   };
 
 
@@ -1053,15 +1152,21 @@ namespace yy {
   {
   "\"end of file\"", "error", "$undefined", "\":=\"", "\"-\"", "\"+\"",
   "\"*\"", "\"/\"", "\"(\"", "\")\"", "\"identifier\"", "\"number\"",
-  "$accept", "exp", "unit", "assignments", "assignment", YY_NULLPTR
+  "\"int\"", "\"boolean\"", "\"void\"", "\"[\"", "\"]\"", "\";\"", "\",\"",
+  "\".\"", "\"&&\"", "\"||\"", "\"<\"", "\">\"", "\"==\"", "\"%\"",
+  "\"length\"", "\"new\"", "\"!\"", "\"this\"", "\"true\"", "\"false\"",
+  "$accept", "expr", "unit", "type_identifier", "simple_type",
+  "assignments", "assignment", "binary_operator", YY_NULLPTR
   };
 
 #if YYDEBUG
   const signed char
   parser::yyrline_[] =
   {
-       0,    57,    57,    60,    61,    64,    73,    74,    75,    76,
-      77,    78,    79
+       0,    58,    58,    61,    64,    65,    66,    67,    79,    80,
+      83,    97,    97,    97,    97,    97,    97,   103,   104,   105,
+     106,   107,   108,   109,   110,   111,   112,   113,   115,   116,
+     117,   118,   119,   120
   };
 
   // Print the state stack on the debug stream.
@@ -1095,9 +1200,9 @@ namespace yy {
 
 
 } // yy
-#line 1099 "/compilers/naive-interpreter/parser.cpp"
+#line 1204 "/compilers/naive-interpreter/parser.cpp"
 
-#line 81 "parser.y"
+#line 122 "parser.y"
 
 
 void

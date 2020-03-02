@@ -1,3 +1,0 @@
-/compilers/naive-interpreter/build/CMakeFiles/rebuild_cache.dir
-/compilers/naive-interpreter/build/CMakeFiles/ParserExample.dir
-/compilers/naive-interpreter/build/CMakeFiles/edit_cache.dir

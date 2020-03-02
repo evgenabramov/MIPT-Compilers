@@ -389,7 +389,7 @@ namespace yy {
     union union_type
     {
       // "number"
-      // exp
+      // expr
       char dummy1[sizeof (int)];
 
       // "identifier"
@@ -554,7 +554,7 @@ namespace yy {
 switch (yytype)
     {
       case 11: // "number"
-      case 13: // exp
+      case 33: // expr
         value.template destroy< int > ();
         break;
 
@@ -638,13 +638,13 @@ switch (yytype)
       symbol_type (int tok, location_type l)
         : super_type(token_type (tok), std::move (l))
       {
-        YY_ASSERT (tok == token::TOK_END || tok == token::TOK_ASSIGN || tok == token::TOK_MINUS || tok == token::TOK_PLUS || tok == token::TOK_STAR || tok == token::TOK_SLASH || tok == token::TOK_LPAREN || tok == token::TOK_RPAREN);
+        YY_ASSERT (tok == token::TOK_END || tok == token::TOK_ASSIGN || tok == token::TOK_MINUS || tok == token::TOK_PLUS || tok == token::TOK_STAR || tok == token::TOK_SLASH || tok == token::TOK_LPAREN || tok == token::TOK_RPAREN || tok == 267 || tok == 268 || tok == 269 || tok == 270 || tok == 271 || tok == 272 || tok == 273 || tok == 274 || tok == 275 || tok == 276 || tok == 277 || tok == 278 || tok == 279 || tok == 280 || tok == 281 || tok == 282 || tok == 283 || tok == 284 || tok == 285 || tok == 286);
       }
 #else
       symbol_type (int tok, const location_type& l)
         : super_type(token_type (tok), l)
       {
-        YY_ASSERT (tok == token::TOK_END || tok == token::TOK_ASSIGN || tok == token::TOK_MINUS || tok == token::TOK_PLUS || tok == token::TOK_STAR || tok == token::TOK_SLASH || tok == token::TOK_LPAREN || tok == token::TOK_RPAREN);
+        YY_ASSERT (tok == token::TOK_END || tok == token::TOK_ASSIGN || tok == token::TOK_MINUS || tok == token::TOK_PLUS || tok == token::TOK_STAR || tok == token::TOK_SLASH || tok == token::TOK_LPAREN || tok == token::TOK_RPAREN || tok == 267 || tok == 268 || tok == 269 || tok == 270 || tok == 271 || tok == 272 || tok == 273 || tok == 274 || tok == 275 || tok == 276 || tok == 277 || tok == 278 || tok == 279 || tok == 280 || tok == 281 || tok == 282 || tok == 283 || tok == 284 || tok == 285 || tok == 286);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
@@ -900,7 +900,7 @@ switch (yytype)
     // Tables.
     // YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
     // STATE-NUM.
-    static const signed char yypact_[];
+    static const short yypact_[];
 
     // YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
     // Performed when YYTABLE does not specify something else to do.  Zero
@@ -1166,10 +1166,10 @@ switch (yytype)
     enum
     {
       yyeof_ = 0,
-      yylast_ = 26,     ///< Last index in yytable_.
-      yynnts_ = 5,  ///< Number of nonterminal symbols.
+      yylast_ = 153,     ///< Last index in yytable_.
+      yynnts_ = 8,  ///< Number of nonterminal symbols.
       yyfinal_ = 3, ///< Termination state number.
-      yyntokens_ = 12  ///< Number of tokens.
+      yyntokens_ = 32  ///< Number of tokens.
     };
 
 
@@ -1214,9 +1214,11 @@ switch (yytype)
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-       5,     6,     7,     8,     9,    10,    11
+       5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
+      15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
+      25,    26,    27,    28,    29,    30,    31
     };
-    const int user_token_number_max_ = 266;
+    const int user_token_number_max_ = 286;
 
     if (t <= 0)
       return yyeof_;
@@ -1237,7 +1239,7 @@ switch (yytype)
     switch (this->type_get ())
     {
       case 11: // "number"
-      case 13: // exp
+      case 33: // expr
         value.move< int > (std::move (that.value));
         break;
 
@@ -1261,7 +1263,7 @@ switch (yytype)
     switch (this->type_get ())
     {
       case 11: // "number"
-      case 13: // exp
+      case 33: // expr
         value.copy< int > (YY_MOVE (that.value));
         break;
 
@@ -1292,7 +1294,7 @@ switch (yytype)
     switch (this->type_get ())
     {
       case 11: // "number"
-      case 13: // exp
+      case 33: // expr
         value.move< int > (YY_MOVE (s.value));
         break;
 
@@ -1355,7 +1357,7 @@ switch (yytype)
   }
 
 } // yy
-#line 1359 "/compilers/naive-interpreter/parser.hh"
+#line 1361 "/compilers/naive-interpreter/parser.hh"
 
 
 

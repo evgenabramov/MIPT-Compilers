@@ -479,8 +479,8 @@ static const flex_int16_t yy_chk[39] =
 
 static const flex_int16_t yy_rule_linenum[13] =
     {   0,
-       43,   44,   46,   50,   51,   52,   53,   54,   55,   57,
-       58,   59
+       43,   44,   46,   51,   52,   53,   54,   55,   56,   58,
+       62,   63
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -805,67 +805,71 @@ case 3:
 YY_RULE_SETUP
 #line 46 "scanner.l"
 {
+              // Example on how to process location info
               std::cout << loc.begin.column << " " << loc.end.column << std::endl;
               return yy::parser::make_MINUS  (loc);
            }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 50 "scanner.l"
+#line 51 "scanner.l"
 return yy::parser::make_PLUS   (loc);
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 51 "scanner.l"
+#line 52 "scanner.l"
 return yy::parser::make_STAR   (loc);
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 52 "scanner.l"
+#line 53 "scanner.l"
 return yy::parser::make_SLASH  (loc);
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 53 "scanner.l"
+#line 54 "scanner.l"
 return yy::parser::make_LPAREN (loc);
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 54 "scanner.l"
+#line 55 "scanner.l"
 return yy::parser::make_RPAREN (loc);
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 55 "scanner.l"
+#line 56 "scanner.l"
 return yy::parser::make_ASSIGN (loc);
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 57 "scanner.l"
-return make_NUMBER(yytext, loc);
+#line 58 "scanner.l"
+{
+              // Example on how to override standard function
+              return make_NUMBER(yytext, loc);
+           }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 58 "scanner.l"
+#line 62 "scanner.l"
 return yy::parser::make_IDENTIFIER(yytext, loc);
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 59 "scanner.l"
+#line 63 "scanner.l"
 {
-                throw yy::parser::syntax_error(loc, "invalid character: " + std::string(yytext));
+              throw yy::parser::syntax_error(loc, "invalid character: " + std::string(yytext));
            }
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 62 "scanner.l"
+#line 66 "scanner.l"
 return yy::parser::make_END (loc);
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 63 "scanner.l"
+#line 67 "scanner.l"
 ECHO;
 	YY_BREAK
-#line 869 "/compilers/naive-interpreter/scanner.cpp"
+#line 873 "/compilers/naive-interpreter/scanner.cpp"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -1982,7 +1986,7 @@ void yyfree (void * ptr )
 
 /* %ok-for-header */
 
-#line 63 "scanner.l"
+#line 67 "scanner.l"
 
 
 yy::parser::symbol_type make_NUMBER(
