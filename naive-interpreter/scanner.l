@@ -44,15 +44,26 @@ blank [ \t\r]
 
 "-"        {
               // Example on how to process location info
-              std::cout << loc.begin.column << " " << loc.end.column << std::endl;
+              // std::cout << loc.begin.column << " " << loc.end.column << std::endl;
               return yy::parser::make_MINUS  (loc);
            }
-"+"        return yy::parser::make_PLUS   (loc);
-"*"        return yy::parser::make_STAR   (loc);
-"/"        return yy::parser::make_SLASH  (loc);
-"("        return yy::parser::make_LPAREN (loc);
-")"        return yy::parser::make_RPAREN (loc);
-":="       return yy::parser::make_ASSIGN (loc);
+"+"        return yy::parser::make_PLUS      (loc);
+"*"        return yy::parser::make_STAR      (loc);
+"/"        return yy::parser::make_SLASH     (loc);
+"("        return yy::parser::make_LPAREN    (loc);
+")"        return yy::parser::make_RPAREN    (loc);
+":="       return yy::parser::make_ASSIGN    (loc);
+"<"        return yy::parser::make_LT        (loc);
+"<="       return yy::parser::make_LE        (loc);
+">"        return yy::parser::make_GT        (loc);
+">="       return yy::parser::make_GE        (loc);
+"&&"       return yy::parser::make_AND       (loc);
+"||"       return yy::parser::make_OR        (loc);
+"true"     return yy::parser::make_TRUE      (loc);
+"false"    return yy::parser::make_FALSE     (loc);
+"int"      return yy::parser::make_INT       (loc);
+"bool"     return yy::parser::make_BOOL      (loc);
+";"        return yy::parser::make_SEMICOLON (loc);
 
 {int}      {
               // Example on how to override standard function

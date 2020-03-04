@@ -15,6 +15,7 @@ BISON_TARGET(
     parser.y
     ${ParserExample_SOURCE_DIR}/parser.cpp
     DEFINES_FILE ${ParserExample_SOURCE_DIR}/parser.hh
+    COMPILE_FLAGS --graph
 )
 
 FLEX_TARGET(

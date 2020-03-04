@@ -44,11 +44,25 @@
     SLASH "/"
     LPAREN "("
     RPAREN ")"
+    AND "&&"
+    OR "||"
+    LT "<"
+    LE "<="
+    GT ">"
+    GE ">="
+    TRUE "true"
+    FALSE "false"
+    INT "int"
+    BOOL "bool"
+    SEMICOLON ";"
 ;
 
-%token <std::string> IDENTIFIER "identifier"
-%token <int> NUMBER "number"
-%nterm <int> expr
+%token <std::string> IDENTIFIER "identifier";
+%token <int> NUMBER "number";
+
+%nterm <int> expr;
+%nterm <bool> bool_expr;
+%nterm <int> int_expr;
 
 %printer { yyo << $$; } <*>;
 
@@ -57,67 +71,58 @@
 unit: 
     assignments expr { driver.result_ = $2; };
 
-type_identifier:
-    IDENTIFIER;
-
-simple_type:
-    "int"
-    | "boolean"
-    | "void" 
-    | type_identifier;
-
-array_type:
-    simple_type "[" "]";
-
-type:
-    simple_type | array_type;
+type: 
+    INT | BOOL;
 
 variable_declaraion:
-    type IDENTIFIER ";" {};
+    type IDENTIFIER ";" {}
+    | type IDENTIFIER ":=" expr ";" {
+        driver.variables_[$2] = $4;
+    };
 
 assignments:
     %empty {}
-    | assignments assignment {};
+    | assignments assignment {}
+    | assignments variable_declaraion {};
 
 assignment:
-    "identifier" ":=" expr {
+    IDENTIFIER ":=" expr ";" {
         driver.variables_[$1] = $3;
-        // std::cout << drv.location.begin.line << "-" << drv.location.end.line << std::endl;
     };
 
-method_arguments:
-    %empty
-    | expr 
-    | expr "," expr;
+%left "||";
+%left "&&";
+%left "<" "<=" ">" ">=";
 
-method_invocaion:
-    expr "." IDENTIFIER "(" method_invocaion ")";
-
-binary_operator:
-    "&&" | "||" | "<" | ">" | "==" | "%";
+bool_expr: 
+    int_expr "<" int_expr {$$ = static_cast<bool>($1 < $3);}
+    | int_expr "<=" int_expr {$$ = static_cast<bool>($1 <= $3);}
+    | int_expr ">" int_expr {$$ = static_cast<bool>($1 > $3);}
+    | int_expr ">=" int_expr {$$ = static_cast<bool>($1 >= $3);}
+    | bool_expr "&&" bool_expr {$$ = static_cast<bool>($1 && $3);}
+    | bool_expr "||" bool_expr {$$ = static_cast<bool>($1 || $3);}
+    | "(" bool_expr ")" {$$ = $2;}
+    | "true" {$$ = true;}
+    | "false" {$$ = false;}
+    ;
 
 %left "+" "-";
 %left "*" "/";
 
-expr:
-    expr binary_operator expr {}
-    | expr "[" expr "]" {}
-    | expr "." "length" {}
-    | "new" simple_type "[" expr "]" {}
-    | "new" type_identifier "(" ")" {}
-    | "!" expr {}
-    | "(" expr ")" {}
-    | NUMBER {}
-    | "this" {}
-    | "true" {$$ = 1;}
-    | "false" {$$ = 0;}
-    | method_invocaion {}
+int_expr: 
+    NUMBER {$$ = $1;}
     | IDENTIFIER {$$ = driver.variables_[$1];}
-    | expr "+" expr {$$ = $1 + $3;}
-    | expr "-" expr {$$ = $1 - $3;}
-    | expr "*" expr {$$ = $1 * $3;}
-    | expr "/" expr {$$ = $1 / $3;}
-    | "(" expr ")" {$$ = $2;};
+    | int_expr "+" int_expr {$$ = $1 + $3;}
+    | int_expr "-" int_expr {$$ = $1 - $3;}
+    | int_expr "*" int_expr {$$ = $1 * $3;}
+    | int_expr "/" int_expr {$$ = $1 / $3;}
+    | "(" int_expr ")" {$$ = $2;}
+    ;
+
+expr: 
+    bool_expr {$$ = static_cast<int>($1);}
+    | int_expr {$$ = $1;}
+    ;
 
 %%
 
