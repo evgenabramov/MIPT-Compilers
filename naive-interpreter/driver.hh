@@ -15,6 +15,7 @@ class Driver {
     void EndScan();
 
     std::map<std::string, int> variables_;
+    std::map<std::string, bool> bool_variables_;
     std::string filename_; // filename to read data from
 
     bool trace_parsing_; // debug levels

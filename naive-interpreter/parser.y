@@ -75,9 +75,22 @@ type:
     INT | BOOL;
 
 variable_declaraion:
-    type IDENTIFIER ";" {}
+    type IDENTIFIER ";" {
+        if (driver.variables_.count($2) > 0 || driver.bool_variables_.count($2) > 0) {
+            std::cerr << "Redefenition of '" << $2 << "'" << std::endl;
+            return;
+        }
+    }
     | type IDENTIFIER ":=" expr ";" {
-        driver.variables_[$2] = $4;
+        if (driver.variables_.count($2) > 0 || driver.bool_variables_.count($2) > 0) {
+            std::cerr << "Redefenition of '" << $2 << "'" << std::endl;
+            return;
+        }
+        if ($1 == "int") {
+            driver.variables_[$2] = $4;            
+        } else {
+            driver.bool_variables_[$2] = $4;
+        }
     };
 
 assignments:
