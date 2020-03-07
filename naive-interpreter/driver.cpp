@@ -4,10 +4,7 @@
 Driver::Driver() :
     trace_parsing_(false),
     trace_scanning_(false),
-    scanner_(*this), parser_(scanner_, *this) {
-    variables_["one"] = 1; // convert tokens to values
-    variables_["two"] = 2;
-}
+    scanner_(*this), parser_(scanner_, *this) {}
 
 int Driver::Parse(const std::string& filename) {
     filename_ = filename;
