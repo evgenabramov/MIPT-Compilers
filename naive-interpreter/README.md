@@ -1,8 +1,10 @@
-# Example of code that can be parsed by interpreter:
+# Описание запуска интерпретатора
+
+Примеры хранятся в директории `examples`
 
 ```
-int a := 2 + 3 <= 5 + 6 && true || false;
-int b := a - 9;
-a := 3 * 20 / 4;
-a + b + 2
+mkdir build && cd build
+cmake .. && make
+./MiniJavaInterpreter ../examples/example[1-3].in
+make clean
 ```

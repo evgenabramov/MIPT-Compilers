@@ -64,6 +64,16 @@ blank [ \t\r]
 "int"      return yy::parser::make_INT       (loc);
 "bool"     return yy::parser::make_BOOL      (loc);
 ";"        return yy::parser::make_SEMICOLON (loc);
+"public"   return yy::parser::make_PUBLIC    (loc);
+"static"   return yy::parser::make_STATIC    (loc);
+"void"     return yy::parser::make_VOID      (loc);
+"main"     return yy::parser::make_MAIN      (loc);
+"String"   return yy::parser::make_STRING    (loc);
+"args"     return yy::parser::make_ARGS      (loc);
+"["        return yy::parser::make_LSBRACKET (loc);
+"]"        return yy::parser::make_RSBRACKET (loc);
+"{"        return yy::parser::make_LCBRACKET (loc);
+"}"        return yy::parser::make_RCBRACKET (loc);
 
 {int}      {
               // Example on how to override standard function
