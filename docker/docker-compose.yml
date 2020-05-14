@@ -13,4 +13,4 @@ services:
     volumes:
       - /Users/evgenabramov/MIPT-Compilers/docker/../:/compilers
     ports:
-      - "127.0.0.1:3682:39"
+      - "127.0.0.1:2232:22"
