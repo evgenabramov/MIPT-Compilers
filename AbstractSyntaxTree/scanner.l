@@ -82,7 +82,7 @@ blank [ \t\r]
 "else"     return yy::parser::make_ELSE      (loc);
 "while"    return yy::parser::make_WHILE     (loc);
 "class"    return yy::parser::make_CLASS     (loc);
-"new"      return yy::parser::make_NEW       (loc);
+"= new"    return yy::parser::make_EQUALNEW  (loc);
 "this"     return yy::parser::make_THIS      (loc);
 "."        return yy::parser::make_DOT       (loc);
 ","        return yy::parser::make_COMMA     (loc);

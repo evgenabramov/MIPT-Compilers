@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <memory>
 #include <exception>
+#include <vector>
 
 namespace ast {
 
@@ -166,6 +167,21 @@ class Interpreter : public Visitor {
       tos_value_ = std::make_shared<IntValue>(lhs % rhs);
   }
 
+  void Visit(ArrayAccessExpression* array_access_expression) override {
+    const std::string& array_name = array_access_expression->GetArrayName();
+    if (arrays_.find(array_name) == arrays_.end()) {
+        throw std::runtime_error("Array is not declared");
+    }
+    array_access_expression->GetExpression()->Accept(this);
+    int index = tos_value_->toInt();
+
+    if (arrays_[array_name].size() <= index) {
+        throw std::logic_error("Bad array index");
+    }
+
+    tos_value_ = arrays_[array_name][index];
+  }
+
   // Base class
   void Visit(Declaration* declaration) override {}
 
@@ -180,13 +196,25 @@ class Interpreter : public Visitor {
   // Terminal position
   void Visit(VariableDeclaration* variable_declaration) override {
       const std::string& variable_name = variable_declaration->GetVariableName();
-      std::string type_name = variable_declaration->GetType()->GetIdentifier();
+      std::string type_name = variable_declaration->GetSimpleType()->GetIdentifier();
       if (type_name == "int") {
           variables_[variable_name] = std::make_shared<IntValue>();
       } else if (type_name == "boolean") {
           variables_[variable_name] = std::make_shared<BoolValue>();
       } else {
           throw std::logic_error("Bad variable type");
+      }
+  }
+
+  void Visit(ArrayDeclaration* array_declaration) override {
+      const std::string& array_name = array_declaration->GetArrayName();
+      std::string array_type = array_declaration->GetArrayType()->GetIdentifier();
+      if (array_type == "int") {
+          arrays_[array_name] = std::vector<std::shared_ptr<Value>>(1, std::make_shared<IntValue>());
+      } else if (array_type == "boolean") {
+          arrays_[array_name] = std::vector<std::shared_ptr<Value>>(1, std::make_shared<BoolValue>());
+      } else {
+          throw std::logic_error("Bad array type");
       }
   }
 
@@ -202,7 +230,7 @@ class Interpreter : public Visitor {
   }
 
   void Visit(AssignmentStatement* assignment_statement) override {
-      std::string variable_name = assignment_statement->GetNamedEntity()->GetName();
+      std::string variable_name = assignment_statement->GetNamedVariable()->GetName();
       if (variables_.find(variable_name) == variables_.end()) {
           throw std::logic_error("Variable is not declared");
       }
@@ -267,11 +295,57 @@ class Interpreter : public Visitor {
       }
   }
 
+  void Visit(ArrayDeclarationStatement* array_declaration_statement) override {
+      array_declaration_statement->GetArrayDeclaration()->Accept(this);
+  }
+
+  void Visit(ArrayAssignmentStatement* array_assignment_statement) override {
+      const std::string& array_name = array_assignment_statement->GetNamedArray()->GetName();
+      array_assignment_statement->GetExpression()->Accept(this);
+      int array_size = tos_value_->toInt();
+      const std::string& array_type = array_assignment_statement->GetSimpleType()->GetIdentifier();
+      if (array_type == "int") {
+          arrays_[array_name] = std::vector<std::shared_ptr<Value>>(array_size, std::make_shared<IntValue>());
+      } else if (array_type == "boolean") {
+          arrays_[array_name] = std::vector<std::shared_ptr<Value>>(array_size, std::make_shared<BoolValue>());
+      } else {
+          throw std::logic_error("Bad array type");
+      }
+  }
+
+  void Visit(ArrayElementAssignmentStatement* array_element_assignment_statement) override {
+      const std::string& array_name = array_element_assignment_statement->GetArrayName();
+
+      if (arrays_.find(array_name) == arrays_.end()) {
+          throw std::runtime_error("Array is not declared");
+      }
+
+      array_element_assignment_statement->GetIndexExpression()->Accept(this);
+      int index = tos_value_->toInt();
+
+      if (arrays_[array_name].size() <= index) {
+          throw std::logic_error("Bad array index");
+      }
+
+      array_element_assignment_statement->GetValueExpression()->Accept(this);
+
+      if (arrays_[array_name].front()->GetTypeIdentifier() == "int") {
+          int value = tos_value_->toInt();
+          arrays_[array_name][index] = std::make_shared<IntValue>(value);
+      } else if (arrays_[array_name].front()->GetTypeIdentifier() == "boolean") {
+          bool value = tos_value_->toBool();
+          arrays_[array_name][index] = std::make_shared<BoolValue>(value);
+      }
+  }
+
   // Base class
   void Visit(NamedEntity* named_entity) override {}
 
   // Terminal position
   void Visit(NamedVariable* named_variable) override {}
+
+  // Terminal position
+  void Visit(NamedArray* named_array) override {}
 
   // Base class
   void Visit(Type* type) override {}
@@ -282,6 +356,7 @@ class Interpreter : public Visitor {
 
  private:
   std::unordered_map<std::string, std::shared_ptr<Value>> variables_;
+  std::unordered_map<std::string, std::vector<std::shared_ptr<Value>>> arrays_;
 
   std::shared_ptr<Value> tos_value_;
   std::shared_ptr<Value> return_value_;

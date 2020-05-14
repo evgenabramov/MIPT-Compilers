@@ -167,6 +167,14 @@ class PrintVisitor : public Visitor {
       --num_tabs_;
   }
 
+  void Visit(ArrayAccessExpression* array_access_expression) override {
+      PrintTabs();
+      out_ << "ArrayAccessExpression [array name: " << array_access_expression->GetArrayName() << "]" << std::endl;
+      ++num_tabs_;
+      array_access_expression->GetExpression()->Accept(this);
+      --num_tabs_;
+  }
+
   // Base class
   void Visit(Declaration* declaration) override {}
 
@@ -186,7 +194,16 @@ class PrintVisitor : public Visitor {
       PrintTabs();
       out_ << "VariableDeclaration [variable name: " << variable_declaration->GetVariableName() << "]" << std::endl;
       ++num_tabs_;
-      variable_declaration->GetType()->Accept(this);
+      variable_declaration->GetSimpleType()->Accept(this);
+      --num_tabs_;
+  }
+
+  void Visit(ArrayDeclaration* array_declaration) override {
+      PrintTabs();
+      out_ << "ArrayDeclaration [array name: " << array_declaration->GetArrayName()
+           << "]:" << std::endl;
+      ++num_tabs_;
+      array_declaration->GetArrayType()->Accept(this);
       --num_tabs_;
   }
 
@@ -209,7 +226,7 @@ class PrintVisitor : public Visitor {
       PrintTabs();
       out_ << "AssignmentStatement: " << std::endl;
       ++num_tabs_;
-      assignment_statement->GetNamedEntity()->Accept(this);
+      assignment_statement->GetNamedVariable()->Accept(this);
       assignment_statement->GetExpression()->Accept(this);
       --num_tabs_;
   }
@@ -274,6 +291,34 @@ class PrintVisitor : public Visitor {
       --num_tabs_;
   }
 
+  void Visit(ArrayDeclarationStatement* array_declaration_statement) override {
+      PrintTabs();
+      out_ << "ArrayDeclarationStatement:" << std::endl;
+      ++num_tabs_;
+      array_declaration_statement->GetArrayDeclaration()->Accept(this);
+      --num_tabs_;
+  }
+
+  void Visit(ArrayAssignmentStatement* array_assignment_statement) override {
+      PrintTabs();
+      out_ << "ArrayAssignmentStatement [array name: "
+           << array_assignment_statement->GetNamedArray()->GetName() << "]:" << std::endl;
+      ++num_tabs_;
+      array_assignment_statement->GetSimpleType()->Accept(this);
+      array_assignment_statement->GetExpression()->Accept(this);
+      --num_tabs_;
+  }
+
+  void Visit(ArrayElementAssignmentStatement* array_element_assignment_statement) override {
+      PrintTabs();
+      out_ << "ArrayElementAssignmentStatement [array name: "
+           << array_element_assignment_statement->GetArrayName() << "]:" << std::endl;
+      ++num_tabs_;
+      array_element_assignment_statement->GetIndexExpression()->Accept(this);
+      array_element_assignment_statement->GetValueExpression()->Accept(this);
+      --num_tabs_;
+  }
+
   // Base class
   void Visit(NamedEntity* named_entity) override {}
 
@@ -283,19 +328,25 @@ class PrintVisitor : public Visitor {
       out_ << "NamedVariable [name: " << named_variable->GetName() << "]" << std::endl;
   }
 
+  // Terminal position
+  void Visit(NamedArray* named_array) override {
+      PrintTabs();
+      out_ << "NamedArray [name: " << named_array->GetName() << "]" << std::endl;
+  }
+
   // Base class
   void Visit(Type* type) override {}
 
   // Terminal position
   void Visit(SimpleType* simple_type) override {
       PrintTabs();
-      out_ << "Type [identifier: " << simple_type->GetIdentifier() << "]" << std::endl;
+      out_ << "SimpleType [identifier: " << simple_type->GetIdentifier() << "]" << std::endl;
   }
 
   // Terminal position
   void Visit(ArrayType* array_type) override {
       PrintTabs();
-      out_ << "ArrayType [type identifier: " << array_type->GetIdentifier() << "]" << std::endl;
+      out_ << "ArrayType [identifier: " << array_type->GetIdentifier() << "]" << std::endl;
   }
 
  private:

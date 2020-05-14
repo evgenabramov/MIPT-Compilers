@@ -21,10 +21,12 @@
 #include "Expression/SubExpression.hpp"
 #include "Expression/ModExpression.hpp"
 #include "Expression/EqualExpression.hpp"
+#include "Expression/ArrayAccessExpression.hpp"
 
 #include "Declaration/Declaration.hpp"
 #include "Declaration/DeclarationList.hpp"
 #include "Declaration/VariableDeclaration.hpp"
+#include "Declaration/ArrayDeclaration.hpp"
 
 #include "Statement/Statement.hpp"
 #include "Statement/StatementList.hpp"
@@ -36,9 +38,13 @@
 #include "Statement/WhileStatement.hpp"
 #include "Statement/AssertStatement.hpp"
 #include "Statement/IfElseStatement.hpp"
+#include "Statement/ArrayDeclarationStatement.hpp"
+#include "Statement/ArrayAssignmentStatement.hpp"
+#include "Statement/ArrayElementAssignmentStatement.hpp"
 
 #include "NamedEntity/NamedEntity.hpp"
 #include "NamedEntity/NamedVariable.hpp"
+#include "NamedEntity/NamedArray.hpp"
 
 #include "Types/Type.hpp"
 #include "Types/SimpleType.hpp"

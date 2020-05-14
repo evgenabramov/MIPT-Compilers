@@ -44,7 +44,7 @@ mkdir build
 cd build
 cmake ..
 make
-./AbstractSyntaxTree --src ../examples/example[1/2].in
+./AbstractSyntaxTree --src ../examples/example[1-3].in
 ```
 
 Посмотреть на выхлоп работы визиторов:

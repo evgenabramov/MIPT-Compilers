@@ -82,7 +82,7 @@
     ELSE "else"
     WHILE "while"
     CLASS "class"
-    NEW "new"
+    EQUALNEW "= new"
     THIS "this"
     DOT "."
     COMMA ","
@@ -101,15 +101,18 @@
 // %nterm <Declaration*> declaration;
 // %nterm <DeclarationList*> declaration_list;
 %nterm <VariableDeclaration*> variable_declaration;
+%nterm <ArrayDeclaration*> array_declaration;
 
 %nterm <Expression*> expression;
 // %nterm <ExpressionList*> expression_list;
 
-%nterm <Type*> type;
+// %nterm <Type*> type;
 %nterm <SimpleType*> simple_type;
 %nterm <ArrayType*> array_type;
 
-%nterm <NamedEntity*> named_entity;
+// %nterm <NamedEntity*> named_entity;
+%nterm <NamedVariable*> named_variable;
+%nterm <NamedArray*> named_array;
 
 // %printer { yyo << $$; } <*>;
 
@@ -140,12 +143,17 @@ statement_list:
     	$$ = new StatementList($1, $2);
     };
 
+%left "new";
+
 statement:
     "assert" "(" expression ")" ";" {
     	$$ = new AssertStatement($3);
     }
     | variable_declaration {
     	$$ = new VariableDeclarationStatement($1);
+    }
+    | array_declaration {
+    	$$ = new ArrayDeclarationStatement($1);
     }
     | "if" "(" expression ")" statement {
     	$$ = new IfStatement($3, $5);
@@ -156,8 +164,14 @@ statement:
     | "while" "(" expression ")" statement {
     	$$ = new WhileStatement($3, $5);
     }
-    | named_entity "=" expression ";" {
+    | named_array "= new" simple_type "[" expression "]" ";" {
+	$$ = new ArrayAssignmentStatement($1, $3, $5);
+    }
+    | named_variable "=" expression ";" {
 	$$ = new AssignmentStatement($1, $3);
+    }
+    | IDENTIFIER "[" expression "]" "=" expression ";" {
+    	$$ = new ArrayElementAssignmentStatement($1, $3, $6);
     }
     | "return" expression ";" {
     	$$ = new ReturnStatement($2);
@@ -167,17 +181,22 @@ statement:
     };
 
 variable_declaration:
-    type IDENTIFIER ";" {
+    simple_type IDENTIFIER ";" {
         $$ = new VariableDeclaration($1, $2);
     };
 
-type:
-    simple_type {
-    	$$ = $1;
-    }
-    | array_type {
-    	$$ = $1;
+array_declaration:
+    array_type IDENTIFIER ";" {
+    	$$ = new ArrayDeclaration($1, $2);
     };
+
+//type:
+//    simple_type {
+//    	$$ = $1;
+//    }
+//    | array_type {
+//    	$$ = $1;
+//    };
 
 simple_type:
     "int" {
@@ -194,13 +213,26 @@ simple_type:
     };
 
 array_type:
-    simple_type "[]" {
+    simple_type "[" "]" {
     	$$ = new ArrayType($1->GetIdentifier());
-    }
+    };
 
-named_entity:
+//named_entity:
+//    named_variable {
+//    	$$ = $1;
+//    }
+//    | named_array {
+//    	$$ = $1;
+//    };
+
+named_variable:
     IDENTIFIER {
     	$$ = new NamedVariable($1);
+    };
+
+named_array:
+    IDENTIFIER {
+    	$$ = new NamedArray($1);
     };
 
 %left "||";
@@ -227,6 +259,9 @@ expression:
     }
     | "identifier" {
     	$$ = new IdentExpression($1);
+    }
+    | "identifier" "[" expression "]" {
+	$$ = new ArrayAccessExpression($1, $3);
     }
     | expression "*" expression {
     	$$ = new MulExpression($1, $3);

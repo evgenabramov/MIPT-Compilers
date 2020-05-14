@@ -27,4 +27,4 @@ class StatementList : public TreeNode {
     StatementList* tail_ = nullptr;
 };
 
-} // namespace AST
+} // namespace ast

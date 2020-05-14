@@ -79,10 +79,12 @@ target_sources(
     Expression/SubExpression.hpp
     Expression/ModExpression.hpp
     Expression/EqualExpression.hpp
-    
+    Expression/ArrayAccessExpression.hpp
+
     Declaration/Declaration.hpp
     Declaration/DeclarationList.hpp
     Declaration/VariableDeclaration.hpp
+    Declaration/ArrayDeclaration.hpp
 
     Statement/Statement.hpp
     Statement/StatementList.hpp
@@ -94,6 +96,9 @@ target_sources(
     Statement/WhileStatement.hpp
     Statement/AssertStatement.hpp
     Statement/IfElseStatement.hpp
+    Statement/ArrayDeclarationStatement.hpp
+    Statement/ArrayAssignmentStatement.hpp
+    Statement/ArrayElementAssignmentStatement.hpp
 
     Service/TreeNode.hpp
     Service/MainClass.hpp
@@ -107,6 +112,7 @@ target_sources(
 
     NamedEntity/NamedEntity.hpp
     NamedEntity/NamedVariable.hpp
+    NamedEntity/NamedArray.hpp
 
     Types/Type.hpp
     Types/SimpleType.hpp

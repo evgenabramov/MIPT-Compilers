@@ -13,8 +13,6 @@ class SimpleType : public Type {
   void Accept(Visitor* visitor) override {
       visitor->Visit(this);
   }
-
-
 };
 
 } // namespace ast

@@ -25,9 +25,15 @@ class Visitor {
     virtual void Visit(SubExpression* sub_expression) = 0;
     virtual void Visit(EqualExpression* equal_expression) = 0;
     virtual void Visit(ModExpression* mod_expression) = 0;
+
+    virtual void Visit(ArrayAccessExpression* array_access_expression) = 0;
+
     virtual void Visit(Declaration* declaration) = 0;
     virtual void Visit(DeclarationList* declaration_list) = 0;
     virtual void Visit(VariableDeclaration* variable_declaration) = 0;
+
+    virtual void Visit(ArrayDeclaration* array_declaration) = 0;
+
     virtual void Visit(Statement* statement) = 0;
     virtual void Visit(StatementList* statement_list) = 0;
     virtual void Visit(AssignmentStatement* assignment_statement) = 0;
@@ -38,8 +44,17 @@ class Visitor {
     virtual void Visit(WhileStatement* while_statement) = 0;
     virtual void Visit(AssertStatement* assert_statement) = 0;
     virtual void Visit(IfElseStatement* if_else_statement) = 0;
+
+    virtual void Visit(ArrayDeclarationStatement* array_declaration_statement) = 0;
+    virtual void Visit(ArrayAssignmentStatement* array_assignment_statement) = 0;
+
+    virtual void Visit(ArrayElementAssignmentStatement* array_element_assignment_statement) = 0;
+
     virtual void Visit(NamedEntity* named_entity) = 0;
     virtual void Visit(NamedVariable* named_variable) = 0;
+
+    virtual void Visit(NamedArray* named_array) = 0;
+
     virtual void Visit(Type* type) = 0;
     virtual void Visit(SimpleType* simple_type) = 0;
     virtual void Visit(ArrayType* array_type) = 0;

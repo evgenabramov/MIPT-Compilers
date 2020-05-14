@@ -25,6 +25,7 @@ class OrExpression;
 class SubExpression;
 class ModExpression;
 class EqualExpression;
+class ArrayAccessExpression;
 
 class Statement;
 class StatementList;
@@ -36,13 +37,18 @@ class VariableDeclarationStatement;
 class WhileStatement;
 class AssertStatement;
 class IfElseStatement;
+class ArrayDeclarationStatement;
+class ArrayAssignmentStatement;
+class ArrayElementAssignmentStatement;
 
 class Declaration;
 class DeclarationList;
 class VariableDeclaration;
+class ArrayDeclaration;
 
 class NamedEntity;
 class NamedVariable;
+class NamedArray;
 
 class Type;
 class SimpleType;
