@@ -17,7 +17,7 @@ class BoolValue : public Value {
   }
 
   std::string GetTypeIdentifier() const override {
-      return "bool";
+      return "boolean";
   }
 
  private:

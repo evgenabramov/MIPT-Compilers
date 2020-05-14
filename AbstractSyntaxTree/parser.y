@@ -45,7 +45,7 @@
 
 %token
     END 0 "end of file"
-    ASSIGN ":="
+    ASSIGN "="
     MINUS "-"
     PLUS "+"
     STAR "*"
@@ -63,7 +63,7 @@
     TRUE "true"
     FALSE "false"
     INT "int"
-    BOOL "bool"
+    BOOL "boolean"
     SEMICOLON ";"
     PUBLIC "public"
     STATIC "static"
@@ -156,7 +156,7 @@ statement:
     | "while" "(" expression ")" statement {
     	$$ = new WhileStatement($3, $5);
     }
-    | named_entity ":=" expression ";" {
+    | named_entity "=" expression ";" {
 	$$ = new AssignmentStatement($1, $3);
     }
     | "return" expression ";" {
@@ -183,8 +183,8 @@ simple_type:
     "int" {
     	$$ = new SimpleType("int");
     }
-    | "bool" {
-    	$$ = new SimpleType("bool");
+    | "boolean" {
+    	$$ = new SimpleType("boolean");
     }
     | "void" {
     	$$ = new SimpleType("void");

@@ -52,7 +52,7 @@ blank [ \t\r]
 "/"        return yy::parser::make_SLASH     (loc);
 "("        return yy::parser::make_LPAREN    (loc);
 ")"        return yy::parser::make_RPAREN    (loc);
-":="       return yy::parser::make_ASSIGN    (loc);
+"="       return yy::parser::make_ASSIGN    (loc);
 "<"        return yy::parser::make_LT        (loc);
 "<="       return yy::parser::make_LE        (loc);
 ">"        return yy::parser::make_GT        (loc);
@@ -64,7 +64,7 @@ blank [ \t\r]
 "true"     return yy::parser::make_TRUE      (loc);
 "false"    return yy::parser::make_FALSE     (loc);
 "int"      return yy::parser::make_INT       (loc);
-"bool"     return yy::parser::make_BOOL      (loc);
+"boolean"  return yy::parser::make_BOOL      (loc);
 ";"        return yy::parser::make_SEMICOLON (loc);
 "public"   return yy::parser::make_PUBLIC    (loc);
 "static"   return yy::parser::make_STATIC    (loc);

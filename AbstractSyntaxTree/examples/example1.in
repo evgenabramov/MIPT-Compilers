@@ -2,8 +2,8 @@ class MyClass {
 
     public static void main(String[] args) {
         int a;
-        a := 6;
-        a := a + 3;
+        a = 6;
+        a = a + 3;
 
         if (a < 10)
             System.out.println(0);

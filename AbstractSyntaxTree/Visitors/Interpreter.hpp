@@ -31,7 +31,7 @@ class Interpreter : public Visitor {
       out_ << "Value: ";
       if (return_value_->GetTypeIdentifier() == "int") {
           out_ << return_value_->toInt() << std::endl;
-      } else if (return_value_->GetTypeIdentifier() == "bool") {
+      } else if (return_value_->GetTypeIdentifier() == "boolean") {
           out_ << return_value_->toBool() << std::endl;
       } else {
           throw std::runtime_error("Return type not recognised");
@@ -183,7 +183,7 @@ class Interpreter : public Visitor {
       std::string type_name = variable_declaration->GetType()->GetIdentifier();
       if (type_name == "int") {
           variables_[variable_name] = std::make_shared<IntValue>();
-      } else if (type_name == "bool") {
+      } else if (type_name == "boolean") {
           variables_[variable_name] = std::make_shared<BoolValue>();
       } else {
           throw std::logic_error("Bad variable type");
@@ -209,7 +209,7 @@ class Interpreter : public Visitor {
       assignment_statement->GetExpression()->Accept(this);
       if (variables_[variable_name]->GetTypeIdentifier() == "int") {
           variables_[variable_name] = std::make_shared<IntValue>(tos_value_->toInt());
-      } else if (variables_[variable_name]->GetTypeIdentifier() == "bool") {
+      } else if (variables_[variable_name]->GetTypeIdentifier() == "boolean") {
           variables_[variable_name] = std::make_shared<BoolValue>(tos_value_->toBool());
       }
   }
