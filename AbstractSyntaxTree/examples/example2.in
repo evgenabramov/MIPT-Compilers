@@ -4,9 +4,9 @@ class CoolClass {
 
         int a;
         a := 17;
-	
-	    int b;
-	    b := 3;
+        
+        int b;
+        b := 3;
 
         bool f;
         f := false;
