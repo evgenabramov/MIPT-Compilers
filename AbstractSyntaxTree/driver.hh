@@ -32,7 +32,9 @@ class Driver {
 
     void PrintTree(const std::string& filename);
 
-    void RunInterpreter(const std::string& filename);
+    void Evaluate(const std::string& filename);
+
+//    void RunInterpreter(const std::string& filename);
 
     ast::Program* program_;
 

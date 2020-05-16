@@ -22,8 +22,11 @@ int main(int argc, char** argv) {
             driver.PrintTree("PrintVisitor_output");
             std::cout << "Saved PrintVisitor output to \"PrintVisitor_output\"" << std::endl;
 
-            driver.RunInterpreter("Interpreter_output");
-            std::cout << "Saved Interpreter output to \"Interpreter_output\"" << std::endl;
+            driver.Evaluate("SymbolTreeVisitor_output");
+            std::cout << "Saved SymbolTreeVisitor output to \"SymbolTreeVisitor_output\"" << std::endl;
+
+//            driver.RunInterpreter("Interpreter_output");
+//            std::cout << "Saved Interpreter output to \"Interpreter_output\"" << std::endl;
             break;
         } else {
             exit(1);

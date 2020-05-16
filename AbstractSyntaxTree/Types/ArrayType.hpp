@@ -13,6 +13,10 @@ class ArrayType : public Type {
   void Accept(Visitor* visitor) override {
       visitor->Visit(this);
   }
+
+  bool IsSimpleType() const override {
+      return false;
+  }
 };
 
 } // namespace ast

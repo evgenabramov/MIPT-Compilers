@@ -10,7 +10,8 @@ namespace ast {
 
 class MainClass : public TreeNode {
  public:
-  MainClass(std::string name, StatementList* statements) : name_(std::move(name)), statements_(statements) {}
+  MainClass(std::string name, StatementList* statement_list)
+      : name_(std::move(name)), statement_list_(statement_list) {}
 
   void Accept(Visitor* visitor) override {
       visitor->Visit(this);
@@ -20,13 +21,13 @@ class MainClass : public TreeNode {
       return name_;
   }
 
-  StatementList* GetStatements() const {
-      return statements_;
+  StatementList* GetStatementList() const {
+      return statement_list_;
   }
 
  private:
   std::string name_;
-  StatementList* statements_;
+  StatementList* statement_list_;
 };
 
 } // namespace ast

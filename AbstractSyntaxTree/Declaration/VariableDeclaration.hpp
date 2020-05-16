@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Declaration.hpp"
-#include "SimpleType.hpp"
+#include "Type.hpp"
 
 #include <string>
 
@@ -9,19 +9,19 @@ namespace ast {
 
 class VariableDeclaration : public Declaration {
  public:
-  VariableDeclaration(SimpleType* simple_type, std::string variable_name)
-      : simple_type_(simple_type), variable_name_(std::move(variable_name)) {}
+  VariableDeclaration(Type* type, std::string variable_name)
+      : type_(type), variable_name_(std::move(variable_name)) {}
 
   void Accept(Visitor* visitor) override {
       visitor->Visit(this);
   }
 
-  SimpleType* GetSimpleType() const {
-      return simple_type_;
+  Type* GetType() const {
+      return type_;
   }
 
-  void SetSimpleType(SimpleType* simple_type) {
-      simple_type_ = simple_type;
+  void SetType(Type* type) {
+      type_ = type;
   }
 
   const std::string& GetVariableName() const {
@@ -33,7 +33,7 @@ class VariableDeclaration : public Declaration {
   }
 
  private:
-  SimpleType* simple_type_;
+  Type* type_;
   std::string variable_name_;
 };
 

@@ -82,10 +82,11 @@ blank [ \t\r]
 "else"     return yy::parser::make_ELSE      (loc);
 "while"    return yy::parser::make_WHILE     (loc);
 "class"    return yy::parser::make_CLASS     (loc);
-"= new"    return yy::parser::make_EQUALNEW  (loc);
+"new"      return yy::parser::make_NEW       (loc);
 "this"     return yy::parser::make_THIS      (loc);
 "."        return yy::parser::make_DOT       (loc);
 ","        return yy::parser::make_COMMA     (loc);
+"[]"       return yy::parser::make_SBRACKETS (loc);
 
 "System.out.println" return yy::parser::make_PRINT (loc);
 

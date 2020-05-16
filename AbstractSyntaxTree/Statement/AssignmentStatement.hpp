@@ -2,25 +2,25 @@
 
 #include "Expression.hpp"
 #include "Statement.hpp"
-#include "NamedVariable.hpp"
+#include "NamedEntity.hpp"
 
 namespace ast {
 
 class AssignmentStatement : public Statement {
  public:
-  AssignmentStatement(NamedVariable* named_variable, Expression* expression)
-      : named_variable_(named_variable), expression_(expression) {}
+  AssignmentStatement(NamedEntity* named_entity, Expression* expression)
+      : named_entity_(named_entity), expression_(expression) {}
 
   void Accept(Visitor* visitor) override {
       visitor->Visit(this);
   }
 
-  NamedVariable* GetNamedVariable() const {
-      return named_variable_;
+  NamedEntity* GetNamedEntity() const {
+      return named_entity_;
   }
 
-  void SetNamedVariable(NamedVariable* named_variable) {
-      named_variable_ = named_variable;
+  void SetNamedEntity(NamedEntity* named_entity) {
+      named_entity_ = named_entity;
   }
 
   Expression* GetExpression() const {
@@ -32,7 +32,7 @@ class AssignmentStatement : public Statement {
   }
 
  private:
-    NamedVariable* named_variable_;
+    NamedEntity* named_entity_;
     Expression* expression_;
 };
 

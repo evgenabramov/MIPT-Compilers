@@ -5,6 +5,7 @@
 
 namespace ast {
 
+// Can be on the left side of assignment (lvalue)
 class NamedEntity : public TreeNode {
  public:
     virtual ~NamedEntity() = default;

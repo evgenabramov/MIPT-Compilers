@@ -13,6 +13,10 @@ class SimpleType : public Type {
   void Accept(Visitor* visitor) override {
       visitor->Visit(this);
   }
+
+  bool IsSimpleType() const override {
+      return true;
+  }
 };
 
 } // namespace ast

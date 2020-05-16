@@ -73,6 +73,7 @@
     ARGS "args"
     LSBRACKET "["
     RSBRACKET "]"
+    SBRACKETS "[]"
     LCBRACKET "{"
     RCBRACKET "}"
     PRINT "System.out.println"
@@ -82,7 +83,7 @@
     ELSE "else"
     WHILE "while"
     CLASS "class"
-    EQUALNEW "= new"
+    NEW "new"
     THIS "this"
     DOT "."
     COMMA ","
@@ -98,21 +99,23 @@
 %nterm <Statement*> statement;
 %nterm <StatementList*> statement_list;
 
-// %nterm <Declaration*> declaration;
-// %nterm <DeclarationList*> declaration_list;
+%nterm <Declaration*> declaration;
+%nterm <DeclarationList*> declaration_list;
 %nterm <VariableDeclaration*> variable_declaration;
-%nterm <ArrayDeclaration*> array_declaration;
+%nterm <MethodDeclaration*> method_declaration;
+%nterm <ClassDeclaration*> class_declaration;
+%nterm <ClassDeclarationList*> class_declaration_list;
+
+%nterm <Formal*> formal;
+%nterm <FormalList*> formal_list;
 
 %nterm <Expression*> expression;
-// %nterm <ExpressionList*> expression_list;
 
-// %nterm <Type*> type;
+%nterm <Type*> type;
 %nterm <SimpleType*> simple_type;
 %nterm <ArrayType*> array_type;
 
-// %nterm <NamedEntity*> named_entity;
-%nterm <NamedVariable*> named_variable;
-%nterm <NamedArray*> named_array;
+%nterm <NamedEntity*> named_entity;
 
 // %printer { yyo << $$; } <*>;
 
@@ -121,23 +124,23 @@
 %start program;
 
 program:
-    main_class {
-    	$$ = new Program($1);
+    main_class class_declaration_list {
+    	$$ = new Program($1, $2);
     	driver.program_ = $$;
     };
 
 main_class:
     "class" IDENTIFIER "{"
-    "public" "static" "void" "main" "(" "String" "[" "]" "args" ")" "{"
+    "public" "static" "void" "main" "(" "String" "[]" "args" ")" "{"
     statement_list
     "}"
     "}" {
-    	$$ = new MainClass(std::move($2), $15);
+    	$$ = new MainClass(std::move($2), $14);
     };
 
 statement_list:
     %empty {
-    	$$ = new StatementList();
+    	$$ = nullptr;
     }
     | statement statement_list {
     	$$ = new StatementList($1, $2);
@@ -152,9 +155,6 @@ statement:
     | variable_declaration {
     	$$ = new VariableDeclarationStatement($1);
     }
-    | array_declaration {
-    	$$ = new ArrayDeclarationStatement($1);
-    }
     | "if" "(" expression ")" statement {
     	$$ = new IfStatement($3, $5);
     }
@@ -164,39 +164,26 @@ statement:
     | "while" "(" expression ")" statement {
     	$$ = new WhileStatement($3, $5);
     }
-    | named_array "= new" simple_type "[" expression "]" ";" {
-	$$ = new ArrayAssignmentStatement($1, $3, $5);
-    }
-    | named_variable "=" expression ";" {
+    | named_entity "=" expression ";" {
 	$$ = new AssignmentStatement($1, $3);
-    }
-    | IDENTIFIER "[" expression "]" "=" expression ";" {
-    	$$ = new ArrayElementAssignmentStatement($1, $3, $6);
     }
     | "return" expression ";" {
     	$$ = new ReturnStatement($2);
     }
     | PRINT "(" expression ")" ";"{
     	$$ = new PrintStatement($3);
+    }
+    | "{" statement_list "}" {
+    	$$ = new ScopeStatement($2);
     };
 
-variable_declaration:
-    simple_type IDENTIFIER ";" {
-        $$ = new VariableDeclaration($1, $2);
+type:
+    simple_type {
+    	$$ = $1;
+    }
+    | array_type {
+    	$$ = $1;
     };
-
-array_declaration:
-    array_type IDENTIFIER ";" {
-    	$$ = new ArrayDeclaration($1, $2);
-    };
-
-//type:
-//    simple_type {
-//    	$$ = $1;
-//    }
-//    | array_type {
-//    	$$ = $1;
-//    };
 
 simple_type:
     "int" {
@@ -213,26 +200,17 @@ simple_type:
     };
 
 array_type:
-    simple_type "[" "]" {
+    simple_type "[]" {
     	$$ = new ArrayType($1->GetIdentifier());
     };
 
-//named_entity:
-//    named_variable {
-//    	$$ = $1;
-//    }
-//    | named_array {
-//    	$$ = $1;
-//    };
-
-named_variable:
-    IDENTIFIER {
+// Can be on the left side of assignment
+named_entity:
+    "identifier" {
     	$$ = new NamedVariable($1);
-    };
-
-named_array:
-    IDENTIFIER {
-    	$$ = new NamedArray($1);
+    }
+    | "identifier" "[" expression "]" {
+    	$$ = new NamedArrayElement($1, $3);
     };
 
 %left "||";
@@ -302,8 +280,70 @@ expression:
     | expression "==" expression {
     	$$ = new EqualExpression($1, $3);
     }
+    | "new" simple_type "[" expression "]" {
+      	$$ = new NewArrayExpression($2, $4);
+    }
     | "(" expression ")" {
     	$$ = $2;
+    };
+
+class_declaration_list:
+    %empty {
+    	$$ = nullptr;
+    }
+    | class_declaration class_declaration_list {
+    	$$ = new ClassDeclarationList($1, $2);
+    };
+
+class_declaration:
+    "class" "identifier" "{"
+    declaration_list
+    "}" {
+    	$$ = new ClassDeclaration($2, $4);
+    };
+
+declaration_list:
+    %empty {
+    	$$ = nullptr;
+    }
+    | declaration declaration_list {
+    	$$ = new DeclarationList($1, $2);
+    };
+
+declaration:
+    variable_declaration {
+    	$$ = $1;
+    }
+    | method_declaration {
+    	$$ = $1;
+    };
+
+variable_declaration:
+    type IDENTIFIER ";" {
+        $$ = new VariableDeclaration($1, $2);
+    };
+
+method_declaration:
+    "public" type "identifier" "(" formal_list ")" "{"
+    statement_list
+    "}" {
+    	$$ = new MethodDeclaration($2, $3, $5, $8);
+    };
+
+formal_list:
+    %empty {
+	$$ = nullptr;
+    }
+    | formal {
+    	$$ = new FormalList($1, nullptr);
+    }
+    | formal "," formal_list {
+    	$$ = new FormalList($1, $3);
+    };
+
+formal:
+    simple_type "identifier" {
+    	$$ = new Formal($1, $2);
     };
 
 %%
