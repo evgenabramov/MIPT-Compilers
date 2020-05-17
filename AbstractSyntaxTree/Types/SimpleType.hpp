@@ -14,7 +14,9 @@ class SimpleType : public Type {
       visitor->Visit(this);
   }
 
-
+  bool IsSimpleType() const override {
+      return true;
+  }
 };
 
 } // namespace ast

@@ -1,27 +1,31 @@
 #pragma once
 
 #include "TreeNode.hpp"
+#include "Type.hpp"
 
 #include <string>
+#include <memory>
 
 namespace ast {
 
-class Type : public TreeNode {
+class Formal : public TreeNode {
  public:
-  Type() = default;
-  explicit Type(std::string identifier) = delete;
+  Formal(Type* type, std::string identifier) : type_(type), identifier_(std::move(identifier)) {}
 
   void Accept(Visitor* visitor) override {
       visitor->Visit(this);
   }
 
-  virtual bool IsSimpleType() const = 0;
+  Type* GetType() const {
+      return type_;
+  }
 
   const std::string& GetIdentifier() const {
       return identifier_;
   }
 
- protected:
+ private:
+  Type* type_;
   std::string identifier_;
 };
 

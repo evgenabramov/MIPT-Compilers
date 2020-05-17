@@ -3,10 +3,11 @@
 namespace ast {
 
 class PrintVisitor;
-class Interpreter;
+class SymbolTreeVisitor;
 
 class Program;
 class MainClass;
+class ClassStorage;
 
 class Expression;
 class AddExpression;
@@ -25,6 +26,8 @@ class OrExpression;
 class SubExpression;
 class ModExpression;
 class EqualExpression;
+class ArrayAccessExpression;
+class NewArrayExpression;
 
 class Statement;
 class StatementList;
@@ -36,13 +39,21 @@ class VariableDeclarationStatement;
 class WhileStatement;
 class AssertStatement;
 class IfElseStatement;
+class ScopeStatement;
 
 class Declaration;
 class DeclarationList;
 class VariableDeclaration;
+class ClassDeclaration;
+class MethodDeclaration;
+class ClassDeclarationList;
+class Formal;
+class FormalList;
+class ClassStorage;
 
 class NamedEntity;
 class NamedVariable;
+class NamedArrayElement;
 
 class Type;
 class SimpleType;
@@ -51,5 +62,9 @@ class ArrayType;
 class Value;
 class IntValue;
 class BoolValue;
+
+class Symbol;
+class ScopeLayer;
+class ScopeLayerTree;
 
 }

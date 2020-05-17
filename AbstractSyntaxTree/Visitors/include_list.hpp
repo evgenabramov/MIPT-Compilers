@@ -3,6 +3,7 @@
 #include "Service/TreeNode.hpp"
 #include "Service/Program.hpp"
 #include "Service/MainClass.hpp"
+#include "Service/ClassStorage.hpp"
 
 #include "Expression/Expression.hpp"
 #include "Expression/AddExpression.hpp"
@@ -21,10 +22,17 @@
 #include "Expression/SubExpression.hpp"
 #include "Expression/ModExpression.hpp"
 #include "Expression/EqualExpression.hpp"
+#include "Expression/ArrayAccessExpression.hpp"
+#include "Expression/NewArrayExpression.hpp"
 
 #include "Declaration/Declaration.hpp"
 #include "Declaration/DeclarationList.hpp"
 #include "Declaration/VariableDeclaration.hpp"
+#include "Declaration/MethodDeclaration.hpp"
+#include "Declaration/ClassDeclaration.hpp"
+#include "Declaration/ClassDeclarationList.hpp"
+#include "Declaration/Formal.hpp"
+#include "Declaration/FormalList.hpp"
 
 #include "Statement/Statement.hpp"
 #include "Statement/StatementList.hpp"
@@ -36,9 +44,11 @@
 #include "Statement/WhileStatement.hpp"
 #include "Statement/AssertStatement.hpp"
 #include "Statement/IfElseStatement.hpp"
+#include "Statement/ScopeStatement.hpp"
 
 #include "NamedEntity/NamedEntity.hpp"
 #include "NamedEntity/NamedVariable.hpp"
+#include "NamedEntity/NamedArrayElement.hpp"
 
 #include "Types/Type.hpp"
 #include "Types/SimpleType.hpp"
@@ -47,3 +57,7 @@
 #include "Visitors/InterpreterValues/Value.hpp"
 #include "Visitors/InterpreterValues/IntValue.hpp"
 #include "Visitors/InterpreterValues/BoolValue.hpp"
+
+#include "SymbolTable/Symbol.hpp"
+#include "SymbolTable/ScopeLayer.hpp"
+#include "SymbolTable/ScopeLayerTree.hpp"

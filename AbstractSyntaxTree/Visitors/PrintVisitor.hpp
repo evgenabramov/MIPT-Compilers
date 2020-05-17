@@ -19,6 +19,9 @@ class PrintVisitor : public Visitor {
       out_ << "Program:" << std::endl;
       ++num_tabs_;
       program->GetMainClass()->Accept(this);
+      if (program->GetClassDeclarationList() != nullptr) {
+          program->GetClassDeclarationList()->Accept(this);
+      }
       --num_tabs_;
   }
 
@@ -26,7 +29,7 @@ class PrintVisitor : public Visitor {
       PrintTabs();
       out_ << "MainClass [name: " << main_class->GetName() << "]:" << std::endl;
       ++num_tabs_;
-      main_class->GetStatements()->Accept(this);
+      main_class->GetStatementList()->Accept(this);
       --num_tabs_;
   }
 
@@ -167,6 +170,24 @@ class PrintVisitor : public Visitor {
       --num_tabs_;
   }
 
+  void Visit(ArrayAccessExpression* array_access_expression) override {
+      PrintTabs();
+      out_ << "ArrayAccessExpression [array name: "
+           << array_access_expression->GetArrayName() << "]" << std::endl;
+      ++num_tabs_;
+      array_access_expression->GetExpression()->Accept(this);
+      --num_tabs_;
+  }
+
+  void Visit(NewArrayExpression* new_array_expression) override {
+      PrintTabs();
+      out_ << "NewArrayExpression [type name: "
+           << new_array_expression->GetSimpleType()->GetIdentifier() << "]" << std::endl;
+      ++num_tabs_;
+      new_array_expression->GetExpression()->Accept(this);
+      --num_tabs_;
+  }
+
   // Base class
   void Visit(Declaration* declaration) override {}
 
@@ -178,7 +199,9 @@ class PrintVisitor : public Visitor {
       out_ << "DeclarationList:" << std::endl;
       ++num_tabs_;
       declaration_list->GetFirstItem()->Accept(this);
-      declaration_list->GetTail()->Accept(this);
+      if (declaration_list->GetTail() != nullptr) {
+          declaration_list->GetTail()->Accept(this);
+      }
       --num_tabs_;
   }
 
@@ -187,6 +210,59 @@ class PrintVisitor : public Visitor {
       out_ << "VariableDeclaration [variable name: " << variable_declaration->GetVariableName() << "]" << std::endl;
       ++num_tabs_;
       variable_declaration->GetType()->Accept(this);
+      --num_tabs_;
+  }
+
+  void Visit(ClassDeclaration* class_declaration) override {
+      PrintTabs();
+      out_ << "ClassDeclaration [class name: " << class_declaration->GetClassName() << "]" << std::endl;
+      ++num_tabs_;
+      class_declaration->GetDeclarationList()->Accept(this);
+      --num_tabs_;
+  }
+
+  void Visit(MethodDeclaration* method_declaration) override {
+      PrintTabs();
+      out_ << "MethodDeclaration [method type: " << method_declaration->GetType()->GetIdentifier()
+           << " method name: " << method_declaration->GetIdentifier() << "]" << std::endl;
+      ++num_tabs_;
+      method_declaration->GetFormalList()->Accept(this);
+      method_declaration->GetStatementList()->Accept(this);
+      --num_tabs_;
+  }
+
+  void Visit(ClassDeclarationList* class_declaration_list) override {
+      if (class_declaration_list == nullptr) {
+          return;
+      }
+      PrintTabs();
+      out_ << "ClassDeclarationList: " << std::endl;
+      ++num_tabs_;
+      class_declaration_list->GetFirstItem()->Accept(this);
+      if (class_declaration_list->GetTail() != nullptr) {
+          class_declaration_list->GetTail()->Accept(this);
+      }
+      --num_tabs_;
+  }
+
+  // Terminal position
+  void Visit(Formal* formal) override {
+      PrintTabs();
+      out_ << "Formal: [type: " << formal->GetType()->GetIdentifier() << " name: "
+           << formal->GetIdentifier() << "]" << std::endl;
+  }
+
+  void Visit(FormalList* formal_list) override {
+      if (formal_list == nullptr) {
+          return;
+      }
+      PrintTabs();
+      out_ << "FormalList: " << std::endl;
+      ++num_tabs_;
+      formal_list->GetFirstItem()->Accept(this);
+      if (formal_list->GetTail() != nullptr) {
+          formal_list->GetTail()->Accept(this);
+      }
       --num_tabs_;
   }
 
@@ -201,7 +277,9 @@ class PrintVisitor : public Visitor {
       out_ << "StatementList: " << std::endl;
       ++num_tabs_;
       statement_list->GetHead()->Accept(this);
-      statement_list->GetTail()->Accept(this);
+      if (statement_list->GetTail() != nullptr) {
+          statement_list->GetTail()->Accept(this);
+      }
       --num_tabs_;
   }
 
@@ -274,13 +352,33 @@ class PrintVisitor : public Visitor {
       --num_tabs_;
   }
 
-  // Base class
-  void Visit(NamedEntity* named_entity) override {}
+  void Visit(ScopeStatement* scope_statement) override {
+      PrintTabs();
+      out_ << "ScopeStatement: " << std::endl;
+      ++num_tabs_;
+      scope_statement->GetStatementList()->Accept(this);
+      --num_tabs_;
+  }
+
+  // Base class (terminal position)
+  void Visit(NamedEntity* named_entity) override {
+      PrintTabs();
+      out_ << "NamedEntity [name: " << named_entity->GetName() << "]" << std::endl;
+  }
 
   // Terminal position
   void Visit(NamedVariable* named_variable) override {
       PrintTabs();
       out_ << "NamedVariable [name: " << named_variable->GetName() << "]" << std::endl;
+  }
+
+  // Terminal position
+  void Visit(NamedArrayElement* named_array) override {
+      PrintTabs();
+      out_ << "NamedArrayElement [name: " << named_array->GetName() << "]" << std::endl;
+      ++num_tabs_;
+      named_array->GetIndexExpression()->Accept(this);
+      --num_tabs_;
   }
 
   // Base class
@@ -289,13 +387,13 @@ class PrintVisitor : public Visitor {
   // Terminal position
   void Visit(SimpleType* simple_type) override {
       PrintTabs();
-      out_ << "Type [identifier: " << simple_type->GetIdentifier() << "]" << std::endl;
+      out_ << "SimpleType [identifier: " << simple_type->GetIdentifier() << "]" << std::endl;
   }
 
   // Terminal position
   void Visit(ArrayType* array_type) override {
       PrintTabs();
-      out_ << "ArrayType [type identifier: " << array_type->GetIdentifier() << "]" << std::endl;
+      out_ << "ArrayType [identifier: " << array_type->GetIdentifier() << "]" << std::endl;
   }
 
  private:

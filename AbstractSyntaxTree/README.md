@@ -44,11 +44,17 @@ mkdir build
 cd build
 cmake ..
 make
-./AbstractSyntaxTree --src ../examples/example[1/2].in
+./AbstractSyntaxTree --src ../examples/example[1-4].in
 ```
 
-Посмотреть на выхлоп работы визиторов:
+Посмотреть на выхлоп работы визиторов (2-3 чекпоинты):
 ```
 cat PrintVisitor_output
 cat Interpreter_output
+```
+
+4 чекпоинт:
+```
+cat PrintVisitor_output
+cat SymbolTreeVisitor_output
 ```

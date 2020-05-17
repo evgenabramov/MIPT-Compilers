@@ -36,4 +36,4 @@ class AssignmentStatement : public Statement {
     Expression* expression_;
 };
 
-} // namespace AST
+} // namespace ast

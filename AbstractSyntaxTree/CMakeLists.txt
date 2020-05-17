@@ -56,6 +56,9 @@ target_include_directories(
     Statement
     NamedEntity
     Types
+    SymbolTable
+    Objects
+    Objects/ObjectTypes
 )
 
 target_sources(
@@ -79,10 +82,17 @@ target_sources(
     Expression/SubExpression.hpp
     Expression/ModExpression.hpp
     Expression/EqualExpression.hpp
-    
+    Expression/ArrayAccessExpression.hpp
+    Expression/NewArrayExpression.hpp
+
     Declaration/Declaration.hpp
     Declaration/DeclarationList.hpp
     Declaration/VariableDeclaration.hpp
+    Declaration/ClassDeclaration.hpp
+    Declaration/MethodDeclaration.hpp
+    Declaration/ClassDeclarationList.hpp
+    Declaration/Formal.hpp
+    Declaration/FormalList.hpp
 
     Statement/Statement.hpp
     Statement/StatementList.hpp
@@ -94,19 +104,22 @@ target_sources(
     Statement/WhileStatement.hpp
     Statement/AssertStatement.hpp
     Statement/IfElseStatement.hpp
+    Statement/ScopeStatement.hpp
 
     Service/TreeNode.hpp
     Service/MainClass.hpp
     Service/Program.hpp
     Service/forward_decl.hpp
+    Service/ClassStorage.hpp
 
     Visitors/Visitor.hpp
     Visitors/include_list.hpp
     Visitors/PrintVisitor.hpp
-    Visitors/Interpreter.hpp
+    Visitors/SymbolTreeVisitor.hpp
 
     NamedEntity/NamedEntity.hpp
     NamedEntity/NamedVariable.hpp
+    NamedEntity/NamedArrayElement.hpp
 
     Types/Type.hpp
     Types/SimpleType.hpp
@@ -115,6 +128,21 @@ target_sources(
     Visitors/InterpreterValues/Value.hpp
     Visitors/InterpreterValues/IntValue.hpp
     Visitors/InterpreterValues/BoolValue.hpp
+
+    SymbolTable/Symbol.hpp
+    SymbolTable/ScopeLayer.hpp
+    SymbolTable/ScopeLayerTree.hpp
+
+    Objects/ObjectTypes/ObjectType.hpp
+    Objects/ObjectTypes/PrimitiveType.hpp
+    Objects/ObjectTypes/PrimitiveSimpleType.hpp
+    Objects/ObjectTypes/PrimitiveArrayType.hpp
+    Objects/ObjectTypes/ClassType.hpp
+    Objects/ObjectTypes/MethodType.hpp
+
+    Objects/Object.hpp
+    Objects/VariableObject.hpp
+    Objects/ArrayObject.hpp
 
     parser.cpp
     main.cpp

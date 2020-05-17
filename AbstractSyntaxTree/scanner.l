@@ -86,6 +86,7 @@ blank [ \t\r]
 "this"     return yy::parser::make_THIS      (loc);
 "."        return yy::parser::make_DOT       (loc);
 ","        return yy::parser::make_COMMA     (loc);
+"[]"       return yy::parser::make_SBRACKETS (loc);
 
 "System.out.println" return yy::parser::make_PRINT (loc);
 

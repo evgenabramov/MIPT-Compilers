@@ -73,6 +73,7 @@
     ARGS "args"
     LSBRACKET "["
     RSBRACKET "]"
+    SBRACKETS "[]"
     LCBRACKET "{"
     RCBRACKET "}"
     PRINT "System.out.println"
@@ -98,12 +99,17 @@
 %nterm <Statement*> statement;
 %nterm <StatementList*> statement_list;
 
-// %nterm <Declaration*> declaration;
-// %nterm <DeclarationList*> declaration_list;
+%nterm <Declaration*> declaration;
+%nterm <DeclarationList*> declaration_list;
 %nterm <VariableDeclaration*> variable_declaration;
+%nterm <MethodDeclaration*> method_declaration;
+%nterm <ClassDeclaration*> class_declaration;
+%nterm <ClassDeclarationList*> class_declaration_list;
+
+%nterm <Formal*> formal;
+%nterm <FormalList*> formal_list;
 
 %nterm <Expression*> expression;
-// %nterm <ExpressionList*> expression_list;
 
 %nterm <Type*> type;
 %nterm <SimpleType*> simple_type;
@@ -118,27 +124,29 @@
 %start program;
 
 program:
-    main_class {
-    	$$ = new Program($1);
+    main_class class_declaration_list {
+    	$$ = new Program($1, $2);
     	driver.program_ = $$;
     };
 
 main_class:
     "class" IDENTIFIER "{"
-    "public" "static" "void" "main" "(" "String" "[" "]" "args" ")" "{"
+    "public" "static" "void" "main" "(" "String" "[]" "args" ")" "{"
     statement_list
     "}"
     "}" {
-    	$$ = new MainClass(std::move($2), $15);
+    	$$ = new MainClass(std::move($2), $14);
     };
 
 statement_list:
     %empty {
-    	$$ = new StatementList();
+    	$$ = nullptr;
     }
     | statement statement_list {
     	$$ = new StatementList($1, $2);
     };
+
+%left "new";
 
 statement:
     "assert" "(" expression ")" ";" {
@@ -164,11 +172,9 @@ statement:
     }
     | PRINT "(" expression ")" ";"{
     	$$ = new PrintStatement($3);
-    };
-
-variable_declaration:
-    type IDENTIFIER ";" {
-        $$ = new VariableDeclaration($1, $2);
+    }
+    | "{" statement_list "}" {
+    	$$ = new ScopeStatement($2);
     };
 
 type:
@@ -196,11 +202,15 @@ simple_type:
 array_type:
     simple_type "[]" {
     	$$ = new ArrayType($1->GetIdentifier());
-    }
+    };
 
+// Can be on the left side of assignment
 named_entity:
-    IDENTIFIER {
+    "identifier" {
     	$$ = new NamedVariable($1);
+    }
+    | "identifier" "[" expression "]" {
+    	$$ = new NamedArrayElement($1, $3);
     };
 
 %left "||";
@@ -227,6 +237,9 @@ expression:
     }
     | "identifier" {
     	$$ = new IdentExpression($1);
+    }
+    | "identifier" "[" expression "]" {
+	$$ = new ArrayAccessExpression($1, $3);
     }
     | expression "*" expression {
     	$$ = new MulExpression($1, $3);
@@ -267,8 +280,70 @@ expression:
     | expression "==" expression {
     	$$ = new EqualExpression($1, $3);
     }
+    | "new" simple_type "[" expression "]" {
+      	$$ = new NewArrayExpression($2, $4);
+    }
     | "(" expression ")" {
     	$$ = $2;
+    };
+
+class_declaration_list:
+    %empty {
+    	$$ = nullptr;
+    }
+    | class_declaration class_declaration_list {
+    	$$ = new ClassDeclarationList($1, $2);
+    };
+
+class_declaration:
+    "class" "identifier" "{"
+    declaration_list
+    "}" {
+    	$$ = new ClassDeclaration($2, $4);
+    };
+
+declaration_list:
+    %empty {
+    	$$ = nullptr;
+    }
+    | declaration declaration_list {
+    	$$ = new DeclarationList($1, $2);
+    };
+
+declaration:
+    variable_declaration {
+    	$$ = $1;
+    }
+    | method_declaration {
+    	$$ = $1;
+    };
+
+variable_declaration:
+    type IDENTIFIER ";" {
+        $$ = new VariableDeclaration($1, $2);
+    };
+
+method_declaration:
+    "public" type "identifier" "(" formal_list ")" "{"
+    statement_list
+    "}" {
+    	$$ = new MethodDeclaration($2, $3, $5, $8);
+    };
+
+formal_list:
+    %empty {
+	$$ = nullptr;
+    }
+    | formal {
+    	$$ = new FormalList($1, nullptr);
+    }
+    | formal "," formal_list {
+    	$$ = new FormalList($1, $3);
+    };
+
+formal:
+    simple_type "identifier" {
+    	$$ = new Formal($1, $2);
     };
 
 %%

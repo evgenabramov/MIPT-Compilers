@@ -23,8 +23,8 @@ class DeclarationList : public TreeNode {
     }
 
  private:
-    Declaration* first_;
-    DeclarationList* tail_;
+    Declaration* first_ = nullptr;
+    DeclarationList* tail_ = nullptr;
 };
 
 } // namespace ast
