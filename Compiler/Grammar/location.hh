@@ -31,12 +31,12 @@
 // version 2.2 of Bison.
 
 /**
- ** \file /compilers/naive-interpreter/location.hh
+ ** \file /compilers/Compiler/Grammar/location.hh
  ** Define the yy::location class.
  */
 
-#ifndef YY_YY_COMPILERS_NAIVE_INTERPRETER_LOCATION_HH_INCLUDED
-# define YY_YY_COMPILERS_NAIVE_INTERPRETER_LOCATION_HH_INCLUDED
+#ifndef YY_YY_COMPILERS_COMPILER_GRAMMAR_LOCATION_HH_INCLUDED
+# define YY_YY_COMPILERS_COMPILER_GRAMMAR_LOCATION_HH_INCLUDED
 
 # include <iostream>
 # include <string>
@@ -54,7 +54,7 @@
 # endif
 
 namespace yy {
-#line 58 "/compilers/naive-interpreter/location.hh"
+#line 58 "/compilers/Compiler/Grammar/location.hh"
 
   /// A point in a source file.
   class position
@@ -327,6 +327,6 @@ namespace yy {
   }
 
 } // yy
-#line 331 "/compilers/naive-interpreter/location.hh"
+#line 331 "/compilers/Compiler/Grammar/location.hh"
 
-#endif // !YY_YY_COMPILERS_NAIVE_INTERPRETER_LOCATION_HH_INCLUDED
+#endif // !YY_YY_COMPILERS_COMPILER_GRAMMAR_LOCATION_HH_INCLUDED

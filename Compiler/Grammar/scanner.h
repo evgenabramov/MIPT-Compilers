@@ -14,7 +14,9 @@ class Driver;
 class Scanner: public yyFlexLexer {
  public:
     Scanner(Driver& driver): driver(driver) {}
-	virtual ~Scanner() {}
-	virtual yy::parser::symbol_type ScanToken();
+    virtual ~Scanner() {}
+
+    virtual yy::parser::symbol_type ScanToken();
+
     Driver& driver;
 };
