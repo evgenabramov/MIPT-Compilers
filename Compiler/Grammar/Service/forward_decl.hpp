@@ -59,10 +59,6 @@ class Type;
 class SimpleType;
 class ArrayType;
 
-class Value;
-class IntValue;
-class BoolValue;
-
 class Symbol;
 class ScopeLayer;
 class ScopeLayerTree;

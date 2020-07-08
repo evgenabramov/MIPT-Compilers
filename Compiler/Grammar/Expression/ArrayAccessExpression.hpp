@@ -12,15 +12,15 @@ class ArrayAccessExpression : public Expression {
       : array_name_(std::move(array_name)), expression_(expression) {}
 
   void Accept(Visitor* visitor) override {
-      visitor->Visit(this);
+    visitor->Visit(this);
   }
 
   const std::string& GetArrayName() const {
-      return array_name_;
+    return array_name_;
   }
 
   Expression* GetExpression() const {
-      return expression_;
+    return expression_;
   }
 
  private:

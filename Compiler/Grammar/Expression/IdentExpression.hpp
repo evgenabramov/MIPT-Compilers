@@ -9,13 +9,13 @@ namespace ast {
 class IdentExpression : public Expression {
  public:
   explicit IdentExpression(std::string ident) : ident_(std::move(ident)) {}
-    
+
   void Accept(Visitor* visitor) override {
-      visitor->Visit(this);
+    visitor->Visit(this);
   }
 
   const std::string& GetIdentifier() const {
-      return ident_;
+    return ident_;
   }
 
  private:

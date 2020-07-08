@@ -9,15 +9,15 @@ class EqualExpression : public Expression {
   EqualExpression(Expression* left, Expression* right) : left_(left), right_(right) {}
 
   void Accept(Visitor* visitor) override {
-      visitor->Visit(this);
+    visitor->Visit(this);
   }
 
   Expression* GetLeftExpression() const {
-      return left_;
+    return left_;
   }
 
   Expression* GetRightExpression() const {
-      return right_;
+    return right_;
   }
 
   Expression* left_;

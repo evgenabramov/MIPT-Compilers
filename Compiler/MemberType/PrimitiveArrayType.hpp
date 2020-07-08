@@ -11,22 +11,22 @@ class PrimitiveArrayType : public PrimitiveType {
   explicit PrimitiveArrayType(ArrayType* array_type) : array_type_(array_type) {}
 
   explicit PrimitiveArrayType(PrimitiveSimpleType* primitive_simple_type)
-      : array_type_(new ArrayType(primitive_simple_type->GetTypeName())) {}
+    : array_type_(new ArrayType(primitive_simple_type->GetTypeName())) {}
 
   PrimitiveSimpleType* GetPrimitiveSimpleType() {
-      return new PrimitiveSimpleType(array_type_->GetIdentifier());
+    return new PrimitiveSimpleType(array_type_->GetIdentifier());
   }
 
   bool IsArray() const override {
-      return true;
+    return true;
   }
 
   std::string GetTypeName() const override {
-      return array_type_->GetIdentifier();
+    return array_type_->GetIdentifier();
   }
 
   bool IsSimpleType() const override {
-      return false;
+    return false;
   }
 
  private:

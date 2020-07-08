@@ -6,18 +6,18 @@ namespace ast {
 
 class IntExpression : public Expression {
  public:
-    explicit IntExpression(const int value) : value_(value) {}
+  explicit IntExpression(const int value) : value_(value) {}
 
-    void Accept(Visitor* visitor) override {
-        visitor->Visit(this);
-    }
+  void Accept(Visitor* visitor) override {
+    visitor->Visit(this);
+  }
 
-    int GetValue() const {
-        return value_;
-    }
+  int GetValue() const {
+    return value_;
+  }
 
  private:
-    int value_;
+  int value_;
 };
 
 } // namespace ast

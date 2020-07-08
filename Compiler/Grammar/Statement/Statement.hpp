@@ -6,11 +6,11 @@ namespace ast {
 
 class Statement : public TreeNode {
  public:
-    virtual ~Statement() = default;
+  virtual ~Statement() = default;
 
-    void Accept(Visitor* visitor) override {
-        visitor->Visit(this);
-    }
+  void Accept(Visitor* visitor) override {
+    visitor->Visit(this);
+  }
 };
 
 } // namespace ast

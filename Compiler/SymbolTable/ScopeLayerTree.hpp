@@ -13,29 +13,29 @@ class ScopeLayerTree {
   ScopeLayerTree() = default;
   explicit ScopeLayerTree(ScopeLayer* root) : root_(root) {}
 
-  std::shared_ptr<ObjectType> Get(Symbol symbol) {
-      return root_->Get(symbol);
+  std::shared_ptr<MemberType> Get(Symbol symbol) {
+    return root_->Get(symbol);
   }
 
   // Map function or class scope with label
   void LabelScope(Symbol label, ScopeLayer* scope_layer) {
-      if (scopes_.find(label) != scopes_.end()) {
-          throw std::runtime_error("Label for scope already taken");
-      }
+    if (scopes_.find(label) != scopes_.end()) {
+      throw std::runtime_error("Label for scope already taken");
+    }
 
-      scopes_[label] = scope_layer;
+    scopes_[label] = scope_layer;
   }
 
   ScopeLayer* GetScopeLayer(Symbol label) {
-      if (scopes_.find(label) == scopes_.end()) {
-          throw std::runtime_error("Label for scope not found");
-      }
+    if (scopes_.find(label) == scopes_.end()) {
+      throw std::runtime_error("Label for scope not found");
+    }
 
-      return scopes_[label];
+    return scopes_[label];
   }
 
   ScopeLayer* GetRoot() const {
-      return root_;
+    return root_;
   }
 
  private:

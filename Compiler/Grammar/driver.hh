@@ -9,35 +9,34 @@
 
 #include "Program.hpp"
 
-
 class Driver {
  public:
-    Driver();
-    int Parse(const std::string& filename);
-    void BeginScan();
-    void EndScan();
+  Driver();
+  int Parse(const std::string& filename);
+  void BeginScan();
+  void EndScan();
 
-    std::string filename_; // filename to read data from
+  std::string filename_; // filename to read data from
 
-    bool trace_parsing_; // debug levels
-    bool trace_scanning_;
+  bool trace_parsing_; // debug levels
+  bool trace_scanning_;
 
-    int result_; // success or failure code
+  int result_; // success or failure code
 
-    friend class Scanner;
-    Scanner scanner_;
-    
-    yy::parser parser_;
-    yy::location location_;
+  friend class Scanner;
+  Scanner scanner_;
 
-    void PrintTree(const std::string& filename);
+  yy::parser parser_;
+  yy::location location_;
 
-    void Evaluate(const std::string& filename);
+  void PrintTree(const std::string& filename);
+
+  void Evaluate(const std::string& filename);
 
 //    void RunInterpreter(const std::string& filename);
 
-    ast::Program* program_;
+  ast::Program* program_;
 
  private:
-    std::ifstream stream_; // stream for scanner
+  std::ifstream stream_; // stream for scanner
 };

@@ -13,27 +13,27 @@ namespace ast {
 class ClassStorage {
  public:
   static ClassStorage& GetInstance() {
-      static ClassStorage storage;
-      return storage;
+    static ClassStorage storage;
+    return storage;
   }
 
   explicit ClassStorage(const ClassStorage& other) = delete;
   ClassStorage& operator=(const ClassStorage& other) = delete;
 
   void AddField(const Symbol& symbol, std::unordered_map<Symbol, std::shared_ptr<PrimitiveType>> field) {
-      class_fields_[symbol] = std::move(field);
+    class_fields_[symbol] = std::move(field);
   }
 
   void AddMethod(const Symbol& symbol, std::unordered_map<Symbol, std::shared_ptr<MethodType>> method) {
-      class_methods_[symbol] = std::move(method);
+    class_methods_[symbol] = std::move(method);
   }
 
   std::unordered_map<Symbol, std::shared_ptr<PrimitiveType>>& GetField(const Symbol& symbol) {
-      return class_fields_[symbol];
+    return class_fields_[symbol];
   }
 
   std::unordered_map<Symbol, std::shared_ptr<MethodType>>& GetMethod(const Symbol& symbol) {
-      return class_methods_[symbol];
+    return class_methods_[symbol];
   }
 
  private:

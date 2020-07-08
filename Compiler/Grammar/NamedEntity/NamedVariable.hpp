@@ -11,11 +11,11 @@ class NamedVariable : public NamedEntity {
   explicit NamedVariable(std::string name) : name_(std::move(name)) {}
 
   void Accept(Visitor* visitor) override {
-      visitor->Visit(this);
+    visitor->Visit(this);
   }
 
   const std::string& GetName() const override {
-      return name_;
+    return name_;
   }
 
  private:

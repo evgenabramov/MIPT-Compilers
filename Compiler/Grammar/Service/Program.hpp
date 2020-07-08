@@ -12,15 +12,15 @@ class Program : public TreeNode {
       : main_class_(main_class), class_declaration_list_(class_declaration_list) {}
 
   void Accept(Visitor* visitor) override {
-      visitor->Visit(this);
+    visitor->Visit(this);
   }
 
   MainClass* GetMainClass() const {
-      return main_class_;
+    return main_class_;
   }
 
   ClassDeclarationList* GetClassDeclarationList() const {
-      return class_declaration_list_;
+    return class_declaration_list_;
   }
 
  private:

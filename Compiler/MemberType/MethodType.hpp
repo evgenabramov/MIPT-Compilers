@@ -1,27 +1,27 @@
 #pragma once
 
-#include "ObjectType.hpp"
+#include "MemberType.hpp"
 #include "MethodDeclaration.hpp"
 
 namespace ast {
 
-class MethodType : public ObjectType {
+class MethodType : public MemberType {
  public:
   explicit MethodType(MethodDeclaration* method_declaration)
-  : method_declaration_(method_declaration),
-    formal_list_(method_declaration->GetFormalList()),
-    return_value_type_(method_declaration->GetType()) {}
+      : method_declaration_(method_declaration),
+        formal_list_(method_declaration->GetFormalList()),
+        return_value_type_(method_declaration->GetType()) {}
 
   MethodDeclaration* GetMethodDeclaration() const {
-      return method_declaration_;
+    return method_declaration_;
   }
 
   FormalList* GetFormalList() const {
-      return formal_list_;
+    return formal_list_;
   }
 
   Type* GetReturnValueType() const {
-      return return_value_type_;
+    return return_value_type_;
   }
 
  private:

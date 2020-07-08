@@ -6,22 +6,22 @@ namespace ast {
 
 class GreaterEqualExpression : public Expression {
  public:
-    GreaterEqualExpression(Expression* left, Expression* right) : left_(left), right_(right) {}
-    
-    void Accept(Visitor* visitor) override {
-        visitor->Visit(this);
-    }
+  GreaterEqualExpression(Expression* left, Expression* right) : left_(left), right_(right) {}
 
-    Expression* GetLeftExpression() const {
-       return left_;
-    }
+  void Accept(Visitor* visitor) override {
+    visitor->Visit(this);
+  }
 
-    Expression* GetRightExpression() const {
-       return right_;
-    }
+  Expression* GetLeftExpression() const {
+    return left_;
+  }
+
+  Expression* GetRightExpression() const {
+    return right_;
+  }
 
   Expression* left_;
-    Expression* right_;
+  Expression* right_;
 };
 
 } // namespace ast

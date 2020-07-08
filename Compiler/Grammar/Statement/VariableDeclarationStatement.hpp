@@ -11,15 +11,15 @@ class VariableDeclarationStatement : public Statement {
       variable_declaration) {}
 
   void Accept(Visitor* visitor) override {
-      visitor->Visit(this);
+    visitor->Visit(this);
   }
 
   VariableDeclaration* GetVariableDeclaration() const {
-      return variable_declaration_;
+    return variable_declaration_;
   }
 
   void SetVariableDeclaration(VariableDeclaration* variable_declaration) {
-      variable_declaration_ = variable_declaration;
+    variable_declaration_ = variable_declaration;
   }
 
  private:

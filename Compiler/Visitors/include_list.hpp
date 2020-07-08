@@ -54,10 +54,6 @@
 #include "SimpleType.hpp"
 #include "ArrayType.hpp"
 
-#include "InterpreterValues/Value.hpp"
-#include "InterpreterValues/IntValue.hpp"
-#include "InterpreterValues/BoolValue.hpp"
-
 #include "Symbol.hpp"
 #include "ScopeLayer.hpp"
 #include "ScopeLayerTree.hpp"

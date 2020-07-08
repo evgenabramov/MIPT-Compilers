@@ -10,15 +10,15 @@ class FormalList : public TreeNode {
   FormalList(Formal* first_item, FormalList* tail) : first_item_(first_item), tail_(tail) {}
 
   void Accept(Visitor* visitor) override {
-      visitor->Visit(this);
+    visitor->Visit(this);
   }
 
   Formal* GetFirstItem() const {
-      return first_item_;
+    return first_item_;
   }
 
   FormalList* GetTail() const {
-      return tail_;
+    return tail_;
   }
 
  private:

@@ -9,23 +9,23 @@ class SubExpression : public Expression {
   SubExpression(Expression* left, Expression* right) : left_(left), right_(right) {}
 
   void Accept(Visitor* visitor) override {
-      visitor->Visit(this);
+    visitor->Visit(this);
   }
 
   Expression* GetLeftExpression() const {
-      return left_;
+    return left_;
   }
 
   void SetLeftExpression(Expression* left) {
-      left_ = left;
+    left_ = left;
   }
 
   Expression* GetRightExpression() const {
-      return right_;
+    return right_;
   }
 
   void SetRightExpression(Expression* right) {
-      right_ = right;
+    right_ = right;
   }
 
  private:

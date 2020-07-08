@@ -8,8 +8,8 @@ namespace ast {
 // https://github.com/akhtyamovpavel/CompilersCourse/blob/master/04-visitors/base_elements/BaseElement.h
 class TreeNode {
  public:
-    virtual void Accept(Visitor* visitor) = 0;
-    virtual ~TreeNode() = default;
+  virtual void Accept(Visitor* visitor) = 0;
+  virtual ~TreeNode() = default;
 };
 
 } // namespace ast

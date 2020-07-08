@@ -6,31 +6,31 @@ namespace ast {
 
 class DivExpression : public Expression {
  public:
-    DivExpression(Expression* left, Expression* right) : left_(left), right_(right) {}
-    
-    void Accept(Visitor* visitor) override {
-        visitor->Visit(this);
-    }
+  DivExpression(Expression* left, Expression* right) : left_(left), right_(right) {}
 
-    Expression* GetLeftExpression() const {
-      return left_;
-    }
+  void Accept(Visitor* visitor) override {
+    visitor->Visit(this);
+  }
 
-    void SetLeftExpression(Expression* left) {
-        left_ = left;
-    }
+  Expression* GetLeftExpression() const {
+    return left_;
+  }
 
-    Expression* GetRightExpression() const {
-        return right_;
-    }
+  void SetLeftExpression(Expression* left) {
+    left_ = left;
+  }
 
-    void SetRightExpression(Expression* right) {
-        right_ = right;
-    }
+  Expression* GetRightExpression() const {
+    return right_;
+  }
+
+  void SetRightExpression(Expression* right) {
+    right_ = right;
+  }
 
  private:
-    Expression* left_;
-    Expression* right_;
+  Expression* left_;
+  Expression* right_;
 };
 
 } // namespace ast

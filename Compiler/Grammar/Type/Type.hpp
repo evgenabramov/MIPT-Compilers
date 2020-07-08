@@ -12,13 +12,13 @@ class Type : public TreeNode {
   explicit Type(std::string identifier) = delete;
 
   void Accept(Visitor* visitor) override {
-      visitor->Visit(this);
+    visitor->Visit(this);
   }
 
   virtual bool IsSimpleType() const = 0;
 
   const std::string& GetIdentifier() const {
-      return identifier_;
+    return identifier_;
   }
 
  protected:

@@ -13,15 +13,15 @@ class Formal : public TreeNode {
   Formal(Type* type, std::string identifier) : type_(type), identifier_(std::move(identifier)) {}
 
   void Accept(Visitor* visitor) override {
-      visitor->Visit(this);
+    visitor->Visit(this);
   }
 
   Type* GetType() const {
-      return type_;
+    return type_;
   }
 
   const std::string& GetIdentifier() const {
-      return identifier_;
+    return identifier_;
   }
 
  private:

@@ -11,15 +11,15 @@ class AssertStatement : public Statement {
   explicit AssertStatement(Expression* expression) : expression_(expression) {}
 
   void Accept(Visitor* visitor) override {
-      visitor->Visit(this);
+    visitor->Visit(this);
   }
 
   void SetExpression(Expression* expression) {
-      expression_ = expression;
+    expression_ = expression;
   }
 
   Expression* GetExpression() const {
-      return expression_;
+    return expression_;
   }
 
  private:

@@ -13,15 +13,15 @@ class NewArrayExpression : public Expression {
       : simple_type_(simple_type), expression_(expression) {}
 
   void Accept(Visitor* visitor) override {
-      visitor->Visit(this);
+    visitor->Visit(this);
   }
 
   SimpleType* GetSimpleType() const {
-      return simple_type_;
+    return simple_type_;
   }
 
   Expression* GetExpression() const {
-      return expression_;
+    return expression_;
   }
 
  private:

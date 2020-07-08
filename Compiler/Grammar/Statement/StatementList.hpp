@@ -11,20 +11,20 @@ class StatementList : public TreeNode {
   StatementList(Statement* head, StatementList* tail) : head_(head), tail_(tail) {}
 
   void Accept(Visitor* visitor) override {
-      visitor->Visit(this);
+    visitor->Visit(this);
   }
 
   Statement* GetHead() const {
-      return head_;
+    return head_;
   }
 
   StatementList* GetTail() const {
-      return tail_;
+    return tail_;
   }
 
  private:
-    Statement* head_ = nullptr;
-    StatementList* tail_ = nullptr;
+  Statement* head_ = nullptr;
+  StatementList* tail_ = nullptr;
 };
 
 } // namespace ast

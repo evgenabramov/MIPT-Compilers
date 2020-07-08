@@ -1,12 +1,12 @@
 #pragma once
 
-#include "ObjectType.hpp"
+#include "MemberType.hpp"
 
 #include <string>
 
 namespace ast {
 
-class PrimitiveType : public ObjectType {
+class PrimitiveType : public MemberType {
  public:
   virtual bool IsArray() const = 0;
   virtual bool IsSimpleType() const = 0;

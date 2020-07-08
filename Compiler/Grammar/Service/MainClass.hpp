@@ -14,15 +14,15 @@ class MainClass : public TreeNode {
       : name_(std::move(name)), statement_list_(statement_list) {}
 
   void Accept(Visitor* visitor) override {
-      visitor->Visit(this);
+    visitor->Visit(this);
   }
 
   std::string GetName() const {
-      return name_;
+    return name_;
   }
 
   StatementList* GetStatementList() const {
-      return statement_list_;
+    return statement_list_;
   }
 
  private:

@@ -11,30 +11,30 @@ class IfElseStatement : public Statement {
       expression_(expression), first_(first), second_(second) {}
 
   void Accept(Visitor* visitor) override {
-      visitor->Visit(this);
+    visitor->Visit(this);
   }
 
   Expression* GetExpression() const {
-      return expression_;
+    return expression_;
   }
   void SetExpression(Expression* expression) {
-      expression_ = expression;
+    expression_ = expression;
   }
 
   Statement* GetFirstStatement() const {
-      return first_;
+    return first_;
   }
 
   void SetFirstStatement(Statement* first) {
-      first_ = first;
+    first_ = first;
   }
 
   Statement* GetSecondStatement() const {
-      return second_;
+    return second_;
   }
 
   void SetSecondStatement(Statement* second) {
-      second_ = second;
+    second_ = second;
   }
 
  private:

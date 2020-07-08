@@ -14,15 +14,15 @@ class Symbol {
   Symbol(const Symbol& other) : name_(other.name_) {}
 
   bool operator==(const Symbol& other) const {
-      return name_ == other.name_;
+    return name_ == other.name_;
   }
 
   bool operator!=(const Symbol& other) const {
-      return name_ != other.name_;
+    return name_ != other.name_;
   }
 
   std::string GetName() const {
-      return name_;
+    return name_;
   }
 
  private:
@@ -35,7 +35,7 @@ namespace std {
 template<>
 struct hash<ast::Symbol> {
   size_t operator()(const ast::Symbol& symbol) const {
-      return std::hash<std::string>()(symbol.GetName());
+    return std::hash<std::string>()(symbol.GetName());
   }
 };
 }

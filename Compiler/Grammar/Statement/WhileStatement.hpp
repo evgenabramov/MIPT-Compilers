@@ -10,23 +10,23 @@ class WhileStatement : public Statement {
   WhileStatement(Expression* expression, Statement* statement) : expression_(expression), statement_(statement) {}
 
   void Accept(Visitor* visitor) override {
-      visitor->Visit(this);
+    visitor->Visit(this);
   }
 
   Expression* GetExpression() const {
-      return expression_;
+    return expression_;
   }
 
   void SetExpression(Expression* expression) {
-      expression_ = expression;
+    expression_ = expression;
   }
 
   Statement* GetStatement() const {
-      return statement_;
+    return statement_;
   }
 
   void SetStatement(Statement* statement) {
-      statement_ = statement;
+    statement_ = statement;
   }
 
  private:

@@ -11,16 +11,16 @@ class PrimitiveSimpleType : public PrimitiveType {
  public:
   explicit PrimitiveSimpleType(SimpleType* simple_type)
     : simple_type_(simple_type) {
-      CheckClass();
+    CheckClass();
   }
 
   explicit PrimitiveSimpleType(const std::string& identifier) {
-      simple_type_ = new SimpleType(identifier);
-      CheckClass();
+    simple_type_ = new SimpleType(identifier);
+    CheckClass();
   }
 
   bool IsArray() const override {
-      return false;
+    return false;
   }
 
   bool IsClass() const {
@@ -28,7 +28,7 @@ class PrimitiveSimpleType : public PrimitiveType {
   }
 
   std::string GetTypeName() const override {
-      return simple_type_->GetIdentifier();
+    return simple_type_->GetIdentifier();
   }
 
   bool IsSimpleType() const override {
@@ -37,8 +37,8 @@ class PrimitiveSimpleType : public PrimitiveType {
 
  private:
   void CheckClass() {
-      const std::string& identifier = simple_type_->GetIdentifier();
-      is_class_ = ((identifier != "int") && (identifier != "boolean"));
+    const std::string& identifier = simple_type_->GetIdentifier();
+    is_class_ = ((identifier != "int") && (identifier != "boolean"));
   }
 
   SimpleType* simple_type_ = nullptr;
