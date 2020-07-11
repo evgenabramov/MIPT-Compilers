@@ -5,10 +5,12 @@ mkdir build
 cd build
 cmake ..
 make
-./Compiler --src ../examples/example[1-4].in
+./Compiler --src ../examples/example[1-6].in
 ```
 
 Посмотреть на выхлоп работы визиторов (2-3 чекпоинты):
+> Deprecated, см. в соответствующих ветках
+
 ```
 cat PrintVisitor_output
 cat Interpreter_output
@@ -19,3 +21,7 @@ cat Interpreter_output
 cat PrintVisitor_output
 cat SymbolTreeVisitor_output
 ```
+
+5-му чекпоинту соответствуют примеры 5 и 6.
+
+Выхлоп `MethodCallVisitor`'a выводится в консоль. 
