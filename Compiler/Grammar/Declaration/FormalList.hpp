@@ -21,6 +21,15 @@ class FormalList : public TreeNode {
     return tail_;
   }
 
+  size_t GetSize() const {
+    if (first_item_ == nullptr) {
+      return 0;
+    } else if (tail_ == nullptr) {
+      return 1;
+    }
+    return 1 + tail_->GetSize();
+  }
+
  private:
   Formal* first_item_ = nullptr;
   FormalList* tail_ = nullptr;

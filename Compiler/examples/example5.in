@@ -1,0 +1,26 @@
+class Main {
+    public static void main(String[] args) {
+	    int number;
+	    number = 5;
+
+        Counter counter;
+        counter = new Counter();
+
+	    int factorial;
+	    factorial = counter.Fac(number);
+
+	    assert(factorial == 120);
+
+	    System.out.println(factorial);
+    }
+}
+
+class Counter {
+    public int Fac(int number) {
+       if (number == 0 || number == 1) {
+           return 1;
+       } else {
+           return number * this.Fac(number - 1);
+       }
+    }
+}

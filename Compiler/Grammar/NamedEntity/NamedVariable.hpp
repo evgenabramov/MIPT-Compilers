@@ -18,6 +18,10 @@ class NamedVariable : public NamedEntity {
     return name_;
   }
 
+  bool IsVariable() const override {
+    return true;
+  }
+
  private:
   std::string name_;
 };

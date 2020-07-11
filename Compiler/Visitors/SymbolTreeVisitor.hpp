@@ -87,6 +87,10 @@ class SymbolTreeVisitor : public Visitor {
 
   void Visit(NewArrayExpression* new_array_expression) override {}
 
+  void Visit(NewExpression* new_expression) override {}
+
+  void Visit(ExpressionList* expression_list) override {}
+
   void Visit(Declaration* declaration) override {}
 
   void Visit(DeclarationList* declaration_list) override {
@@ -167,6 +171,18 @@ class SymbolTreeVisitor : public Visitor {
     }
   }
 
+  void Visit(ThisExpression* this_expression) override {}
+
+  void Visit(MethodInvocationExpression* method_invocation_expression) override {
+    method_invocation_expression->GetMethodInvocation()->Accept(this);
+  }
+
+  void Visit(MethodInvocation* method_invocation) override {
+    // Check if method exists
+    scope_layer_tree_->GetScopeLayer(method_invocation->GetIdentifier());
+    method_invocation->GetExpressionList()->Accept(this);
+  }
+
   void Visit(Statement* statement) override {}
 
   void Visit(StatementList* statement_list) override {
@@ -182,9 +198,7 @@ class SymbolTreeVisitor : public Visitor {
   void Visit(AssignmentStatement* assignment_statement) override {}
 
   void Visit(IfStatement* if_statement) override {
-    current_layer_ = new ScopeLayer(current_layer_);
     if_statement->GetStatement()->Accept(this);
-    current_layer_ = current_layer_->GetParent();
   }
 
   void Visit(PrintStatement* print_statement) override {}
@@ -196,27 +210,24 @@ class SymbolTreeVisitor : public Visitor {
   }
 
   void Visit(WhileStatement* while_statement) override {
-    current_layer_ = new ScopeLayer(current_layer_);
-    while_statement->GetExpression()->Accept(this);
-    current_layer_ = current_layer_->GetParent();
+    while_statement->GetStatement()->Accept(this);
   }
 
   void Visit(AssertStatement* assert_statement) override {}
 
   void Visit(IfElseStatement* if_else_statement) override {
-    current_layer_ = new ScopeLayer(current_layer_);
     if_else_statement->GetFirstStatement()->Accept(this);
-    current_layer_ = current_layer_->GetParent();
-
-    current_layer_ = new ScopeLayer(current_layer_);
     if_else_statement->GetSecondStatement()->Accept(this);
-    current_layer_ = current_layer_->GetParent();
   }
 
   void Visit(ScopeStatement* scope_statement) override {
     current_layer_ = new ScopeLayer(current_layer_);
     scope_statement->GetStatementList()->Accept(this);
     current_layer_ = current_layer_->GetParent();
+  }
+
+  void Visit(MethodInvocationStatement* method_invocation_statement) override {
+    method_invocation_statement->GetMethodInvocation()->Accept(this);
   }
 
   void Visit(NamedEntity* named_entity) override {}
@@ -237,11 +248,52 @@ class SymbolTreeVisitor : public Visitor {
   }
 
   void OutputTreeLayers() {
+    out_ << "-------------------------------------------" << std::endl;
+    out_ << "Scope Tree Layers info:" << std::endl;
     scope_layer_tree_->GetRoot()->PrintLayer(out_, 0);
+    out_ << "-------------------------------------------" << std::endl;
   }
 
-  ScopeLayer* GetRoot() const {
-    return scope_layer_tree_->GetRoot();
+  ScopeLayerTree* GetScopeLayerTree() const {
+    return scope_layer_tree_;
+  }
+
+  void OutputClassesInfo() {
+    out_ << "-------------------------------------------" << std::endl;
+    out_ << "Classes info:" << std::endl;
+    for (auto& [class_name, class_type] : class_types_) {
+      out_ << "Class name: " << class_name.GetName() << std::endl;
+
+      if (!class_type->GetMethodTypes().empty()) {
+        out_ << "\tClass methods:" << std::endl;
+        for (auto&[method_name, method_type] : class_type->GetMethodTypes()) {
+          out_ << "\t\t[Method name:] " << method_name.GetName()
+               << " [Return type:] " << method_type->GetReturnValueType()->GetIdentifier() << std::endl;
+        }
+      }
+
+       if (!class_type->GetFieldTypes().empty()) {
+         out_ << "\tClass fields:" << std::endl;
+         for (auto& [field_name, field_type] : class_type->GetFieldTypes()) {
+           out_ << "\t\t[Field name:] " << field_name.GetName()
+                << " [Type:] ";
+           if (field_type->IsSimpleType()) {
+             out_ << field_type->GetTypeName() << std::endl;
+           } else {
+             out_ << field_type->GetTypeName() << "[]" << std::endl;
+           }
+         }
+       }
+    }
+    out_ << "-------------------------------------------" << std::endl;
+  }
+
+  void FillClassStorage() {
+    ClassStorage& class_storage = ClassStorage::GetInstance();
+    for (auto& [class_name, class_type] : class_types_) {
+      class_storage.SetClassFields(class_name, class_type->GetFieldTypes());
+      class_storage.SetClassMethods(class_name, class_type->GetMethodTypes());
+    }
   }
 
  private:

@@ -14,6 +14,7 @@ class NamedEntity : public TreeNode {
   }
 
   virtual const std::string& GetName() const = 0;
+  virtual bool IsVariable() const = 0;
 };
 
 } // namespace ast

@@ -4,6 +4,7 @@
 #include "Program.hpp"
 #include "MainClass.hpp"
 #include "ClassStorage.hpp"
+#include "MethodInvocation.hpp"
 
 #include "Expression.hpp"
 #include "AddExpression.hpp"
@@ -24,6 +25,10 @@
 #include "EqualExpression.hpp"
 #include "ArrayAccessExpression.hpp"
 #include "NewArrayExpression.hpp"
+#include "ExpressionList.hpp"
+#include "MethodInvocationExpression.hpp"
+#include "ThisExpression.hpp"
+#include "NewExpression.hpp"
 
 #include "Declaration.hpp"
 #include "DeclarationList.hpp"
@@ -45,6 +50,7 @@
 #include "AssertStatement.hpp"
 #include "IfElseStatement.hpp"
 #include "ScopeStatement.hpp"
+#include "MethodInvocationStatement.hpp"
 
 #include "NamedEntity.hpp"
 #include "NamedVariable.hpp"
@@ -57,3 +63,10 @@
 #include "Symbol.hpp"
 #include "ScopeLayer.hpp"
 #include "ScopeLayerTree.hpp"
+
+#include "Object.hpp"
+#include "SimpleObject.h"
+#include "ArrayObject.h"
+
+#include "Frame.hpp"
+#include "FunctionTable.hpp"

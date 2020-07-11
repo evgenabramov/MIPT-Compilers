@@ -35,6 +35,10 @@ class PrimitiveSimpleType : public PrimitiveType {
     return true;
   }
 
+  ~PrimitiveSimpleType() final {
+    delete simple_type_;
+  }
+
  private:
   void CheckClass() {
     const std::string& identifier = simple_type_->GetIdentifier();

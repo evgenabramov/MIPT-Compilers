@@ -60,6 +60,7 @@ target_include_directories(
         SymbolTable
         Objects
         MemberType
+        MethodMechanisms
 )
 
 target_sources(
@@ -85,6 +86,10 @@ target_sources(
         Grammar/Expression/EqualExpression.hpp
         Grammar/Expression/ArrayAccessExpression.hpp
         Grammar/Expression/NewArrayExpression.hpp
+        Grammar/Expression/ExpressionList.hpp
+        Grammar/Expression/MethodInvocationExpression.hpp
+        Grammar/Expression/ThisExpression.hpp
+        Grammar/Expression/NewExpression.hpp
 
         Grammar/Declaration/Declaration.hpp
         Grammar/Declaration/DeclarationList.hpp
@@ -106,17 +111,20 @@ target_sources(
         Grammar/Statement/AssertStatement.hpp
         Grammar/Statement/IfElseStatement.hpp
         Grammar/Statement/ScopeStatement.hpp
+        Grammar/Statement/MethodInvocationStatement.hpp
 
         Grammar/Service/TreeNode.hpp
         Grammar/Service/MainClass.hpp
         Grammar/Service/Program.hpp
         Grammar/Service/forward_decl.hpp
-        Grammar/Service/ClassStorage.hpp
+        Grammar/Service/MethodInvocation.hpp
 
         Visitors/Visitor.hpp
         Visitors/include_list.hpp
         Visitors/PrintVisitor.hpp
         Visitors/SymbolTreeVisitor.hpp
+        Visitors/MethodCallVisitor.cpp
+        Visitors/TemplateVisitor.hpp
 
         Grammar/NamedEntity/NamedEntity.hpp
         Grammar/NamedEntity/NamedVariable.hpp
@@ -129,6 +137,7 @@ target_sources(
         SymbolTable/Symbol.hpp
         SymbolTable/ScopeLayer.hpp
         SymbolTable/ScopeLayerTree.hpp
+        SymbolTable/ClassStorage.hpp
 
         MemberType/MemberType.hpp
         MemberType/PrimitiveType.hpp
@@ -138,8 +147,11 @@ target_sources(
         MemberType/MethodType.hpp
 
         Objects/Object.hpp
-        Objects/SimpleObject.hpp
-        Objects/ArrayObject.hpp
+        Objects/SimpleObject.cpp
+        Objects/ArrayObject.cpp
+
+        MethodMechanisms/FunctionTable.hpp
+        MethodMechanisms/Frame.hpp
 
         Grammar/parser.cpp
         main.cpp

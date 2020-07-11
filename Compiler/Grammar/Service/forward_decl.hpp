@@ -7,7 +7,7 @@ class SymbolTreeVisitor;
 
 class Program;
 class MainClass;
-class ClassStorage;
+class MethodInvocation;
 
 class Expression;
 class AddExpression;
@@ -28,6 +28,10 @@ class ModExpression;
 class EqualExpression;
 class ArrayAccessExpression;
 class NewArrayExpression;
+class ExpressionList;
+class MethodInvocationExpression;
+class ThisExpression;
+class NewExpression;
 
 class Statement;
 class StatementList;
@@ -40,6 +44,7 @@ class WhileStatement;
 class AssertStatement;
 class IfElseStatement;
 class ScopeStatement;
+class MethodInvocationStatement;
 
 class Declaration;
 class DeclarationList;

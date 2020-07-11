@@ -38,6 +38,13 @@ class ScopeLayerTree {
     return root_;
   }
 
+  void OutputTree() const {
+    std::cout << "------------------------------------------" << std::endl;
+    std::cout << "Scope Layer Tree: " << std::endl;
+    root_->PrintLayer();
+    std::cout << "------------------------------------------" << std::endl;
+  }
+
  private:
   ScopeLayer* root_ = nullptr;
   std::unordered_map<Symbol, ScopeLayer*> scopes_;

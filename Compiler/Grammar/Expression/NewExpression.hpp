@@ -6,9 +6,9 @@
 
 namespace ast {
 
-class IdentExpression : public Expression {
+class NewExpression : public Expression {
  public:
-  explicit IdentExpression(std::string identifier) : identifier_(std::move(identifier)) {}
+  explicit NewExpression(const std::string& identifier) : identifier_(identifier) {}
 
   void Accept(Visitor* visitor) override {
     visitor->Visit(this);

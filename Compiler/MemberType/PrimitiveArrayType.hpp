@@ -29,6 +29,10 @@ class PrimitiveArrayType : public PrimitiveType {
     return false;
   }
 
+  ~PrimitiveArrayType() final {
+    delete array_type_;
+  }
+
  private:
   ArrayType* array_type_ = nullptr;
 };

@@ -11,6 +11,14 @@ class PrimitiveType : public MemberType {
   virtual bool IsArray() const = 0;
   virtual bool IsSimpleType() const = 0;
   virtual std::string GetTypeName() const = 0;
+
+  bool operator==(const PrimitiveType& other) {
+    return (GetTypeName() == other.GetTypeName());
+  }
+
+  bool operator!=(const PrimitiveType& other) {
+    return !(*this == other);
+  }
 };
 
 } // namespace ast

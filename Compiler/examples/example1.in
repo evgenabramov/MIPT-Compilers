@@ -13,7 +13,5 @@ class MyClass {
         System.out.println(a);
 
         assert(a == 9);
-
-        return a;
     }
 }

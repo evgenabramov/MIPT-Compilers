@@ -188,6 +188,41 @@ class PrintVisitor : public Visitor {
     --num_tabs_;
   }
 
+  // Terminal position
+  void Visit(ThisExpression* this_expression) override {
+    PrintTabs();
+    out_ << "ThisExpression: " << std::endl;
+  }
+
+  // Terminal position
+  void Visit(NewExpression* new_expression) override {
+    PrintTabs();
+    out_ << "NewExpression [type identifier: " << new_expression->GetIdentifier() << "]" << std::endl;
+  }
+
+  void Visit(MethodInvocationExpression* method_invocation_expression) override {
+    PrintTabs();
+    out_ << "MethodInvocationExpression: " << std::endl;
+    ++num_tabs_;
+    method_invocation_expression->GetMethodInvocation()->Accept(this);
+    --num_tabs_;
+  }
+
+  void Visit(ExpressionList* expression_list) override {
+    if (expression_list->GetFirstItem() == nullptr) {
+      return;
+    }
+    PrintTabs();
+    out_ << "ExpressionList: " << std::endl;
+    ++num_tabs_;
+    expression_list->GetFirstItem()->Accept(this);
+    if (expression_list->GetTail() == nullptr) {
+      return;
+    }
+    expression_list->GetTail()->Accept(this);
+    --num_tabs_;
+  }
+
   // Base class
   void Visit(Declaration* declaration) override {}
 
@@ -266,6 +301,21 @@ class PrintVisitor : public Visitor {
     --num_tabs_;
   }
 
+  void Visit(MethodInvocation* method_invocation) override {
+    PrintTabs();
+    out_ << "MethodInvocation [method name: " << method_invocation->GetIdentifier() << "]" << std::endl;
+    PrintTabs();
+    out_ << "Method expression: " << std::endl;
+    ++num_tabs_;
+    method_invocation->GetExpression()->Accept(this);
+    --num_tabs_;
+    PrintTabs();
+    out_ << "Method passed arguments: " << std::endl;
+    ++num_tabs_;
+    method_invocation->GetExpressionList()->Accept(this);
+    --num_tabs_;
+  }
+
   // Base class
   void Visit(Statement* statement) override {}
 
@@ -330,7 +380,7 @@ class PrintVisitor : public Visitor {
     out_ << "WhileStatement:" << std::endl;
     ++num_tabs_;
     while_statement->GetExpression()->Accept(this);
-    while_statement->GetExpression()->Accept(this);
+    while_statement->GetStatement()->Accept(this);
     --num_tabs_;
   }
 
@@ -357,6 +407,14 @@ class PrintVisitor : public Visitor {
     out_ << "ScopeStatement: " << std::endl;
     ++num_tabs_;
     scope_statement->GetStatementList()->Accept(this);
+    --num_tabs_;
+  }
+
+  void Visit(MethodInvocationStatement* method_invocation_statement) override {
+    PrintTabs();
+    out_ << "MethodInvocationStatement: " << std::endl;
+    ++num_tabs_;
+    method_invocation_statement->GetMethodInvocation()->Accept(this);
     --num_tabs_;
   }
 

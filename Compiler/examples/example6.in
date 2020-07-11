@@ -1,0 +1,55 @@
+class Main {
+    public static void main(String[] args) {
+	    int a;
+	    a = -10;
+
+        int b;
+        b = 2;
+
+        int power;
+        power = 7;
+
+        Counter[] counter;
+        counter = new Counter[3];
+
+        int sum;
+        sum = (counter[1]).Abs(a) + (new Counter()).Power(b, power);
+
+	    assert(sum == 138);
+
+	    System.out.println(sum);
+    }
+}
+
+class Counter {
+    public int Abs(int value) {
+       int result;
+
+       if (value < 0) {
+           int k1;
+           result = -1 * value;
+       } else {
+           int k2;
+           result = value;
+       }
+
+       return result;
+    }
+
+    public int Power(int value, int degree) {
+        int c;
+        c = 0;
+
+        int result;
+        result = 1;
+
+        while (c < degree) {
+            int k;
+
+            result = result * value;
+            c = c + 1;
+        }
+
+        return result;
+    }
+}

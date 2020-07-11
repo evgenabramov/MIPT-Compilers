@@ -13,6 +13,8 @@
 #include <vector>
 #include <unordered_map>
 #include <memory>
+#include <fstream>
+#include <iostream>
 
 namespace ast {
 
@@ -97,7 +99,7 @@ class ScopeLayer {
     }
   }
 
-  // Get variable type by symbol
+  // Get variable/method type by symbol
   std::shared_ptr<MemberType> Get(Symbol symbol) {
     ScopeLayer* current_layer = this;
     // go up in tree
@@ -122,6 +124,21 @@ class ScopeLayer {
     }
   }
 
+  void PrintLayer(size_t num_tabs = 0) const {
+    for (auto& symbol : symbols_) {
+      PrintTabs(num_tabs);
+      std::cout << symbol.GetName() << std::endl;
+    }
+
+    PrintTabs(num_tabs);
+    std::cout << "Num children of scope: " << children_.size() << std::endl;
+
+    for (ScopeLayer* child : children_) {
+      child->PrintLayer(num_tabs + 1);
+      std::cout << std::endl;
+    }
+  }
+
   void AddChild(ScopeLayer* child) {
     children_.push_back(child);
   }
@@ -142,7 +159,13 @@ class ScopeLayer {
  private:
   void PrintTabs(std::ofstream& out, size_t num_tabs) const {
     for (size_t i = 0; i < num_tabs; ++i) {
-      out << "  ";
+      out << "\t";
+    }
+  }
+
+  void PrintTabs(size_t num_tabs) const {
+    for (size_t i = 0; i < num_tabs; ++i) {
+      std::cout << "\t";
     }
   }
 

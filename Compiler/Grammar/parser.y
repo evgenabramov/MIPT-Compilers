@@ -110,6 +110,9 @@
 %nterm <FormalList*> formal_list;
 
 %nterm <Expression*> expression;
+%nterm <ExpressionList*> expression_list;
+
+%nterm <MethodInvocation*> method_invocation;
 
 %nterm <Type*> type;
 %nterm <SimpleType*> simple_type;
@@ -175,6 +178,9 @@ statement:
     }
     | "{" statement_list "}" {
     	$$ = new ScopeStatement($2);
+    }
+    | method_invocation ";" {
+    	$$ = new MethodInvocationStatement($1);
     };
 
 type:
@@ -283,8 +289,17 @@ expression:
     | "new" simple_type "[" expression "]" {
       	$$ = new NewArrayExpression($2, $4);
     }
+    | "new" "identifier" "(" ")" {
+    	$$ = new NewExpression($2);
+    }
     | "(" expression ")" {
     	$$ = $2;
+    }
+    | method_invocation {
+    	$$ = new MethodInvocationExpression($1);
+    }
+    | "this" {
+    	$$ = new ThisExpression();
     };
 
 class_declaration_list:
@@ -344,6 +359,25 @@ formal_list:
 formal:
     simple_type "identifier" {
     	$$ = new Formal($1, $2);
+    };
+
+method_invocation:
+    expression "." "identifier" "(" ")" {
+    	$$ = new MethodInvocation($1, $3);
+    }
+    | expression "." "identifier" "(" expression_list ")" {
+    	$$ = new MethodInvocation($1, $3, $5);
+    };
+
+expression_list:
+    %empty {
+    	$$ = nullptr;
+    }
+    | expression {
+    	$$ = new ExpressionList($1, nullptr);
+    }
+    | expression "," expression_list {
+    	$$ = new ExpressionList($1, $3);
     };
 
 %%

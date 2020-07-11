@@ -37,8 +37,6 @@ class CoolClass {
             new_value = new_value + 1;
 
         assert(new_value == 10);
-
-        return new_value;
     }
 
 }

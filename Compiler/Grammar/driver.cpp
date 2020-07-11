@@ -1,10 +1,13 @@
 #include "Grammar/driver.hh"
-#include "parser.hh"
 
 #include "PrintVisitor.hpp"
 #include "SymbolTreeVisitor.hpp"
+#include "MethodCallVisitor.h"
+
+#include "parser.hh"
 
 #include <fstream>
+#include <Visitors/MethodCallVisitor.h>
 
 Driver::Driver() :
     trace_parsing_(false),
@@ -49,35 +52,30 @@ void Driver::PrintTree(const std::string& filename) {
 //}
 
 void Driver::Evaluate(const std::string& filename) {
-  SymbolTreeVisitor visitor(filename);
-  visitor.Visit(program_);
+  using namespace ast;
+
+  SymbolTreeVisitor symbol_tree_visitor(filename);
+  symbol_tree_visitor.Visit(program_);
 
   std::cout << "SymbolTreeVisitor finished work" << std::endl
             << "Tree layers (tab = depth in tree, BFS):" << std::endl;
-  visitor.OutputTreeLayers();
+  // Layers info:
+  symbol_tree_visitor.OutputTreeLayers();
 
-  std::ofstream out;
-  out.open(filename, std::ios_base::app);
+  // Classes info:
+  symbol_tree_visitor.OutputClassesInfo();
 
-  std::unordered_map<Symbol, std::shared_ptr<ClassType>> class_types = visitor.GetClassTypes();
-  for (auto& class_type : class_types) {
-    out << "Class name: " << class_type.first.GetName() << std::endl;
-    out << "Class methods:" << std::endl;
-    for (auto& method_type : class_type.second->GetMethodTypes()) {
-      out << "method name: " << method_type.first.GetName()
-          << " return type: " << method_type.second->GetReturnValueType()->GetIdentifier() << std::endl;
-    }
-    out << "Class fields:" << std::endl;
-    for (auto& method_type : class_type.second->GetFieldTypes()) {
-      out << "field name: " << method_type.first.GetName()
-          << " type: ";
-      if (method_type.second->IsSimpleType()) {
-        out << method_type.second->GetTypeName() << std::endl;
-      } else {
-        out << method_type.second->GetTypeName() << "[]" << std::endl;
-      }
-    }
-  }
+  // For correct method_call_visitor work
+  symbol_tree_visitor.FillClassStorage();
 
-  out.close();
+  std::shared_ptr<MethodType> main_method = std::dynamic_pointer_cast<MethodType>(
+      symbol_tree_visitor.GetScopeLayerTree()->GetRoot()->Get("main"));
+
+  MethodCallVisitor method_call_visitor(
+      symbol_tree_visitor.GetScopeLayerTree()->GetScopeLayer("main"), main_method,
+      new SimpleObject(new PrimitiveSimpleType(new SimpleType("int")), 0));
+
+  method_call_visitor.SetTree(symbol_tree_visitor.GetScopeLayerTree());
+
+  method_call_visitor.Visit(main_method->GetMethodDeclaration());
 }

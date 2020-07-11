@@ -23,6 +23,10 @@ class NamedArrayElement : public NamedEntity {
     return index_expression_;
   }
 
+  bool IsVariable() const override {
+    return false;
+  }
+
  private:
   std::string array_name_;
   Expression* index_expression_;

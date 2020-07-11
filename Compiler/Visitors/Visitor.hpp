@@ -25,21 +25,26 @@ class Visitor {
   virtual void Visit(SubExpression* sub_expression) = 0;
   virtual void Visit(EqualExpression* equal_expression) = 0;
   virtual void Visit(ModExpression* mod_expression) = 0;
-
-  // NEW !!!
   virtual void Visit(ArrayAccessExpression* array_access_expression) = 0;
   virtual void Visit(NewArrayExpression* new_array_expression) = 0;
+  virtual void Visit(NewExpression* new_expression) = 0;
+
+  // NEW !!!
+  virtual void Visit(ThisExpression* this_expression) = 0;
+  virtual void Visit(MethodInvocationExpression* method_invocation_expression) = 0;
+  virtual void Visit(ExpressionList* expression_list) = 0;
 
   virtual void Visit(Declaration* declaration) = 0;
   virtual void Visit(DeclarationList* declaration_list) = 0;
   virtual void Visit(VariableDeclaration* variable_declaration) = 0;
-
-  // NEW !!!
   virtual void Visit(ClassDeclaration* class_declaration) = 0;
   virtual void Visit(MethodDeclaration* method_declaration) = 0;
   virtual void Visit(ClassDeclarationList* class_declaration_list) = 0;
   virtual void Visit(Formal* formal) = 0;
   virtual void Visit(FormalList* formal_list) = 0;
+
+  // NEW !!!
+  virtual void Visit(MethodInvocation* method_invocation) = 0;
 
   virtual void Visit(Statement* statement) = 0;
   virtual void Visit(StatementList* statement_list) = 0;
@@ -51,9 +56,10 @@ class Visitor {
   virtual void Visit(WhileStatement* while_statement) = 0;
   virtual void Visit(AssertStatement* assert_statement) = 0;
   virtual void Visit(IfElseStatement* if_else_statement) = 0;
-
-  // NEW !!
   virtual void Visit(ScopeStatement* scope_statement) = 0;
+
+  // NEW !!!
+  virtual void Visit(MethodInvocationStatement* method_invocation_statement) = 0;
 
   virtual void Visit(NamedEntity* named_entity) = 0;
   virtual void Visit(NamedVariable* named_variable) = 0;
