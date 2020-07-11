@@ -1,17 +1,17 @@
 class Main {
     public static void main(String[] args) {
-	    int number;
-	    number = 5;
+        int number;
+        number = 5;
 
         Counter counter;
         counter = new Counter();
 
-	    int factorial;
-	    factorial = counter.Fac(number);
+        int factorial;
+        factorial = counter.Fac(number);
 
-	    assert(factorial == 120);
+        assert(factorial == 120);
 
-	    System.out.println(factorial);
+        System.out.println(factorial);
     }
 }
 

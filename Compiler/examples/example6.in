@@ -1,7 +1,7 @@
 class Main {
     public static void main(String[] args) {
-	    int a;
-	    a = -10;
+        int a;
+        a = -10;
 
         int b;
         b = 2;
@@ -15,10 +15,10 @@ class Main {
         int sum;
         sum = (counter[1]).Abs(a) + (new Counter()).Power(b, power);
 
-	    assert(sum == 138);
-	    assert(counter.length == 3);
+        assert(sum == 138);
+        assert(counter.length == 3);
 
-	    System.out.println(sum);
+        System.out.println(sum);
     }
 }
 
