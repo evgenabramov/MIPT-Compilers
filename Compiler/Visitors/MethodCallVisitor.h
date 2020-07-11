@@ -45,6 +45,7 @@ class MethodCallVisitor : public TemplateVisitor<Object*> {
   void Visit(MethodInvocationExpression* method_invocation_expression) override;
   void Visit(ExpressionList* expression_list) override;
   void Visit(NewExpression* new_expression) override;
+  void Visit(ArrayLengthExpression* array_length_expression) override;
 
   void Visit(Declaration* declaration) override;
   void Visit(DeclarationList* declaration_list) override;

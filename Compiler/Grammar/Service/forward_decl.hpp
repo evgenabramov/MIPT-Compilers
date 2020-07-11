@@ -32,6 +32,7 @@ class ExpressionList;
 class MethodInvocationExpression;
 class ThisExpression;
 class NewExpression;
+class ArrayLengthExpression;
 
 class Statement;
 class StatementList;

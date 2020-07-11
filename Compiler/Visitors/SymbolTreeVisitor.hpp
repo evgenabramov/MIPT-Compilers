@@ -91,6 +91,8 @@ class SymbolTreeVisitor : public Visitor {
 
   void Visit(ExpressionList* expression_list) override {}
 
+  void Visit(ArrayLengthExpression* array_length_expression) override {}
+
   void Visit(Declaration* declaration) override {}
 
   void Visit(DeclarationList* declaration_list) override {

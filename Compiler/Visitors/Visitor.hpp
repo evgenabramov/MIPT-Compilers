@@ -33,6 +33,7 @@ class Visitor {
   virtual void Visit(ThisExpression* this_expression) = 0;
   virtual void Visit(MethodInvocationExpression* method_invocation_expression) = 0;
   virtual void Visit(ExpressionList* expression_list) = 0;
+  virtual void Visit(ArrayLengthExpression* array_length_expression) = 0;
 
   virtual void Visit(Declaration* declaration) = 0;
   virtual void Visit(DeclarationList* declaration_list) = 0;

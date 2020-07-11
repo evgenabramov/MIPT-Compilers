@@ -87,6 +87,7 @@
     THIS "this"
     DOT "."
     COMMA ","
+    LENGTH "length"
 ;
 
 // %token <std::string> TYPE "type";
@@ -300,6 +301,9 @@ expression:
     }
     | "this" {
     	$$ = new ThisExpression();
+    }
+    | expression "." "length" {
+    	$$ = new ArrayLengthExpression($1);
     };
 
 class_declaration_list:

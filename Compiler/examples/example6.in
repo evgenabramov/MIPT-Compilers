@@ -16,6 +16,7 @@ class Main {
         sum = (counter[1]).Abs(a) + (new Counter()).Power(b, power);
 
 	    assert(sum == 138);
+	    assert(counter.length == 3);
 
 	    System.out.println(sum);
     }

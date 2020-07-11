@@ -47,46 +47,47 @@ blank [ \t\r]
               // std::cout << loc.begin.column << " " << loc.end.column << std::endl;
               return yy::parser::make_MINUS  (loc);
            }
-"+"        return yy::parser::make_PLUS      (loc);
-"*"        return yy::parser::make_STAR      (loc);
-"/"        return yy::parser::make_SLASH     (loc);
-"("        return yy::parser::make_LPAREN    (loc);
-")"        return yy::parser::make_RPAREN    (loc);
-"="       return yy::parser::make_ASSIGN    (loc);
-"<"        return yy::parser::make_LT        (loc);
-"<="       return yy::parser::make_LE        (loc);
-">"        return yy::parser::make_GT        (loc);
-">="       return yy::parser::make_GE        (loc);
-"=="       return yy::parser::make_EQUAL     (loc);
-"&&"       return yy::parser::make_AND       (loc);
-"||"       return yy::parser::make_OR        (loc);
-"!"        return yy::parser::make_NOT       (loc);
-"true"     return yy::parser::make_TRUE      (loc);
-"false"    return yy::parser::make_FALSE     (loc);
-"int"      return yy::parser::make_INT       (loc);
-"boolean"  return yy::parser::make_BOOL      (loc);
-";"        return yy::parser::make_SEMICOLON (loc);
-"public"   return yy::parser::make_PUBLIC    (loc);
-"static"   return yy::parser::make_STATIC    (loc);
-"void"     return yy::parser::make_VOID      (loc);
-"main"     return yy::parser::make_MAIN      (loc);
-"String"   return yy::parser::make_STRING    (loc);
-"args"     return yy::parser::make_ARGS      (loc);
-"["        return yy::parser::make_LSBRACKET (loc);
-"]"        return yy::parser::make_RSBRACKET (loc);
-"{"        return yy::parser::make_LCBRACKET (loc);
-"}"        return yy::parser::make_RCBRACKET (loc);
-"assert"   return yy::parser::make_ASSERT    (loc);
-"return"   return yy::parser::make_RETURN    (loc);
-"if"       return yy::parser::make_IF        (loc);
-"else"     return yy::parser::make_ELSE      (loc);
-"while"    return yy::parser::make_WHILE     (loc);
-"class"    return yy::parser::make_CLASS     (loc);
-"new"      return yy::parser::make_NEW       (loc);
-"this"     return yy::parser::make_THIS      (loc);
-"."        return yy::parser::make_DOT       (loc);
-","        return yy::parser::make_COMMA     (loc);
-"[]"       return yy::parser::make_SBRACKETS (loc);
+"+"        return yy::parser::make_PLUS            (loc);
+"*"        return yy::parser::make_STAR            (loc);
+"/"        return yy::parser::make_SLASH           (loc);
+"("        return yy::parser::make_LPAREN          (loc);
+")"        return yy::parser::make_RPAREN          (loc);
+"="        return yy::parser::make_ASSIGN          (loc);
+"<"        return yy::parser::make_LT              (loc);
+"<="       return yy::parser::make_LE              (loc);
+">"        return yy::parser::make_GT              (loc);
+">="       return yy::parser::make_GE              (loc);
+"=="       return yy::parser::make_EQUAL           (loc);
+"&&"       return yy::parser::make_AND             (loc);
+"||"       return yy::parser::make_OR              (loc);
+"!"        return yy::parser::make_NOT             (loc);
+"true"     return yy::parser::make_TRUE            (loc);
+"false"    return yy::parser::make_FALSE           (loc);
+"int"      return yy::parser::make_INT             (loc);
+"boolean"  return yy::parser::make_BOOL            (loc);
+";"        return yy::parser::make_SEMICOLON       (loc);
+"public"   return yy::parser::make_PUBLIC          (loc);
+"static"   return yy::parser::make_STATIC          (loc);
+"void"     return yy::parser::make_VOID            (loc);
+"main"     return yy::parser::make_MAIN            (loc);
+"String"   return yy::parser::make_STRING          (loc);
+"args"     return yy::parser::make_ARGS            (loc);
+"["        return yy::parser::make_LSBRACKET       (loc);
+"]"        return yy::parser::make_RSBRACKET       (loc);
+"{"        return yy::parser::make_LCBRACKET       (loc);
+"}"        return yy::parser::make_RCBRACKET       (loc);
+"assert"   return yy::parser::make_ASSERT          (loc);
+"return"   return yy::parser::make_RETURN          (loc);
+"if"       return yy::parser::make_IF              (loc);
+"else"     return yy::parser::make_ELSE            (loc);
+"while"    return yy::parser::make_WHILE           (loc);
+"class"    return yy::parser::make_CLASS           (loc);
+"new"      return yy::parser::make_NEW             (loc);
+"this"     return yy::parser::make_THIS            (loc);
+"."        return yy::parser::make_DOT             (loc);
+","        return yy::parser::make_COMMA           (loc);
+"[]"       return yy::parser::make_SBRACKETS       (loc);
+"length"   return yy::parser::make_LENGTH          (loc);
 
 "System.out.println" return yy::parser::make_PRINT (loc);
 
@@ -98,7 +99,7 @@ blank [ \t\r]
 .          {
               throw yy::parser::syntax_error(loc, "invalid character: " + std::string(yytext));
            }
-<<EOF>>    return yy::parser::make_END (loc);
+<<EOF>>    return yy::parser::make_END             (loc);
 %%
 
 yy::parser::symbol_type make_NUMBER(

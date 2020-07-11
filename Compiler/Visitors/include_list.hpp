@@ -29,6 +29,7 @@
 #include "MethodInvocationExpression.hpp"
 #include "ThisExpression.hpp"
 #include "NewExpression.hpp"
+#include "ArrayLengthExpression.hpp"
 
 #include "Declaration.hpp"
 #include "DeclarationList.hpp"

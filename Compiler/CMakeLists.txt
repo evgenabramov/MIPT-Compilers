@@ -90,6 +90,7 @@ target_sources(
         Grammar/Expression/MethodInvocationExpression.hpp
         Grammar/Expression/ThisExpression.hpp
         Grammar/Expression/NewExpression.hpp
+        Grammar/Expression/ArrayLengthExpression.hpp
 
         Grammar/Declaration/Declaration.hpp
         Grammar/Declaration/DeclarationList.hpp

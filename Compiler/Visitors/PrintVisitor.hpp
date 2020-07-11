@@ -223,6 +223,14 @@ class PrintVisitor : public Visitor {
     --num_tabs_;
   }
 
+  void Visit(ArrayLengthExpression* array_length_expression) override {
+    PrintTabs();
+    out_ << "ArrayLengthExpression: " << std::endl;
+    ++num_tabs_;
+    array_length_expression->GetExpression()->Accept(this);
+    --num_tabs_;
+  }
+
   // Base class
   void Visit(Declaration* declaration) override {}
 

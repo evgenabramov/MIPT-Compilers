@@ -191,6 +191,11 @@ void MethodCallVisitor::Visit(NewExpression* new_expression) {
   tos_value_ = new SimpleObject(new PrimitiveSimpleType(new_expression->GetIdentifier()));
 }
 
+void MethodCallVisitor::Visit(ArrayLengthExpression* array_length_expression) {
+  auto array_object = dynamic_cast<ArrayObject*>(Accept(array_length_expression->GetExpression()));
+  tos_value_ = new SimpleObject(new PrimitiveSimpleType("int"), array_object->GetSize());
+}
+
 // Base class
 void MethodCallVisitor::Visit(Declaration* declaration) {}
 
