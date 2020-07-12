@@ -1,5 +1,0 @@
-public static void main(String[] args) {
-    int variable := 36;
-    variable := variable - 37;
-    true && (variable < 0 || false)
-}
