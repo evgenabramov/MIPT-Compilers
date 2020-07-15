@@ -1,0 +1,31 @@
+class Main {
+    public static void main(String[] args) {
+	    int result;
+	    result = 0;
+
+	    while (result < 10)
+	        result = result + 1;
+
+	    assert(result == 10);
+
+	    System.out.println(result);
+    }
+}
+
+class SimpleClass {
+    int x;
+    boolean f;
+
+    int[] a;
+    public int FindValue(int a, boolean b, int c) {
+	    int d;
+	    d = 5;
+	
+	    boolean k;
+	    k = false;
+	    assert(!k);
+
+	    System.out.println(d);
+	    return d;
+    }
+}
