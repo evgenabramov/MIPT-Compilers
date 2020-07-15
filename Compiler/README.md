@@ -25,3 +25,9 @@ cat SymbolTreeVisitor_output
 5-му чекпоинту соответствуют примеры 5 и 6.
 
 Выхлоп `MethodCallVisitor`'a выводится в консоль. 
+
+6 чекпоинт (на тех же примерах):
+
+```
+cat <class name>::<function name>_IRTreePrintVisitor_output
+```
