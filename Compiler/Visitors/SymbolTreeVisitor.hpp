@@ -109,6 +109,7 @@ class SymbolTreeVisitor : public Visitor {
     if (variable_declaration->GetType()->IsSimpleType()) {
       auto primitive_simple_type = current_layer_->DeclareSimpleVariable(
           variable_declaration->GetVariableName(),
+          dynamic_cast<SimpleType*>(variable_declaration->GetType())
       );
 
       // If object does not exist, it will be created
