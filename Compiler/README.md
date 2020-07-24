@@ -31,3 +31,11 @@ cat SymbolTreeVisitor_output
 ```
 cat <class name>::<function name>_IRTreePrintVisitor_output
 ```
+
+7 чекпоинт (на тех же примерах - они усложнены):
+```
+cat <class name>::<function name>_IRTree_raw
+cat <class name>::<function name>_IRTree_without_double_call
+cat <class name>::<function name>_IRTree_without_ESEQ
+cat <class name>::<function name>_IRTree_linearized
+```
