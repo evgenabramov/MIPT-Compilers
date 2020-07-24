@@ -1,22 +1,23 @@
 #include "PrintVisitor.h"
 
 #include "BaseElements.h"
-#include "EseqExpression.hpp"
 
 namespace irt {
 
-PrintVisitor::PrintVisitor(const std::string& filename) : stream_(filename, std::ios_base::app) {}
+PrintVisitor::PrintVisitor(const std::string& method_name, const std::string& suffix) : stream_(method_name + suffix) {
+  stream_ << "Method tree for " + method_name << ":" << std::endl;
+}
 
 PrintVisitor::~PrintVisitor() {
   stream_.close();
 }
 
-void PrintVisitor::Visit(ExpStatement* stmt) {
+void PrintVisitor::Visit(ExpStatement* statement) {
   PrintTabs();
   stream_ << "ExpStatement:" << std::endl;
-
+  
   ++num_tabs_;
-  stmt->GetExpression()->Accept(this);
+  statement->GetExpression()->Accept(this);
   --num_tabs_;
 }
 
@@ -43,8 +44,8 @@ void PrintVisitor::Visit(MoveStatement* move_statement) {
   PrintTabs();
   stream_ << "MoveStatement:" << std::endl;
   ++num_tabs_;
-  move_statement->source_->Accept(this);
   move_statement->target_->Accept(this);
+  move_statement->source_->Accept(this);
   --num_tabs_;
 }
 
@@ -55,7 +56,7 @@ void PrintVisitor::Visit(SeqStatement* seq_statement) {
   seq_statement->first_statement_->Accept(this);
   seq_statement->second_statement_->Accept(this);
   --num_tabs_;
-
+  
 }
 
 void PrintVisitor::Visit(LabelStatement* label_statement) {
@@ -127,6 +128,12 @@ void PrintVisitor::PrintTabs() {
   for (int i = 0; i < num_tabs_; ++i) {
     stream_ << '\t';
   }
+}
+
+void PrintVisitor::ChangeStream(const std::string& method_name, const std::string& suffix) {
+  stream_ = std::move(std::ofstream(method_name + suffix));
+  num_tabs_ = 0;
+  stream_ << "Method tree for " + method_name << ":" << std::endl;
 }
 
 }

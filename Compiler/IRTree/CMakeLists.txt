@@ -56,4 +56,9 @@ target_sources(
         Visitors/PrintVisitor.h
         Visitors/BaseElements.h
         Visitors/forward_decl.hpp
+        Visitors/DoubleCallEliminateVisitor.cpp
+        Visitors/VisitorStruct.h
+        Visitors/TemplateVisitor.hpp
+        Visitors/ESEQEliminateVisitor.cpp
+        Visitors/LinearizationVisitor.cpp
 )

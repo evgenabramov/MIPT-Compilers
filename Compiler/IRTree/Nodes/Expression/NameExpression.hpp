@@ -13,6 +13,10 @@ class NameExpression : public Expression {
     visitor->Visit(this);
   }
 
+  bool IsNameExpression() const override {
+    return true;
+  };
+
   Label label_;
 };
 

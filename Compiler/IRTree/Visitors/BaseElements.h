@@ -4,6 +4,7 @@
 #include "ConstExpression.hpp"
 #include "MemExpression.hpp"
 #include "TempExpression.hpp"
+#include "EseqExpression.hpp"
 
 #include "ExpStatement.hpp"
 #include "JumpConditionalStatement.hpp"

@@ -13,7 +13,7 @@ class Main {
         counter = new Counter[3];
 
         int sum;
-        sum = (counter[1]).Abs(a) + (new Counter()).Power(b, power);
+        sum = (counter[1]).Abs(a) + (new Counter()).Power(counter[0].Abs(b), power);
 
         assert(sum == 138);
         assert(counter.length == 3);

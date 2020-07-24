@@ -6,6 +6,9 @@
 #include "IRTreeBuildVisitor.h"
 
 #include <IRTree/Visitors/PrintVisitor.h>
+#include <IRTree/Visitors/DoubleCallEliminateVisitor.h>
+#include <IRTree/Visitors/LinearizationVisitor.h>
+#include <IRTree/Visitors/ESEQEliminateVisitor.h>
 
 #include "parser.hh"
 
@@ -87,11 +90,28 @@ void Driver::Evaluate(const std::string& filename) {
   IrtMapping methods = irtree_build_visitor.GetMethodTrees();
 
   for (auto& [method_name, method_statement] : methods) {
-    std::string output_filename = method_name + "_IRTreePrintVisitor_output";
-    std::ofstream out(output_filename);
-    out << "Method tree for " + method_name << ":" << std::endl;
-
-    irt::PrintVisitor print_visitor(output_filename);
+    irt::PrintVisitor print_visitor(method_name, "_IRTree_raw");
+    method_statement->Accept(&print_visitor);
+    
+    irt::DoubleCallEliminateVisitor call_eliminate_visitor;
+    method_statement->Accept(&call_eliminate_visitor);
+    method_statement = call_eliminate_visitor.GetTree();
+    
+    print_visitor.ChangeStream(method_name, "_IRTree_without_double_call");
+    method_statement->Accept(&print_visitor);
+    
+    irt::ESEQEliminateVisitor eseq_eliminate_visitor;
+    method_statement->Accept(&eseq_eliminate_visitor);
+    method_statement = eseq_eliminate_visitor.GetTree();
+    
+    print_visitor.ChangeStream(method_name, "_IRTree_without_ESEQ");
+    method_statement->Accept(&print_visitor);
+  
+    irt::LinearizationVisitor linearization_visitor;
+    method_statement->Accept(&linearization_visitor);
+    method_statement = linearization_visitor.GetTree();
+  
+    print_visitor.ChangeStream(method_name, "_IRTree_linearized");
     method_statement->Accept(&print_visitor);
   }
 }

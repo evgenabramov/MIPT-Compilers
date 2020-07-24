@@ -19,6 +19,10 @@ class ExpStatement : public Statement {
     visitor->Visit(this);
   }
 
+  bool IsExpStatement() const override {
+    return true;
+  }
+
  private:
   Expression* expression_;
 };

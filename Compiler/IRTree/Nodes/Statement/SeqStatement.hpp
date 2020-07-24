@@ -13,6 +13,10 @@ class SeqStatement : public Statement {
     visitor->Visit(this);
   }
 
+  bool IsSeqStatement() const override {
+    return true;
+  }
+
   Statement* first_statement_;
   Statement* second_statement_;
 };

@@ -18,6 +18,10 @@ class ConstExpression : public Expression {
     visitor->Visit(this);
   }
 
+  bool IsConstExpression() const override {
+    return true;
+  }
+
  private:
   int value_;
 };

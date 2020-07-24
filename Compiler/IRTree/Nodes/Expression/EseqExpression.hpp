@@ -14,6 +14,10 @@ class EseqExpression : public Expression {
     visitor->Visit(this);
   }
 
+  bool IsEseqExpression() const override {
+    return true;
+  }
+
   Statement* statement_;
   Expression* expression_;
 };

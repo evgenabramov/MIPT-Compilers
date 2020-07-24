@@ -7,7 +7,7 @@ namespace irt {
 
 class MoveStatement : public Statement {
  public:
-  MoveStatement(Expression* source, Expression* target) : source_(source), target_(target) {}
+  MoveStatement(Expression* target, Expression* source) : target_(target), source_(source) {}
 
   void Accept(Visitor* visitor) override {
     visitor->Visit(this);
