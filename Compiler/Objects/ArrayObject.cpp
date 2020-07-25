@@ -1,5 +1,3 @@
-#pragma once
-
 #include "ArrayObject.h"
 
 namespace ast {

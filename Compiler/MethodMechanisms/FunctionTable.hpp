@@ -48,7 +48,7 @@ class FunctionTable {
       Symbol symbol = symbols_.top();
 
       std::cerr << "Popping \'" << symbol.GetName()
-        << "\' index on stack while exiting scope..." << std::endl;
+                << "\' index on stack while exiting scope..." << std::endl;
 
       values_[symbol].pop();
       if (values_[symbol].empty()) {

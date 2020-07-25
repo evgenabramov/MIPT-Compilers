@@ -6,7 +6,7 @@ SimpleObject::SimpleObject(PrimitiveSimpleType* type) : type_(type) {
   if (type_->IsClass()) {
     // fields as symbols
     auto fields = ClassStorage::GetInstance().GetClassFields(Symbol(type_->GetTypeName()));
-    for (auto& [field_name, field_type] : fields) {
+    for (auto&[field_name, field_type] : fields) {
       if (field_type->IsArray()) {
         fields_[field_name] = new ArrayObject(dynamic_cast<PrimitiveArrayType*>(field_type.get()));
       } else {

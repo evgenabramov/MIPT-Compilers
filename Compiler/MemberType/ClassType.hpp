@@ -34,6 +34,10 @@ class ClassType : public MemberType {
     return method_types_;
   }
 
+  std::string GetTypeName() const override {
+    return class_declaration_->GetClassName();
+  }
+  
  private:
   ClassDeclaration* class_declaration_;
   std::unordered_map<Symbol, std::shared_ptr<PrimitiveType>> field_types_;

@@ -10,7 +10,7 @@ namespace ast {
 class VariableDeclaration : public Declaration {
  public:
   VariableDeclaration(Type* type, std::string variable_name)
-    : type_(type), variable_name_(std::move(variable_name)) {}
+      : type_(type), variable_name_(std::move(variable_name)) {}
 
   void Accept(Visitor* visitor) override {
     visitor->Visit(this);

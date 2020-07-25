@@ -37,17 +37,20 @@ FLEX_TARGET(
 
 ADD_FLEX_BISON_DEPENDENCY(MyScanner MyParser)
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build)
+
 add_executable(
         ${PROJECT_NAME}
         main.cpp
-        Grammar/driver.cpp
+        driver.cpp
         ${BISON_MyParser_OUTPUTS}
         ${FLEX_MyScanner_OUTPUTS}
 )
 
 target_include_directories(
         ${PROJECT_NAME}
-        PUBLIC
+        PRIVATE
+
         ${CMAKE_SOURCE_DIR}
         Grammar/Service
         Visitors
@@ -61,11 +64,12 @@ target_include_directories(
         Objects
         MemberType
         MethodMechanisms
+        MethodMechanisms/Address
 )
 
 target_sources(
         ${PROJECT_NAME}
-        PUBLIC
+        PRIVATE
 
         Grammar/Expression/Expression.hpp
         Grammar/Expression/AddExpression.hpp
@@ -126,6 +130,8 @@ target_sources(
         Visitors/SymbolTreeVisitor.hpp
         Visitors/MethodCallVisitor.cpp
         Visitors/TemplateVisitor.hpp
+        Visitors/IRTreeBuildVisitor.cpp
+        Visitors/TypeVisitor.hpp
 
         Grammar/NamedEntity/NamedEntity.hpp
         Grammar/NamedEntity/NamedVariable.hpp
@@ -153,12 +159,19 @@ target_sources(
 
         MethodMechanisms/FunctionTable.hpp
         MethodMechanisms/Frame.hpp
+        MethodMechanisms/FrameTranslator.cpp
+        MethodMechanisms/Address/Address.hpp
+        MethodMechanisms/Address/AddressInFrame.hpp
+        MethodMechanisms/Address/AddressInRegister.hpp
 
         Grammar/parser.cpp
         main.cpp
-        Grammar/driver.cpp
+        driver.cpp
         Grammar/scanner.cpp
 )
 
+set(IRTreeLibrary "${PROJECT_NAME}_IRTreeLibrary")
 
+add_subdirectory(IRTree)
 
+target_link_libraries(${PROJECT_NAME} ${IRTreeLibrary})

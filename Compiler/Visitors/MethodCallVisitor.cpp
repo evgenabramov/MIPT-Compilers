@@ -47,7 +47,7 @@ std::pair<int, int> MethodCallVisitor::VisitBinaryExpression(Expression* left_ex
 //  }
 
   if ((left_type->GetTypeName() != "int" && left_type->GetTypeName() != "boolean") ||
-    (right_type->GetTypeName() != "int" && right_type->GetTypeName() != "boolean")) {
+      (right_type->GetTypeName() != "int" && right_type->GetTypeName() != "boolean")) {
     throw std::runtime_error("Bad type for arithmetic/logic operations");
   }
 

@@ -9,7 +9,7 @@ namespace ast {
 class MethodDeclaration : public Declaration {
  public:
   MethodDeclaration(Type* type, std::string identifier, FormalList* formal_list, StatementList* statement_list)
-    : type_(type), identifier_(std::move(identifier)), formal_list_(formal_list), statement_list_(statement_list) {}
+      : type_(type), identifier_(std::move(identifier)), formal_list_(formal_list), statement_list_(statement_list) {}
 
   void Accept(Visitor* visitor) override {
     visitor->Visit(this);

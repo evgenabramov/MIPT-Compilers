@@ -1,0 +1,23 @@
+#pragma once
+
+#include "../BaseElement.hpp"
+
+namespace irt {
+
+class Expression : public BaseElement {
+ public:
+  virtual ~Expression() = default;
+
+  virtual bool IsEseqExpression() const {
+    return false;
+  }
+
+  virtual bool IsConstExpression() const {
+    return false;
+  }
+
+  virtual bool IsNameExpression() const {
+    return false;
+  }
+};
+}

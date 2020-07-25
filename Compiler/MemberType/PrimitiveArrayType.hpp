@@ -11,10 +11,14 @@ class PrimitiveArrayType : public PrimitiveType {
   explicit PrimitiveArrayType(ArrayType* array_type) : array_type_(array_type) {}
 
   explicit PrimitiveArrayType(PrimitiveSimpleType* primitive_simple_type)
-    : array_type_(new ArrayType(primitive_simple_type->GetTypeName())) {}
+      : array_type_(new ArrayType(primitive_simple_type->GetTypeName())) {}
 
   PrimitiveSimpleType* GetPrimitiveSimpleType() {
     return new PrimitiveSimpleType(array_type_->GetIdentifier());
+  }
+
+  ~PrimitiveArrayType() final {
+    delete array_type_;
   }
 
   bool IsArray() const override {
@@ -29,8 +33,11 @@ class PrimitiveArrayType : public PrimitiveType {
     return false;
   }
 
-  ~PrimitiveArrayType() final {
-    delete array_type_;
+  size_t GetSize() const override {
+    // Array size is a runtime property which can change
+    // So we can't store dynamic array on stack anyway
+    // TODO: find correct solution for problem
+    return 4;
   }
 
  private:

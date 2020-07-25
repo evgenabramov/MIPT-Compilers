@@ -33,12 +33,12 @@ class SymbolTreeVisitor : public Visitor {
     current_label_ = Symbol("main");
 
     auto main_method = current_layer_->DeclareMethod(
-      current_label_,
-      new MethodDeclaration(
-        new SimpleType("void"),
-        "main",
-        nullptr,
-        main_class->GetStatementList())
+        current_label_,
+        new MethodDeclaration(
+            new SimpleType("void"),
+            "main",
+            nullptr,
+            main_class->GetStatementList())
     );
 
     current_layer_ = new ScopeLayer(current_layer_);
@@ -108,8 +108,8 @@ class SymbolTreeVisitor : public Visitor {
   void Visit(VariableDeclaration* variable_declaration) override {
     if (variable_declaration->GetType()->IsSimpleType()) {
       auto primitive_simple_type = current_layer_->DeclareSimpleVariable(
-        variable_declaration->GetVariableName(),
-        dynamic_cast<SimpleType*>(variable_declaration->GetType())
+          variable_declaration->GetVariableName(),
+          dynamic_cast<SimpleType*>(variable_declaration->GetType())
       );
 
       // If object does not exist, it will be created
@@ -118,8 +118,8 @@ class SymbolTreeVisitor : public Visitor {
       }
     } else {
       auto primitive_array_type = current_layer_->DeclareArrayVariable(
-        variable_declaration->GetVariableName(),
-        dynamic_cast<ArrayType*>(variable_declaration->GetType())
+          variable_declaration->GetVariableName(),
+          dynamic_cast<ArrayType*>(variable_declaration->GetType())
       );
 
       if (!is_inside_method_) {
@@ -158,8 +158,8 @@ class SymbolTreeVisitor : public Visitor {
   void Visit(Formal* formal) override {
     // can only be simple type and not a field
     auto primitive_simple_type = current_layer_->DeclareSimpleVariable(
-      formal->GetIdentifier(),
-      dynamic_cast<SimpleType*>(formal->GetType())
+        formal->GetIdentifier(),
+        dynamic_cast<SimpleType*>(formal->GetType())
     );
   }
 
@@ -263,7 +263,7 @@ class SymbolTreeVisitor : public Visitor {
   void OutputClassesInfo() {
     out_ << "-------------------------------------------" << std::endl;
     out_ << "Classes info:" << std::endl;
-    for (auto& [class_name, class_type] : class_types_) {
+    for (auto&[class_name, class_type] : class_types_) {
       out_ << "Class name: " << class_name.GetName() << std::endl;
 
       if (!class_type->GetMethodTypes().empty()) {
@@ -274,25 +274,25 @@ class SymbolTreeVisitor : public Visitor {
         }
       }
 
-       if (!class_type->GetFieldTypes().empty()) {
-         out_ << "\tClass fields:" << std::endl;
-         for (auto& [field_name, field_type] : class_type->GetFieldTypes()) {
-           out_ << "\t\t[Field name:] " << field_name.GetName()
-                << " [Type:] ";
-           if (field_type->IsSimpleType()) {
-             out_ << field_type->GetTypeName() << std::endl;
-           } else {
-             out_ << field_type->GetTypeName() << "[]" << std::endl;
-           }
-         }
-       }
+      if (!class_type->GetFieldTypes().empty()) {
+        out_ << "\tClass fields:" << std::endl;
+        for (auto&[field_name, field_type] : class_type->GetFieldTypes()) {
+          out_ << "\t\t[Field name:] " << field_name.GetName()
+               << " [Type:] ";
+          if (field_type->IsSimpleType()) {
+            out_ << field_type->GetTypeName() << std::endl;
+          } else {
+            out_ << field_type->GetTypeName() << "[]" << std::endl;
+          }
+        }
+      }
     }
     out_ << "-------------------------------------------" << std::endl;
   }
 
   void FillClassStorage() {
     ClassStorage& class_storage = ClassStorage::GetInstance();
-    for (auto& [class_name, class_type] : class_types_) {
+    for (auto&[class_name, class_type] : class_types_) {
       class_storage.SetClassFields(class_name, class_type->GetFieldTypes());
       class_storage.SetClassMethods(class_name, class_type->GetMethodTypes());
     }

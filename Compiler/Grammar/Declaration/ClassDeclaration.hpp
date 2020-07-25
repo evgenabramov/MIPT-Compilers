@@ -9,7 +9,7 @@ namespace ast {
 class ClassDeclaration : public TreeNode {
  public:
   ClassDeclaration(std::string class_name, DeclarationList* declaration_list)
-    : class_name_(std::move(class_name)), declaration_list_(declaration_list) {}
+      : class_name_(std::move(class_name)), declaration_list_(declaration_list) {}
 
   void Accept(Visitor* visitor) override {
     visitor->Visit(this);

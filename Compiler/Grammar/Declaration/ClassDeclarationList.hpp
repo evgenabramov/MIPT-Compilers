@@ -9,7 +9,7 @@ class ClassDeclarationList : public TreeNode {
   ClassDeclarationList() = default;
 
   ClassDeclarationList(ClassDeclaration* first_item, ClassDeclarationList* tail)
-    : first_item_(first_item), tail_(tail) {}
+      : first_item_(first_item), tail_(tail) {}
 
   void Accept(Visitor* visitor) override {
     visitor->Visit(this);

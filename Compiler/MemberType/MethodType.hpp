@@ -24,6 +24,10 @@ class MethodType : public MemberType {
     return return_value_type_;
   }
 
+  std::string GetTypeName() const override {
+    return method_declaration_->GetType()->GetIdentifier();
+  }
+
  private:
   MethodDeclaration* method_declaration_;
   FormalList* formal_list_; // for fast access

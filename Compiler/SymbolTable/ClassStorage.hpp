@@ -49,12 +49,11 @@ class ClassStorage {
       std::cout << "Methods info: " << std::endl;
     }
 
-    for (auto& [class_name, class_methods] : class_methods_) {
+    for (auto&[class_name, class_methods] : class_methods_) {
       if (class_methods.empty()) {
         continue;
       }
-      std::cout << "\tClass name: " << class_name.GetName() << std::endl;
-      for (auto& [method_name, method_type] : class_methods) {
+      for (auto&[method_name, method_type] : class_methods) {
         std::cout << "\t\t[Method name:] " << method_name.GetName()
                   << " [Method return type:] " << method_type->GetReturnValueType()->GetIdentifier() << std::endl;
       }
@@ -64,12 +63,12 @@ class ClassStorage {
       std::cout << "Fields info: " << std::endl;
     }
 
-    for (auto& [class_name, class_fields] : class_fields_) {
+    for (auto&[class_name, class_fields] : class_fields_) {
 //      if (class_fields.empty()) {
 //        continue;
 //      }
       std::cout << "\tClass name: " << class_name.GetName() << std::endl;
-      for (auto& [field_name, field_type] : class_fields) {
+      for (auto&[field_name, field_type] : class_fields) {
         std::cout << "\t\t[Field name:] " << field_name.GetName()
                   << " [Field type:] " << field_type->GetTypeName() << std::endl;
       }

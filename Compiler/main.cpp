@@ -1,5 +1,5 @@
 #include <iostream>
-#include <Grammar/driver.hh>
+#include <driver.hh>
 
 int main(int argc, char** argv) {
   Driver driver;
