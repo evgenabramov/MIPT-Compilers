@@ -73,9 +73,9 @@ void PrintVisitor::Visit(BinopExpression* binop_statement) {
   --num_tabs_;
 }
 
-void PrintVisitor::Visit(TempExpression* temp_exression) {
+void PrintVisitor::Visit(TempExpression* temp_expression) {
   PrintTabs();
-  stream_ << "TempExpression: " << temp_exression->temporary_.ToString() << std::endl;
+  stream_ << "TempExpression: " << temp_expression->temporary_.ToString() << std::endl;
 }
 
 void PrintVisitor::Visit(MemExpression* mem_expression) {

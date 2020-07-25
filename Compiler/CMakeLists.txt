@@ -175,5 +175,3 @@ set(IRTreeLibrary "${PROJECT_NAME}_IRTreeLibrary")
 add_subdirectory(IRTree)
 
 target_link_libraries(${PROJECT_NAME} ${IRTreeLibrary})
-
-

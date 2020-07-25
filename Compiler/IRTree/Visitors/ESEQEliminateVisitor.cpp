@@ -1,3 +1,4 @@
+#include <cassert>
 #include "ESEQEliminateVisitor.h"
 
 #include "BaseElements.h"
@@ -127,11 +128,10 @@ void ESEQEliminateVisitor::Visit(JumpConditionalStatement* jump_conditional_stat
 }
 
 void ESEQEliminateVisitor::Visit(MoveStatement* move_statement) {
-  IrtStorage source = Accept(move_statement->source_);
   IrtStorage target = Accept(move_statement->target_);
+  IrtStorage source = Accept(move_statement->source_);
 
-  if (source.expression_->IsEseqExpression()
-      && target.expression_->IsEseqExpression()) {
+  if (source.expression_->IsEseqExpression() && target.expression_->IsEseqExpression()) {
     auto source_eseq_expression = dynamic_cast<EseqExpression*>(source.expression_);
     auto target_eseq_expression = dynamic_cast<EseqExpression*>(target.expression_);
 
@@ -275,11 +275,11 @@ void ESEQEliminateVisitor::Visit(MemExpression* mem_expression) {
   IrtStorage child_expression = Accept(mem_expression->expression_);
 
   if (child_expression.expression_->IsEseqExpression()) {
-    auto expression = dynamic_cast<EseqExpression*>(child_expression.expression_);
+    auto eseq_expression = dynamic_cast<EseqExpression*>(child_expression.expression_);
 
     tos_value_.expression_ = new EseqExpression(
-        expression->statement_,
-        new MemExpression(expression->expression_)
+        eseq_expression->statement_,
+        new MemExpression(eseq_expression->expression_)
     );
   } else {
     tos_value_.expression_ = new MemExpression(child_expression.expression_);
@@ -304,12 +304,12 @@ void ESEQEliminateVisitor::Visit(CallExpression* call_expression) {
 
   if (first_eseq_index == -1) {
     if (func.expression_->IsEseqExpression()) {
-      auto expression = dynamic_cast<EseqExpression*>(func.expression_);
+      auto eseq_func_expression = dynamic_cast<EseqExpression*>(func.expression_);
 
       tos_value_.expression_ = new EseqExpression(
-          expression->statement_,
+          eseq_func_expression->statement_,
           new CallExpression(
-              expression->expression_,
+              eseq_func_expression->expression_,
               args.expression_list_
           )
       );
@@ -325,8 +325,8 @@ void ESEQEliminateVisitor::Visit(CallExpression* call_expression) {
   auto eseq_argument = dynamic_cast<EseqExpression*>(args.expression_list_->expressions_[first_eseq_index]);
 
   std::vector<Temporary> temps;
-  std::vector<size_t> noncommute_indices;
-  for (int i = first_eseq_index; i >= 0; --i) {
+  std::vector<int> noncommute_indices(1, -1);
+  for (int i = first_eseq_index - 1; i >= 0; --i) {
     if (!CheckCommute(eseq_argument->statement_, args.expression_list_->expressions_[i])) {
       noncommute_indices.push_back(i);
       temps.emplace_back();
@@ -335,8 +335,8 @@ void ESEQEliminateVisitor::Visit(CallExpression* call_expression) {
 
   // Add temporaries to save arguments
   Statement* suffix_statement = eseq_argument->statement_;
-  for (int i = noncommute_indices.size() - 1; i >= 0; --i) {
-    size_t index = noncommute_indices[i];
+  for (int i = static_cast<int>(temps.size()) - 1; i >= 0; --i) {
+    size_t index = noncommute_indices[i + 1];
     suffix_statement = new SeqStatement(
         new MoveStatement(
             new TempExpression(temps[i]),
@@ -348,17 +348,22 @@ void ESEQEliminateVisitor::Visit(CallExpression* call_expression) {
 
   // Construct new ExpressionList
   auto new_expression_list = new ExpressionList();
-  for (size_t i = 0; i < noncommute_indices.size() - 1; ++i) {
-    size_t first_index = noncommute_indices[i];
-    size_t next_index = noncommute_indices[i + 1];
-    new_expression_list->Add(new TempExpression(temps[i]));
-    for (size_t index = first_index + 1; index < next_index; ++index) {
+  for (int i = 1; i < noncommute_indices.size(); ++i) {
+    size_t noncommute_index = noncommute_indices[i];
+    size_t prev_index = noncommute_indices[i - 1];
+    for (size_t index = prev_index + 1; index < noncommute_index; ++index) {
       new_expression_list->Add(args.expression_list_->expressions_[index]);
     }
+    new_expression_list->Add(new TempExpression(temps[i - 1]));
   }
-  if (!noncommute_indices.empty()) {
-    new_expression_list->Add(new TempExpression(temps.back()));
+  for (size_t i = noncommute_indices.back() + 1; i < args.expression_list_->expressions_.size(); ++i) {
+    if (i == first_eseq_index) {
+      new_expression_list->Add(eseq_argument->expression_);
+    } else {
+      new_expression_list->Add(args.expression_list_->expressions_[i]);
+    }
   }
+  assert(call_expression->args_->expressions_.size() == new_expression_list->expressions_.size());
 
   if (func.expression_->IsEseqExpression()) {
     auto eseq_func_expression = dynamic_cast<EseqExpression*>(func.expression_);

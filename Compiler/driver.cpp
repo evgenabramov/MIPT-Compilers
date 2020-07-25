@@ -9,6 +9,9 @@
 #include <IRTree/Visitors/DoubleCallEliminateVisitor.h>
 #include <IRTree/Visitors/LinearizationVisitor.h>
 #include <IRTree/Visitors/ESEQEliminateVisitor.h>
+#include <IRTree/Visitors/BlockBorderVisitor.h>
+#include <IRTree/Visitors/BlockBuildVisitor.h>
+#include <IRTree/Blocks/BlockGraph.hpp>
 
 #include "parser.hh"
 
@@ -113,5 +116,19 @@ void Driver::Evaluate(const std::string& filename) {
   
     print_visitor.ChangeStream(method_name, "_IRTree_linearized");
     method_statement->Accept(&print_visitor);
+    
+    irt::BlockBorderVisitor block_border_visitor;
+    method_statement->Accept(&block_border_visitor);
+    method_statement = block_border_visitor.GetTree();
+    
+    print_visitor.ChangeStream(method_name, "_IRTree_with_blocks");
+    method_statement->Accept(&print_visitor);
+    
+    irt::BlockBuildVisitor block_build_visitor;
+    method_statement->Accept(&block_build_visitor);
+    
+    irt::BlockGraph block_graph = block_build_visitor.GetBlockGraph();
+    block_graph.OutputGraph(method_name, "_IRTree_blocks");
+    block_graph.OutputTraces(method_name, "_IRTree_traces");
   }
 }

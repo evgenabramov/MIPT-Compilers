@@ -11,6 +11,7 @@ target_include_directories(
         TreeWrapper
         TreeWrapper/ConditionalWrapper
         Types
+        Blocks
         Visitors
 )
 
@@ -51,6 +52,12 @@ target_sources(
         TreeWrapper/ConditionalWrapper/OrConditionalWrapper.hpp
         TreeWrapper/ConditionalWrapper/RelativeConditionalWrapper.hpp
 
+        Blocks/Block.hpp
+        Blocks/SimpleBlock.hpp
+        Blocks/ConditionalBlock.hpp
+        Blocks/Trace.hpp
+        Blocks/BlockGraph.hpp
+
         Visitors/Visitor.h
         Visitors/PrintVisitor.cpp
         Visitors/PrintVisitor.h
@@ -61,4 +68,6 @@ target_sources(
         Visitors/TemplateVisitor.hpp
         Visitors/ESEQEliminateVisitor.cpp
         Visitors/LinearizationVisitor.cpp
+        Visitors/BlockBuildVisitor.cpp
+        Visitors/BlockBorderVisitor.cpp
 )

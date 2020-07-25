@@ -12,6 +12,10 @@ class LabelStatement : public Statement {
   void Accept(Visitor* visitor) override {
     visitor->Visit(this);
   }
+  
+  bool IsLabelStatement() const override {
+    return true;
+  }
 
   Label label_;
 };

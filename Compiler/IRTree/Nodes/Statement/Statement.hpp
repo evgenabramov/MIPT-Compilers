@@ -15,6 +15,14 @@ class Statement : public BaseElement {
   virtual bool IsExpStatement() const {
     return false;
   }
+  
+  virtual bool IsLabelStatement() const {
+    return false;
+  }
+  
+  virtual bool IsJumpStatement() const {
+    return false;
+  }
 };
 
 }

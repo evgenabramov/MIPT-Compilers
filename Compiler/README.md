@@ -39,3 +39,10 @@ cat <class name>::<function name>_IRTree_without_double_call
 cat <class name>::<function name>_IRTree_without_ESEQ
 cat <class name>::<function name>_IRTree_linearized
 ```
+
+8 чекпоинт:
+```
+cat <class name>::<function name>_IRTree_with_blocks
+cat <class name>::<function name>_IRTree_blocks
+cat <class name>::<function name>_IRTree_traces
+```

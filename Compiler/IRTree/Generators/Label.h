@@ -7,7 +7,7 @@ namespace irt {
 class Label {
  public:
   Label();
-
+  Label(const Label& other);
   explicit Label(std::string label);
 
   std::string ToString() const;
