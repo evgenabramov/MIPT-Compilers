@@ -9,6 +9,7 @@ class Temporary {
   Temporary();
 
   explicit Temporary(const std::string& name);
+  Temporary(const Temporary& other) = default;
 
   std::string ToString() const;
 

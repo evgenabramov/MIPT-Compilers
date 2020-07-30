@@ -19,5 +19,22 @@ class Expression : public BaseElement {
   virtual bool IsNameExpression() const {
     return false;
   }
+  
+  virtual bool IsBinopExpression() const {
+    return false;
+  }
+  
+  virtual bool IsMemExpression() const {
+    return false;
+  }
+  
+  virtual bool IsTempExpression() const {
+    return false;
+  }
+  
+  virtual bool IsCallExpression() const {
+    return false;
+  }
 };
+
 }

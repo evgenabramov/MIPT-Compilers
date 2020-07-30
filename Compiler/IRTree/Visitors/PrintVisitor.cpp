@@ -64,12 +64,12 @@ void PrintVisitor::Visit(LabelStatement* label_statement) {
   stream_ << "LabelStatement: " << label_statement->label_.ToString() << std::endl;
 }
 
-void PrintVisitor::Visit(BinopExpression* binop_statement) {
+void PrintVisitor::Visit(BinopExpression* binop_expression) {
   PrintTabs();
-  stream_ << "BinopExpression: " << ToString(binop_statement->operator_type_) << std::endl;
+  stream_ << "BinopExpression: " << ToString(binop_expression->operator_type_) << std::endl;
   ++num_tabs_;
-  binop_statement->first_->Accept(this);
-  binop_statement->second_->Accept(this);
+  binop_expression->first_->Accept(this);
+  binop_expression->second_->Accept(this);
   --num_tabs_;
 }
 

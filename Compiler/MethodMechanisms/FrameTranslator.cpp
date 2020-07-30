@@ -60,8 +60,9 @@ void FrameTranslator::AddVariable(const std::string& name) {
   if (addresses_.find(name) == addresses_.end()) {
     addresses_[name] = std::stack<Address*>();
   }
+  int offset = GetOffset();
   addresses_[name].push(
-      new AddressInFrame(FramePointer(), GetOffset())
+      new AddressInFrame(FramePointer(), offset)
   );
 }
 

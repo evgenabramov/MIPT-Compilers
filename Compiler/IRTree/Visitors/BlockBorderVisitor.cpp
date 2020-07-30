@@ -70,12 +70,12 @@ void BlockBorderVisitor::Visit(LabelStatement* label_statement) {
   tos_value_.statement_ = new LabelStatement(label_statement->label_);
 }
 
-void BlockBorderVisitor::Visit(BinopExpression* binop_statement) {
-  IrtStorage first = Accept(binop_statement->first_);
-  IrtStorage second = Accept(binop_statement->second_);
+void BlockBorderVisitor::Visit(BinopExpression* binop_expression) {
+  IrtStorage first = Accept(binop_expression->first_);
+  IrtStorage second = Accept(binop_expression->second_);
   
   tos_value_.expression_ = new BinopExpression(
-      binop_statement->operator_type_,
+      binop_expression->operator_type_,
       first.expression_,
       second.expression_
   );
