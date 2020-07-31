@@ -12,6 +12,10 @@ class CallExpression : public Expression {
   void Accept(Visitor* visitor) override {
     visitor->Visit(this);
   }
+  
+  bool IsCallExpression() const override {
+    return true;
+  }
 
   Expression* function_name_;
   ExpressionList* args_;

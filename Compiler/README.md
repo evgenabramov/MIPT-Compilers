@@ -46,3 +46,8 @@ cat <class name>::<function name>_IRTree_with_blocks
 cat <class name>::<function name>_IRTree_blocks
 cat <class name>::<function name>_IRTree_traces
 ```
+
+9 чекпоинт:
+```
+cat <class name>::<function name>.s
+```

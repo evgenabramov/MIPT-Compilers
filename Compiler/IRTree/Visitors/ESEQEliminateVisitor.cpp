@@ -175,10 +175,10 @@ void ESEQEliminateVisitor::Visit(LabelStatement* label_statement) {
   tos_value_.statement_ = new LabelStatement(label_statement->label_);
 }
 
-void ESEQEliminateVisitor::Visit(BinopExpression* binop_statement) {
-  auto operator_type = binop_statement->operator_type_;
-  Expression* lhs = Accept(binop_statement->first_).expression_;
-  Expression* rhs = Accept(binop_statement->second_).expression_;
+void ESEQEliminateVisitor::Visit(BinopExpression* binop_expression) {
+  auto operator_type = binop_expression->operator_type_;
+  Expression* lhs = Accept(binop_expression->first_).expression_;
+  Expression* rhs = Accept(binop_expression->second_).expression_;
 
   if (lhs->IsEseqExpression() && rhs->IsEseqExpression()) {
     auto eseq_lhs = dynamic_cast<EseqExpression*>(lhs);

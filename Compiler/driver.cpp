@@ -12,6 +12,7 @@
 #include <IRTree/Visitors/BlockBorderVisitor.h>
 #include <IRTree/Visitors/BlockBuildVisitor.h>
 #include <IRTree/Blocks/BlockGraph.hpp>
+#include <IRTree/Visitors/CodeGenerationVisitor.h>
 
 #include "parser.hh"
 
@@ -130,5 +131,9 @@ void Driver::Evaluate(const std::string& filename) {
     irt::BlockGraph block_graph = block_build_visitor.GetBlockGraph();
     block_graph.OutputGraph(method_name, "_IRTree_blocks");
     block_graph.OutputTraces(method_name, "_IRTree_traces");
+    
+    irt::CodeGenerationVisitor code_generation_visitor;
+    method_statement->Accept(&code_generation_visitor);
+    code_generation_visitor.PrintInstructions(method_name + ".s");
   }
 }

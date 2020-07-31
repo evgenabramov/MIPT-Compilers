@@ -12,6 +12,10 @@ class TempExpression : public Expression {
   void Accept(Visitor* visitor) override {
     visitor->Visit(this);
   }
+  
+  bool IsTempExpression() const override {
+    return true;
+  }
 
   Temporary temporary_;
 };

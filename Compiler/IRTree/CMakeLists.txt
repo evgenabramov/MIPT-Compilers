@@ -13,6 +13,7 @@ target_include_directories(
         Types
         Blocks
         Visitors
+        Instructions
 )
 
 target_sources(
@@ -70,4 +71,7 @@ target_sources(
         Visitors/LinearizationVisitor.cpp
         Visitors/BlockBuildVisitor.cpp
         Visitors/BlockBorderVisitor.cpp
+        Visitors/CodeGenerationVisitor.cpp
+
+        Instructions/Instruction.hpp
 )

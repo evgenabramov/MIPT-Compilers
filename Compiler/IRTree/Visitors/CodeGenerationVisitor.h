@@ -1,11 +1,15 @@
 #pragma once
 
+#include "Visitor.h"
 #include "TemplateVisitor.hpp"
-#include "VisitorStruct.h"
+#include "../Generators/Temporary.h"
+#include "../Instructions/Instruction.hpp"
+
+#include <vector>
 
 namespace irt {
 
-class LinearizationVisitor : public TemplateVisitor<IrtStorage> {
+class CodeGenerationVisitor : public TemplateVisitor<Temporary> {
  public:
   void Visit(ExpStatement* statement) override;
   void Visit(ConstExpression* const_expression) override;
@@ -21,7 +25,17 @@ class LinearizationVisitor : public TemplateVisitor<IrtStorage> {
   void Visit(ExpressionList* expression_list) override;
   void Visit(NameExpression* name_expression) override;
   void Visit(EseqExpression* eseq_expression) override;
-  Statement* GetTree();
+  
+  std::vector<Instruction> GetInstructions() const;
+  
+  void PrintInstructions(const std::string& filename) const;
+ 
+ private:
+  void EmitCallExpression(const Temporary& result_temp, CallExpression* call_expression);
+  
+  void Emit(std::string str, std::vector<Temporary> targets, std::vector<Temporary> sources);
+  
+  std::vector<Instruction> instructions_;
 };
 
 }

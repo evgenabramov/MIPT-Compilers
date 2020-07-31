@@ -11,6 +11,10 @@ class MemExpression : public Expression {
   void Accept(Visitor* visitor) override {
     visitor->Visit(this);
   }
+  
+  bool IsMemExpression() const override {
+    return true;
+  }
 
   Expression* expression_;
 };

@@ -13,6 +13,10 @@ class BinopExpression : public Expression {
   void Accept(Visitor* visitor) override {
     visitor->Visit(this);
   }
+  
+  bool IsBinopExpression() const override {
+    return true;
+  }
 
   BinaryOperatorType operator_type_;
   Expression* first_;

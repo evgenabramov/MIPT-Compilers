@@ -37,7 +37,7 @@ void IRTreeBuildVisitor::Visit(MainClass* main_class) {
   current_class_name_ = main_class->GetName();
   auto main_method_declaration = new MethodDeclaration(
       new SimpleType("void"), "main", nullptr, main_class->GetStatementList());
-
+  
   main_method_declaration->Accept(this);
 }
 
@@ -46,7 +46,7 @@ void IRTreeBuildVisitor::Visit(Expression* expression) {}
 void IRTreeBuildVisitor::Visit(AddExpression* add_expression) {
   auto lhs = Accept(add_expression->GetLeftExpression());
   auto rhs = Accept(add_expression->GetRightExpression());
-
+  
   tos_value_ = new irt::ExpressionWrapper(
       new irt::BinopExpression(
           irt::BinaryOperatorType::PLUS,
@@ -59,7 +59,7 @@ void IRTreeBuildVisitor::Visit(AddExpression* add_expression) {
 void IRTreeBuildVisitor::Visit(AndExpression* and_expression) {
   auto lhs = Accept(and_expression->GetLeftExpression());
   auto rhs = Accept(and_expression->GetRightExpression());
-
+  
   tos_value_ = new irt::AndConditionalWrapper(lhs, rhs);
 }
 
@@ -71,7 +71,7 @@ void IRTreeBuildVisitor::Visit(BoolExpression* bool_expression) {
 void IRTreeBuildVisitor::Visit(DivExpression* div_expression) {
   auto lhs = Accept(div_expression->GetLeftExpression());
   auto rhs = Accept(div_expression->GetRightExpression());
-
+  
   tos_value_ = new irt::ExpressionWrapper(
       new irt::BinopExpression(
           irt::BinaryOperatorType::DIV,
@@ -84,7 +84,7 @@ void IRTreeBuildVisitor::Visit(DivExpression* div_expression) {
 void IRTreeBuildVisitor::Visit(GreaterEqualExpression* greater_equal_expression) {
   auto lhs = Accept(greater_equal_expression->GetLeftExpression());
   auto rhs = Accept(greater_equal_expression->GetRightExpression());
-
+  
   tos_value_ = new irt::RelativeConditionalWrapper(
       irt::LogicOperatorType::GE,
       lhs->ToExpression(),
@@ -95,7 +95,7 @@ void IRTreeBuildVisitor::Visit(GreaterEqualExpression* greater_equal_expression)
 void IRTreeBuildVisitor::Visit(GreaterExpression* greater_expression) {
   auto lhs = Accept(greater_expression->GetLeftExpression());
   auto rhs = Accept(greater_expression->GetRightExpression());
-
+  
   tos_value_ = new irt::RelativeConditionalWrapper(
       irt::LogicOperatorType::GT,
       lhs->ToExpression(),
@@ -116,7 +116,7 @@ void IRTreeBuildVisitor::Visit(IntExpression* int_expression) {
 void IRTreeBuildVisitor::Visit(LessEqualExpression* less_equal_expression) {
   auto lhs = Accept(less_equal_expression->GetLeftExpression());
   auto rhs = Accept(less_equal_expression->GetRightExpression());
-
+  
   tos_value_ = new irt::RelativeConditionalWrapper(
       irt::LogicOperatorType::LE,
       lhs->ToExpression(),
@@ -127,7 +127,7 @@ void IRTreeBuildVisitor::Visit(LessEqualExpression* less_equal_expression) {
 void IRTreeBuildVisitor::Visit(LessExpression* less_expression) {
   auto lhs = Accept(less_expression->GetLeftExpression());
   auto rhs = Accept(less_expression->GetRightExpression());
-
+  
   tos_value_ = new irt::RelativeConditionalWrapper(
       irt::LogicOperatorType::LT,
       lhs->ToExpression(),
@@ -138,7 +138,7 @@ void IRTreeBuildVisitor::Visit(LessExpression* less_expression) {
 void IRTreeBuildVisitor::Visit(MulExpression* mul_expression) {
   auto lhs = Accept(mul_expression->GetLeftExpression());
   auto rhs = Accept(mul_expression->GetRightExpression());
-
+  
   tos_value_ = new irt::ExpressionWrapper(
       new irt::BinopExpression(
           irt::BinaryOperatorType::MUL,
@@ -150,21 +150,21 @@ void IRTreeBuildVisitor::Visit(MulExpression* mul_expression) {
 
 void IRTreeBuildVisitor::Visit(NotExpression* not_expression) {
   auto expression_wrapper = Accept(not_expression->GetExpression());
-
+  
   tos_value_ = new irt::NegateConditionalWrapper(expression_wrapper);
 }
 
 void IRTreeBuildVisitor::Visit(OrExpression* or_expression) {
   auto lhs = Accept(or_expression->GetLeftExpression());
   auto rhs = Accept(or_expression->GetRightExpression());
-
+  
   tos_value_ = new irt::OrConditionalWrapper(lhs, rhs);
 }
 
 void IRTreeBuildVisitor::Visit(ModExpression* mod_expression) {
   auto lhs = Accept(mod_expression->GetLeftExpression());
   auto rhs = Accept(mod_expression->GetRightExpression());
-
+  
   tos_value_ = new irt::ExpressionWrapper(
       new irt::BinopExpression(
           irt::BinaryOperatorType::MOD,
@@ -177,7 +177,7 @@ void IRTreeBuildVisitor::Visit(ModExpression* mod_expression) {
 void IRTreeBuildVisitor::Visit(ArrayAccessExpression* array_access_expression) {
   auto array_address = current_frame_->GetAddress(array_access_expression->GetArrayName())->ToExpression();
   auto index = Accept(array_access_expression->GetExpression())->ToExpression();
-
+  
   // TODO: use global const for word size
   tos_value_ = new irt::ExpressionWrapper(
       new irt::MemExpression(
@@ -202,16 +202,18 @@ void IRTreeBuildVisitor::Visit(NewArrayExpression* new_array_expression) {
   // TODO: use global const for word size
   // TODO: allow to store class objects in array (use GetSize for type)
   auto args = new irt::ExpressionList();
-  args->Add(new irt::BinopExpression(
-      irt::BinaryOperatorType::MUL,
-      new irt::ConstExpression(4),
+  args->Add(
       new irt::BinopExpression(
-          irt::BinaryOperatorType::PLUS,
-          array_size_expression,
-          new irt::ConstExpression(1)
+          irt::BinaryOperatorType::MUL,
+          new irt::ConstExpression(4),
+          new irt::BinopExpression(
+              irt::BinaryOperatorType::PLUS,
+              array_size_expression,
+              new irt::ConstExpression(1)
+          )
       )
-  )); // one additional space for array size
-
+  ); // one additional space for array size
+  
   irt::Temporary tmp;
   auto array = new irt::EseqExpression(
       new irt::SeqStatement(
@@ -229,14 +231,14 @@ void IRTreeBuildVisitor::Visit(NewArrayExpression* new_array_expression) {
       ),
       new irt::TempExpression(tmp)
   );
-
+  
   tos_value_ = new irt::ExpressionWrapper(array);
 }
 
 void IRTreeBuildVisitor::Visit(SubExpression* sub_expression) {
   auto lhs = Accept(sub_expression->GetLeftExpression());
   auto rhs = Accept(sub_expression->GetRightExpression());
-
+  
   tos_value_ = new irt::ExpressionWrapper(
       new irt::BinopExpression(
           irt::BinaryOperatorType::MINUS,
@@ -249,7 +251,7 @@ void IRTreeBuildVisitor::Visit(SubExpression* sub_expression) {
 void IRTreeBuildVisitor::Visit(EqualExpression* equal_expression) {
   auto lhs = Accept(equal_expression->GetLeftExpression());
   auto rhs = Accept(equal_expression->GetRightExpression());
-
+  
   tos_value_ = new irt::RelativeConditionalWrapper(
       irt::LogicOperatorType::EQ,
       lhs->ToExpression(),
@@ -259,7 +261,7 @@ void IRTreeBuildVisitor::Visit(EqualExpression* equal_expression) {
 
 void IRTreeBuildVisitor::Visit(ThisExpression* this_expression) {
   auto address_expression = current_frame_->GetAddress("this")->ToExpression();
-
+  
   tos_value_ = new irt::ExpressionWrapper(address_expression);
 }
 
@@ -271,10 +273,10 @@ void IRTreeBuildVisitor::Visit(ExpressionList* expression_list) {}
 
 void IRTreeBuildVisitor::Visit(NewExpression* new_expression) {
   auto type = new PrimitiveSimpleType(new_expression->GetIdentifier());
-
+  
   auto args = new irt::ExpressionList();
   args->Add(new irt::ConstExpression(type->GetSize()));
-
+  
   irt::Temporary tmp;
   auto object = new irt::EseqExpression(
       new irt::MoveStatement(
@@ -286,16 +288,17 @@ void IRTreeBuildVisitor::Visit(NewExpression* new_expression) {
       ),
       new irt::TempExpression(tmp)
   );
-
+  
   tos_value_ = new irt::ExpressionWrapper(object);
 }
 
 void IRTreeBuildVisitor::Visit(ArrayLengthExpression* array_length_expression) {
   // TODO: add support for complex expressions
   // Type resolver is required here
-  std::string array_name = dynamic_cast<IdentExpression*>(array_length_expression->GetExpression())->GetIdentifier();
+  std::string array_name = dynamic_cast<IdentExpression*>(
+      array_length_expression->GetExpression())->GetIdentifier();
   auto array_address = current_frame_->GetAddress(array_name)->ToExpression();
-
+  
   tos_value_ = new irt::ExpressionWrapper(array_address);
 }
 
@@ -326,21 +329,21 @@ void IRTreeBuildVisitor::Visit(ClassDeclaration* class_declaration) {
 
 void IRTreeBuildVisitor::Visit(MethodDeclaration* method_declaration) {
   layer_indices_.push(0);
-
+  
   current_layer_ = scope_layer_tree_->GetScopeLayer(method_declaration->GetIdentifier());
-
+  
   std::string full_method_name = current_class_name_ + "::" + method_declaration->GetIdentifier();
-
+  
   current_frame_ = new irt::FrameTranslator(full_method_name);
   frame_translator_[full_method_name] = current_frame_;
-
+  
   if (method_declaration->GetFormalList() != nullptr) {
     method_declaration->GetFormalList()->Accept(this);
   }
   current_frame_->AddReturnAddress();
-
+  
   auto statement_list = Accept(method_declaration->GetStatementList());
-
+  
   if (statement_list) {
     tos_value_ = new irt::StatementWrapper(
         new irt::SeqStatement(
@@ -351,7 +354,7 @@ void IRTreeBuildVisitor::Visit(MethodDeclaration* method_declaration) {
   } else {
     tos_value_ = nullptr;
   }
-
+  
   layer_indices_.pop();
   method_trees_.emplace(full_method_name, tos_value_->ToStatement());
 }
@@ -377,7 +380,7 @@ void IRTreeBuildVisitor::Visit(FormalList* formal_list) {
     if (formal == nullptr) {
       return;
     }
-
+    
     formal->Accept(this);
     formal_list = formal_list->GetTail();
   }
@@ -387,7 +390,7 @@ void IRTreeBuildVisitor::Visit(MethodInvocation* method_invocation) {
   auto args = new irt::ExpressionList();
   // first argument is object itself
   args->Add(Accept(method_invocation->GetExpression())->ToExpression());
-
+  
   ExpressionList* expression_list = method_invocation->GetExpressionList();
   while (expression_list != nullptr) {
     Expression* expression = expression_list->GetFirstItem();
@@ -397,9 +400,9 @@ void IRTreeBuildVisitor::Visit(MethodInvocation* method_invocation) {
     args->Add(Accept(expression)->ToExpression());
     expression_list = expression_list->GetTail();
   }
-
+  
   std::string class_name = type_visitor_->Accept(method_invocation->GetExpression());
-
+  
   tos_value_ = new irt::ExpressionWrapper(
       new irt::CallExpression(
           new irt::NameExpression(
@@ -416,7 +419,7 @@ void IRTreeBuildVisitor::Visit(StatementList* statement_list) {
     tos_value_ = nullptr;
     return;
   }
-
+  
   std::stack<irt::Statement*> statements;
   while (statement_list != nullptr) {
     Statement* statement = statement_list->GetHead();
@@ -429,10 +432,10 @@ void IRTreeBuildVisitor::Visit(StatementList* statement_list) {
     }
     statement_list = statement_list->GetTail();
   }
-
+  
   irt::Statement* suffix = statements.top();
   statements.pop();
-
+  
   while (!statements.empty()) {
     irt::Statement* statement = statements.top();
     statements.pop();
@@ -447,7 +450,7 @@ void IRTreeBuildVisitor::Visit(StatementList* statement_list) {
 void IRTreeBuildVisitor::Visit(AssignmentStatement* assignment_statement) {
   auto named_entity_expression = Accept(assignment_statement->GetNamedEntity())->ToExpression();
   auto expression = Accept(assignment_statement->GetExpression())->ToExpression();
-
+  
   tos_value_ = new irt::StatementWrapper(
       new irt::MoveStatement(named_entity_expression, expression));
 }
@@ -455,15 +458,15 @@ void IRTreeBuildVisitor::Visit(AssignmentStatement* assignment_statement) {
 void IRTreeBuildVisitor::Visit(IfStatement* if_statement) {
   auto condition_expression = Accept(if_statement->GetExpression());
   auto true_statement = Accept(if_statement->GetStatement());
-
+  
   irt::Label label_true;
   irt::Label label_join;
-
+  
   irt::Statement* suffix = new irt::LabelStatement(label_join);
-
+  
   irt::Label* result_true = &label_join;
   irt::Label* result_false = &label_join;
-
+  
   // Sequentially append instructions to one another
   if (true_statement) {
     result_true = &label_true;
@@ -475,7 +478,7 @@ void IRTreeBuildVisitor::Visit(IfStatement* if_statement) {
         )
     );
   }
-
+  
   tos_value_ = new irt::StatementWrapper(
       new irt::SeqStatement(
           condition_expression->ToConditional(*result_true, *result_false),
@@ -487,7 +490,7 @@ void IRTreeBuildVisitor::Visit(IfStatement* if_statement) {
 void IRTreeBuildVisitor::Visit(PrintStatement* print_statement) {
   auto args = new irt::ExpressionList();
   args->Add(Accept(print_statement->GetExpression())->ToExpression());
-
+  
   // TODO: add label 'print' and use function from standard library
   tos_value_ = new irt::ExpressionWrapper(
       new irt::CallExpression(
@@ -514,15 +517,15 @@ void IRTreeBuildVisitor::Visit(VariableDeclarationStatement* variable_declaratio
 void IRTreeBuildVisitor::Visit(WhileStatement* while_statement) {
   auto condition_expression = Accept(while_statement->GetExpression());
   auto while_statement_wrapper = Accept(while_statement->GetStatement());
-
+  
   irt::Label label_condition;
   irt::Label label_true;
   irt::Label label_join;
-
+  
   irt::Statement* suffix = new irt::LabelStatement(label_join);
-
+  
   irt::Label* result_true = &label_join;
-
+  
   if (while_statement_wrapper) {
     result_true = &label_true;
     suffix = new irt::SeqStatement(
@@ -536,7 +539,7 @@ void IRTreeBuildVisitor::Visit(WhileStatement* while_statement) {
         )
     );
   }
-
+  
   suffix = new irt::SeqStatement(
       new irt::LabelStatement(label_condition),
       new irt::SeqStatement(
@@ -544,14 +547,14 @@ void IRTreeBuildVisitor::Visit(WhileStatement* while_statement) {
           suffix
       )
   );
-
+  
   tos_value_ = new irt::StatementWrapper(suffix);
 }
 
 void IRTreeBuildVisitor::Visit(AssertStatement* assert_statement) {
   auto args = new irt::ExpressionList();
   args->Add(Accept(assert_statement->GetExpression())->ToExpression());
-
+  
   // TODO: add label 'assert' and use function from standard library
   tos_value_ = new irt::ExpressionWrapper(
       new irt::CallExpression(
@@ -565,16 +568,16 @@ void IRTreeBuildVisitor::Visit(IfElseStatement* if_else_statement) {
   auto condition_expression = Accept(if_else_statement->GetExpression());
   auto true_statement = Accept(if_else_statement->GetFirstStatement());
   auto false_statement = Accept(if_else_statement->GetSecondStatement());
-
+  
   irt::Label label_true;
   irt::Label label_false;
   irt::Label label_join;
-
+  
   irt::Statement* suffix = new irt::LabelStatement(label_join);
-
+  
   irt::Label* result_true = &label_join;
   irt::Label* result_false = &label_join;
-
+  
   // Sequentially append instructions to one another
   if (false_statement) {
     result_false = &label_false;
@@ -585,7 +588,7 @@ void IRTreeBuildVisitor::Visit(IfElseStatement* if_else_statement) {
             suffix
         )
     );
-
+    
     if (true_statement) {
       suffix = new irt::SeqStatement(
           new irt::JumpStatement(label_join),
@@ -593,7 +596,7 @@ void IRTreeBuildVisitor::Visit(IfElseStatement* if_else_statement) {
       );
     }
   }
-
+  
   if (true_statement) {
     result_true = &label_true;
     suffix = new irt::SeqStatement(
@@ -604,7 +607,7 @@ void IRTreeBuildVisitor::Visit(IfElseStatement* if_else_statement) {
         )
     );
   }
-
+  
   tos_value_ = new irt::StatementWrapper(
       new irt::SeqStatement(
           condition_expression->ToConditional(*result_true, *result_false),
@@ -615,18 +618,18 @@ void IRTreeBuildVisitor::Visit(IfElseStatement* if_else_statement) {
 
 void IRTreeBuildVisitor::Visit(ScopeStatement* scope_statement) {
   current_layer_ = current_layer_->GetChild(layer_indices_.top());
-
+  
   layer_indices_.push(0);
   current_frame_->SetupScope();
-
+  
   scope_statement->GetStatementList()->Accept(this);
-
+  
   layer_indices_.pop();
   size_t index = layer_indices_.top();
-
+  
   layer_indices_.pop();
   layer_indices_.push(index + 1);
-
+  
   current_layer_ = current_layer_->GetParent();
   current_frame_->TearDownScope();
 }
@@ -646,7 +649,7 @@ void IRTreeBuildVisitor::Visit(NamedVariable* named_variable) {
 void IRTreeBuildVisitor::Visit(NamedArrayElement* named_array_element) {
   auto array_address = current_frame_->GetAddress(named_array_element->GetName())->ToExpression();
   auto index = Accept(named_array_element->GetIndexExpression())->ToExpression();
-
+  
   auto element_address = new irt::BinopExpression(
       irt::BinaryOperatorType::PLUS,
       array_address,
@@ -657,8 +660,10 @@ void IRTreeBuildVisitor::Visit(NamedArrayElement* named_array_element) {
               index,
               new irt::ConstExpression(1)
           ),
-          new irt::ConstExpression(4)));
-
+          new irt::ConstExpression(4)
+      )
+  );
+  
   tos_value_ = new irt::ExpressionWrapper(new irt::MemExpression(element_address));
 }
 

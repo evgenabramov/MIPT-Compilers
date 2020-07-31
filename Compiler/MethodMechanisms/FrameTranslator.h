@@ -11,7 +11,7 @@ namespace irt {
 
 class FrameTranslator {
  public:
-  FrameTranslator(const std::string& function_name);
+  explicit FrameTranslator(const std::string& function_name);
   void SetupScope();
   void TearDownScope();
 

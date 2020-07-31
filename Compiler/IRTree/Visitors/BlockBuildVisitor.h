@@ -16,7 +16,7 @@ class BlockBuildVisitor : public Visitor {
   void Visit(MoveStatement* move_statement) override;
   void Visit(SeqStatement* seq_statement) override;
   void Visit(LabelStatement* label_statement) override;
-  void Visit(BinopExpression* binop_statement) override;
+  void Visit(BinopExpression* binop_expression) override;
   void Visit(TempExpression* temp_expression) override;
   void Visit(MemExpression* mem_expression) override;
   void Visit(JumpStatement* jump_statement) override;

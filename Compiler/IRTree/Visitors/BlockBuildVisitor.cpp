@@ -45,9 +45,9 @@ void BlockBuildVisitor::Visit(SeqStatement* seq_statement) {
 
 void BlockBuildVisitor::Visit(LabelStatement* label_statement) {}
 
-void BlockBuildVisitor::Visit(BinopExpression* binop_statement) {
-  binop_statement->first_->Accept(this);
-  binop_statement->second_->Accept(this);
+void BlockBuildVisitor::Visit(BinopExpression* binop_expression) {
+  binop_expression->first_->Accept(this);
+  binop_expression->second_->Accept(this);
 }
 
 void BlockBuildVisitor::Visit(TempExpression* temp_expression) {}
