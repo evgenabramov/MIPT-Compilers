@@ -43,14 +43,18 @@ void BlockBorderVisitor::Visit(SeqStatement* seq_statement) {
     auto label_statement = dynamic_cast<LabelStatement*>(seq_statement->first_statement_);
     
     if (!is_block_finished_) {
+      is_block_finished_ = true;
+      
+      IrtStorage first_statement = Accept(seq_statement->first_statement_);
+      IrtStorage second_statement = Accept(seq_statement->second_statement_);
+      
       tos_value_.statement_ = new SeqStatement(
           new JumpStatement(label_statement->label_),
           new SeqStatement(
-              seq_statement->first_statement_,
-              seq_statement->second_statement_
+              first_statement.statement_,
+              second_statement.statement_
           )
       );
-      is_block_finished_ = true;
       return;
     } else {
       is_block_finished_ = false;

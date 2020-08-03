@@ -10,6 +10,15 @@ std::string Temporary::ToString() const {
   return name_;
 }
 
+bool Temporary::operator==(const Temporary& other) const {
+  return (name_ == other.name_);
+}
+
+
+bool Temporary::operator!=(const Temporary& other) const {
+  return !(*this == other);
+}
+
 int Temporary::counter_ = 0;
 
 }

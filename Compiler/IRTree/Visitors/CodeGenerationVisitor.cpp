@@ -117,9 +117,9 @@ void CodeGenerationVisitor::Visit(MoveStatement* move_statement) {
           Temporary rhs_temp = Accept(binop->second_);
           
           Emit(
-              "str s0, [t0, #" + std::to_string(const_lhs->Value()) + "]",
-              {rhs_temp},
-              {source_temp}
+              "str s0, [s1, #" + std::to_string(const_lhs->Value()) + "]",
+              {},
+              {source_temp, rhs_temp}
           );
         } else if (binop->second_->IsConstExpression()) {
           // MOVE(MEM(BINOP(PLUS, e1, CONST(i))), e2)
@@ -128,9 +128,9 @@ void CodeGenerationVisitor::Visit(MoveStatement* move_statement) {
           auto const_rhs = dynamic_cast<ConstExpression*>(binop->second_);
           
           Emit(
-              "str s0, [t0, #" + std::to_string(const_rhs->Value()) + "]",
-              {lhs_temp},
-              {source_temp}
+              "str s0, [s1, #" + std::to_string(const_rhs->Value()) + "]",
+              {},
+              {source_temp, lhs_temp}
           );
         } else {
           // MOVE(MEM(BINOP(PLUS, e1, e2)), e3) - trivial case
@@ -139,9 +139,9 @@ void CodeGenerationVisitor::Visit(MoveStatement* move_statement) {
           Temporary rhs_temp = Accept(binop->second_);
           
           Emit(
-              "str s0, [t0, t1]",
-              {rhs_temp, lhs_temp},
-              {source_temp}
+              "str s0, [s1, s2]",
+              {},
+              {source_temp, rhs_temp, lhs_temp}
           );
         }
       } else {
@@ -150,9 +150,9 @@ void CodeGenerationVisitor::Visit(MoveStatement* move_statement) {
         Temporary binop_temp = Accept(mem_target->expression_);
         
         Emit(
-            "str s0, [t0]",
-            {binop_temp},
-            {source_temp}
+            "str s0, [s1]",
+            {},
+            {source_temp, binop_temp}
         );
       }
     } else if (source->IsMemExpression()) {
@@ -166,9 +166,9 @@ void CodeGenerationVisitor::Visit(MoveStatement* move_statement) {
       Temporary target_temp = Accept(mem_target->expression_);
       
       Emit(
-          "str s0, [t0]",
-          {target_temp},
-          {source_temp}
+          "str s0, [s1]",
+          {},
+          {source_temp, target_temp}
       );
     }
   } else if (source->IsMemExpression()) {
@@ -329,7 +329,7 @@ void CodeGenerationVisitor::Visit(BinopExpression* binop_expression) {
         break;
       case BinaryOperatorType::MOD:
         Emit(
-            "mov t0, #" + std::to_string(const_lhs->Value()) + " mov " + std::to_string(const_rhs->Value()),
+            "mov t0, #" + std::to_string(const_lhs->Value()) + " mod " + std::to_string(const_rhs->Value()),
             {result_temp},
             {}
         );

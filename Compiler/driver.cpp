@@ -13,6 +13,8 @@
 #include <IRTree/Visitors/BlockBuildVisitor.h>
 #include <IRTree/Blocks/BlockGraph.hpp>
 #include <IRTree/Visitors/CodeGenerationVisitor.h>
+#include <IRTree/Instructions/ControlFlowGraph.hpp>
+#include <IRTree/Instructions/InterferenceGraph.hpp>
 
 #include "parser.hh"
 
@@ -135,5 +137,10 @@ void Driver::Evaluate(const std::string& filename) {
     irt::CodeGenerationVisitor code_generation_visitor;
     method_statement->Accept(&code_generation_visitor);
     code_generation_visitor.PrintInstructions(method_name + ".s");
+    
+    irt::ControlFlowGraph control_flow_graph(code_generation_visitor.GetInstructions());
+    irt::InterferenceGraph interference_graph = control_flow_graph.BuildInterferenceGraph();
+    control_flow_graph.OutputGraph(method_name + "_ControlFlowGraph");
+    interference_graph.Output(method_name + "_InterferenceGraph");
   }
 }

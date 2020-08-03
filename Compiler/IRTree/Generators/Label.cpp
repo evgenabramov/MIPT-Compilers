@@ -14,6 +14,10 @@ std::string Label::ToString() const {
   return label_;
 }
 
+bool Label::operator==(const Label& other) const {
+  return (label_ == other.label_);
+}
+
 int Label::counter_ = 0;
 
 }

@@ -10,6 +10,8 @@ namespace irt {
 
 class Instruction {
  public:
+  Instruction() = default;
+  
   Instruction(std::string str, std::vector<Temporary> targets, std::vector<Temporary> sources)
     : str_(std::move(str)), targets_(std::move(targets)), sources_(std::move(sources)) {}
   
@@ -37,11 +39,19 @@ class Instruction {
     }
     out << result << std::endl;
   }
+  
+  std::vector<Temporary> GetTargets() const {
+    return targets_;
+  }
+  
+  std::vector<Temporary> GetSources() const {
+    return sources_;
+  }
  
  private:
-  std::string str_;
-  std::vector<Temporary> targets_;
-  std::vector<Temporary> sources_;
+  std::string str_ = {};
+  std::vector<Temporary> targets_ = {};
+  std::vector<Temporary> sources_ = {};
 };
 
 }
