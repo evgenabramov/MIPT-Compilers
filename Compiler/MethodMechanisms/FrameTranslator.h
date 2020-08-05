@@ -24,6 +24,10 @@ class FrameTranslator {
   Address* FramePointer();
   Address* GetAddress(const std::string& name);
   Address* GetReturnValueAddress();
+  
+  size_t GetNumArguments() const;
+  
+  size_t GetFrameSize() const;
 
  private:
   // Get frame size on stack and increase it
@@ -32,8 +36,8 @@ class FrameTranslator {
   std::string function_name_;
 
   // reserved variable names
-  const std::string return_address_ = "::return";
-  const std::string frame_pointer_address_ = "::fp";
+  const std::string return_address_ = "lr";
+  const std::string frame_pointer_address_ = "fp";
   const std::string return_value_address_ = "::return_value";
 
   // variable -> stack of Addresses (register/stack) in scopes
@@ -43,6 +47,7 @@ class FrameTranslator {
   int word_size_ = 4;
 
   int max_offset_ = 0;
+  size_t num_arguments_ = 0;
 };
 
 }

@@ -15,7 +15,7 @@ namespace ast {
 
 class TypeVisitor;
 
-using IrtMapping = std::unordered_map<std::string, irt::Statement*>;
+using IrtMapping = std::unordered_map<std::string, std::pair<irt::FrameTranslator*, irt::Statement*>>;
 
 class IRTreeBuildVisitor : public TemplateVisitor<irt::SubtreeWrapper*> {
  public:

@@ -117,7 +117,8 @@ class ControlFlowGraph {
   using Node = ControlFlowNode;
  
  public:
-  explicit ControlFlowGraph(const std::vector<Instruction>& instructions) {
+  ControlFlowGraph(size_t frame_size, const std::vector<Instruction>& instructions)
+      : frame_size_(frame_size), instructions_(instructions) {
     std::unordered_set<Temporary> saved_temporaries;
     std::unordered_map<Label, Node*> node_by_label;
     size_t position = 0;
@@ -125,6 +126,8 @@ class ControlFlowGraph {
     temp_to_position.clear();
     position_to_temp.clear();
     nodes_.resize(instructions.size());
+    
+    SaveMachineRegisters(saved_temporaries, position);
     
     for (size_t index = 0; index < instructions.size(); ++index) {
       const Instruction& instruction = instructions[index];
@@ -149,14 +152,15 @@ class ControlFlowGraph {
       }
     }
     
-    size_t num_temporaries = saved_temporaries.size();
+    num_temporaries_ = saved_temporaries.size();
     
     // Label edges
     for (size_t index = 0; index < instructions.size(); ++index) {
-      nodes_[index].SetNumTemporaries(num_temporaries);
+      nodes_[index].SetNumTemporaries(num_temporaries_);
       std::string instruction_str = instructions[index].GetStr();
       
-      if (instruction_str.front() == 'b' && instruction_str.substr(0, 3) != "bl ") {
+      if (instruction_str.front() == 'b' && instruction_str.substr(0, 3) != "bl "
+         && instruction_str.substr(0, 3) != "bx ") {
         size_t label_position = instruction_str.find(' ') + 1;
         if (label_position == std::string::npos) {
           throw std::logic_error("Cannot find label in instruction: " + instruction_str);
@@ -194,21 +198,21 @@ class ControlFlowGraph {
         stream << temp.ToString() << " ";
       }
       stream << std::endl;
-  
+      
       std::vector<Temporary> defined = nodes_[index].GetTemporaries(nodes_[index].defined_);
       stream << "Defined temporaries: ";
       for (const auto& temp : defined) {
         stream << temp.ToString() << " ";
       }
       stream << std::endl;
-  
+      
       std::vector<Temporary> in = nodes_[index].GetTemporaries(nodes_[index].in_);
       stream << "Live-in temporaries: ";
       for (const auto& temp : in) {
         stream << temp.ToString() << " ";
       }
       stream << std::endl;
-  
+      
       std::vector<Temporary> out = nodes_[index].GetTemporaries(nodes_[index].out_);
       stream << "Live-out temporaries: ";
       for (const auto& temp : out) {
@@ -220,9 +224,15 @@ class ControlFlowGraph {
   }
   
   InterferenceGraph BuildInterferenceGraph() {
-    InterferenceGraph interference_graph;
+    InterferenceGraph interference_graph(
+        num_temporaries_,
+        temp_to_position,
+        position_to_temp,
+        instructions_,
+        frame_size_
+    );
     
-    AnalyzeLiveness();
+    PreformLivenessAnalysis();
     
     for (const Node& node : nodes_) {
       const std::vector<Temporary> defined_temps = std::move(node.GetDefinedTemporaries());
@@ -236,11 +246,21 @@ class ControlFlowGraph {
         }
       }
     }
+    
+    for (size_t index_from = 0; index_from + 1 < kNumMachineRegisters; ++index_from) {
+      Temporary from_temp = Temporary("r" + std::to_string(index_from));
+      for (size_t index_to = index_from + 1; index_to + 1 < kNumMachineRegisters; ++index_to) {
+        Temporary to_temp = Temporary("r" + std::to_string(index_to));
+        interference_graph.AddEdge(from_temp, to_temp);
+      }
+      interference_graph.AddEdge(from_temp, Temporary("fp"));
+    }
+    
     return std::move(interference_graph);
   }
  
  private:
-  void AnalyzeLiveness() {
+  void PreformLivenessAnalysis() {
     std::vector<size_t> order = GetReversedTopologicalOrder();
     
     bool is_same;
@@ -253,7 +273,7 @@ class ControlFlowGraph {
         
         std::vector<std::bitset<kChunkSize>> old_out = node.out_;
         std::vector<std::bitset<kChunkSize>> old_in = node.in_;
-  
+        
         // Dataflow equation for node.out[]
         for (Node* next_node : node.next_) {
           for (size_t chunk_index = 0; chunk_index < node.out_.size(); ++chunk_index) {
@@ -314,7 +334,21 @@ class ControlFlowGraph {
     }
   }
   
+  static void SaveMachineRegisters(std::unordered_set<Temporary>& saved_temporaries, size_t& position) {
+    std::vector<Temporary> machine_registers;
+    for (size_t index = 0; index + 1 < kNumMachineRegisters; ++index) {
+      machine_registers.emplace_back("r" + std::to_string(index));
+    }
+    SaveTemporaries(saved_temporaries, machine_registers, position);
+  }
+  
+  size_t num_temporaries_;
+  static const size_t kNumMachineRegisters = 12;
+  
   std::vector<Node> nodes_;
+  
+  size_t frame_size_;
+  std::vector<Instruction> instructions_;
 };
 
 }

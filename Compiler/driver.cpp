@@ -37,7 +37,7 @@ int Driver::Parse(const std::string& filename) {
 
 void Driver::BeginScan() {
   scanner_.set_debug(trace_scanning_);
-
+  
   if (filename_.empty() || filename_ == "-") {
     std::cout << "Empty filename" << std::endl;
   } else {
@@ -64,38 +64,40 @@ void Driver::PrintTree(const std::string& filename) {
 
 void Driver::Evaluate(const std::string& filename) {
   using namespace ast;
-
+  
   SymbolTreeVisitor symbol_tree_visitor(filename);
   symbol_tree_visitor.Visit(program_);
-
+  
   std::cout << "SymbolTreeVisitor finished work" << std::endl
             << "Tree layers (tab = depth in tree, BFS):" << std::endl;
   // Layers info:
   symbol_tree_visitor.OutputTreeLayers();
-
+  
   // Classes info:
   symbol_tree_visitor.OutputClassesInfo();
-
+  
   // For correct method_call_visitor work
   symbol_tree_visitor.FillClassStorage();
-
+  
   std::shared_ptr<MethodType> main_method = std::dynamic_pointer_cast<MethodType>(
       symbol_tree_visitor.GetScopeLayerTree()->GetRoot()->Get("main"));
-
+  
   MethodCallVisitor method_call_visitor(
       symbol_tree_visitor.GetScopeLayerTree()->GetScopeLayer("main"), main_method,
       new SimpleObject(new PrimitiveSimpleType(new SimpleType("int")), 0));
-
+  
   method_call_visitor.SetTree(symbol_tree_visitor.GetScopeLayerTree());
-
+  
   method_call_visitor.Visit(main_method->GetMethodDeclaration());
-
+  
   IRTreeBuildVisitor irtree_build_visitor(symbol_tree_visitor.GetScopeLayerTree());
   irtree_build_visitor.Visit(program_);
-
+  
   IrtMapping methods = irtree_build_visitor.GetMethodTrees();
-
-  for (auto& [method_name, method_statement] : methods) {
+  
+  for (auto&[method_name, method_info] : methods) {
+    auto&[method_frame, method_statement] = method_info;
+    
     irt::PrintVisitor print_visitor(method_name, "_IRTree_raw");
     method_statement->Accept(&print_visitor);
     
@@ -112,11 +114,11 @@ void Driver::Evaluate(const std::string& filename) {
     
     print_visitor.ChangeStream(method_name, "_IRTree_without_ESEQ");
     method_statement->Accept(&print_visitor);
-  
+    
     irt::LinearizationVisitor linearization_visitor;
     method_statement->Accept(&linearization_visitor);
     method_statement = linearization_visitor.GetTree();
-  
+    
     print_visitor.ChangeStream(method_name, "_IRTree_linearized");
     method_statement->Accept(&print_visitor);
     
@@ -134,13 +136,36 @@ void Driver::Evaluate(const std::string& filename) {
     block_graph.OutputGraph(method_name, "_IRTree_blocks");
     block_graph.OutputTraces(method_name, "_IRTree_traces");
     
-    irt::CodeGenerationVisitor code_generation_visitor;
+    irt::CodeGenerationVisitor code_generation_visitor(
+        method_frame->GetNumArguments(),
+        method_frame->GetFrameSize()
+    );
     method_statement->Accept(&code_generation_visitor);
     code_generation_visitor.PrintInstructions(method_name + ".s");
     
-    irt::ControlFlowGraph control_flow_graph(code_generation_visitor.GetInstructions());
-    irt::InterferenceGraph interference_graph = control_flow_graph.BuildInterferenceGraph();
-    control_flow_graph.OutputGraph(method_name + "_ControlFlowGraph");
-    interference_graph.Output(method_name + "_InterferenceGraph");
+    size_t frame_size = method_frame->GetFrameSize();
+    std::vector<irt::Instruction> instructions = code_generation_visitor.GetInstructions();
+    
+    size_t iteration = 0;
+    bool should_retry_pipeline;
+    
+    do {
+      ++iteration;
+      
+      irt::ControlFlowGraph control_flow_graph(frame_size, instructions);
+      irt::InterferenceGraph interference_graph = control_flow_graph.BuildInterferenceGraph();
+      
+      control_flow_graph.OutputGraph(method_name + "_ControlFlowGraph" + std::to_string(iteration));
+      
+      interference_graph.Output(method_name + "_InterferenceGraph" + std::to_string(iteration));
+    
+      should_retry_pipeline = interference_graph.ColorNodes();
+      
+      frame_size = interference_graph.GetFrameSize();
+      instructions = interference_graph.GetInstructions();
+      
+      irt::PrintInstructions(method_name + std::to_string(iteration) + ".s", instructions);
+      
+    } while (should_retry_pipeline);
   }
 }

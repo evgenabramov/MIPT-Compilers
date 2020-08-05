@@ -11,6 +11,8 @@ namespace irt {
 
 class CodeGenerationVisitor : public TemplateVisitor<Temporary> {
  public:
+  CodeGenerationVisitor(size_t num_arguments, size_t frame_size);
+  
   void Visit(ExpStatement* statement) override;
   void Visit(ConstExpression* const_expression) override;
   void Visit(JumpConditionalStatement* jump_conditional_statement) override;
@@ -36,6 +38,9 @@ class CodeGenerationVisitor : public TemplateVisitor<Temporary> {
   void Emit(std::string str, std::vector<Temporary> targets, std::vector<Temporary> sources);
   
   std::vector<Instruction> instructions_;
+  
+  size_t num_arguments_;
+  size_t frame_size_;
 };
 
 }

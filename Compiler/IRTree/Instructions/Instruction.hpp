@@ -54,4 +54,14 @@ class Instruction {
   std::vector<Temporary> sources_ = {};
 };
 
+static void PrintInstructions(std::string filename, const std::vector<Instruction>& instructions) {
+  std::ofstream stream(filename);
+  for (const auto& instruction: instructions) {
+    if (instruction.GetStr().back() != ':') {
+      stream << "    ";
+    }
+    instruction.Print(stream);
+  }
+}
+
 }
