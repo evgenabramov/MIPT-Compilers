@@ -337,8 +337,8 @@ void IRTreeBuildVisitor::Visit(MethodDeclaration* method_declaration) {
   current_layer_ = scope_layer_tree_->GetScopeLayer(method_declaration->GetIdentifier());
   
   std::string full_method_name;
-  if (method_declaration->GetIdentifier() == "main") {
-    full_method_name = current_class_name_ + "::" + method_declaration->GetIdentifier();
+  if (method_declaration->GetIdentifier() != "main") {
+    full_method_name = current_class_name_ + "_" + method_declaration->GetIdentifier();
   } else {
     full_method_name = "main";
   }
@@ -421,7 +421,7 @@ void IRTreeBuildVisitor::Visit(MethodInvocation* method_invocation) {
   tos_value_ = new irt::ExpressionWrapper(
       new irt::CallExpression(
           new irt::NameExpression(
-              irt::Label(class_name + "::" + method_invocation->GetIdentifier())),
+              irt::Label(class_name + "_" + method_invocation->GetIdentifier())),
           args
       )
   );

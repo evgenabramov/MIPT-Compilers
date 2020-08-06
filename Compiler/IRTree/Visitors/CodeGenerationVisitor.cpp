@@ -374,11 +374,25 @@ void CodeGenerationVisitor::Visit(BinopExpression* binop_expression) {
         );
         break;
       case BinaryOperatorType::MUL:
-        Emit(
-            "mul t0, s0, #" + std::to_string(const_rhs->Value()),
-            {result_temp},
-            {lhs_temp}
-        );
+        if (result_temp == lhs_temp) {
+          Emit(
+              "mul t0, #" + std::to_string(const_rhs->Value()),
+              {result_temp},
+              {lhs_temp}
+          );
+        } else {
+          Temporary temp;
+          Emit(
+              "mov t0, #" + std::to_string(const_rhs->Value()),
+              {temp},
+              {}
+          );
+          Emit(
+              "mul t0, s0, s1",
+              {result_temp},
+              {lhs_temp, temp}
+          );
+        }
         break;
       case BinaryOperatorType::DIV:
         Emit(
@@ -436,11 +450,25 @@ void CodeGenerationVisitor::Visit(BinopExpression* binop_expression) {
         );
         break;
       case BinaryOperatorType::MUL:
-        Emit(
-            "mul t0, s0, #" + std::to_string(const_lhs->Value()),
-            {result_temp},
-            {rhs_temp}
-        );
+        if (result_temp == rhs_temp) {
+          Emit(
+              "mul t0, #" + std::to_string(const_lhs->Value()),
+              {result_temp},
+              {rhs_temp}
+          );
+        } else {
+          Temporary temp;
+          Emit(
+              "mov t0, #" + std::to_string(const_lhs->Value()),
+              {temp},
+              {}
+          );
+          Emit(
+              "mul t0, s0, s1",
+              {result_temp},
+              {rhs_temp, temp}
+          );
+        }
         break;
       case BinaryOperatorType::AND:
         Emit(

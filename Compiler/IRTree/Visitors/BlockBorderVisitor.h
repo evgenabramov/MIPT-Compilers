@@ -3,11 +3,15 @@
 #include "TemplateVisitor.hpp"
 #include "VisitorStruct.h"
 
+#include <string>
+
 namespace irt {
 
 // Prepare IRTree for blocks building
 class BlockBorderVisitor : public TemplateVisitor<IrtStorage> {
  public:
+  explicit BlockBorderVisitor(std::string method_name);
+  
   void Visit(ExpStatement* statement) override;
   void Visit(ConstExpression* const_expression) override;
   void Visit(JumpConditionalStatement* jump_conditional_statement) override;
@@ -26,6 +30,8 @@ class BlockBorderVisitor : public TemplateVisitor<IrtStorage> {
   
  private:
   bool is_block_finished_ = true;
+  
+  std::string method_name_;
 };
 
 }
