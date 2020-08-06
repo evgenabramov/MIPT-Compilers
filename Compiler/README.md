@@ -52,7 +52,13 @@ cat <class name>::<function name>_IRTree_traces
 cat <class name>::<function name>.s
 ```
 
-10-11 чекпоинты (`iteration`— итерация работы алгоритма покраски регистров):
+10 чекпоинт (`iteration`— итерация работы алгоритма покраски регистров):
 ```
 cat <class name>::<function name><iteration>.s
+```
+
+11 чекпоинт:
+```
+arm-linux-gnueabihf-gcc -static final_program.s -o final_program
+./final_program
 ```

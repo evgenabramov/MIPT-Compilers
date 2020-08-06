@@ -4,6 +4,8 @@
 
 namespace irt {
 
+BlockBorderVisitor::BlockBorderVisitor(std::string method_name) : method_name_(std::move(method_name)) {}
+
 void BlockBorderVisitor::Visit(ExpStatement* statement) {
   IrtStorage child_expression = Accept(statement->GetExpression());
   tos_value_.statement_ = new ExpStatement(child_expression.expression_);
@@ -138,8 +140,8 @@ Statement* BlockBorderVisitor::GetTree() {
   return new SeqStatement(
       tos_value_.statement_,
       new SeqStatement(
-          new JumpStatement(Label("done")),
-          new LabelStatement(Label("done"))
+          new JumpStatement(Label(method_name_ + "_done")),
+          new LabelStatement(Label(method_name_ + "_done"))
       )
   );
 }

@@ -95,6 +95,11 @@ void Driver::Evaluate(const std::string& filename) {
   
   IrtMapping methods = irtree_build_visitor.GetMethodTrees();
   
+  std::vector<irt::Instruction> program_instructions;
+  program_instructions.push_back(irt::Instruction(".text", {}, {}));
+  program_instructions.push_back(irt::Instruction(".global main", {}, {}));
+  program_instructions.push_back(irt::Instruction("", {}, {}));
+  
   for (auto&[method_name, method_info] : methods) {
     auto&[method_frame, method_statement] = method_info;
     
@@ -122,7 +127,7 @@ void Driver::Evaluate(const std::string& filename) {
     print_visitor.ChangeStream(method_name, "_IRTree_linearized");
     method_statement->Accept(&print_visitor);
     
-    irt::BlockBorderVisitor block_border_visitor;
+    irt::BlockBorderVisitor block_border_visitor(method_name);
     method_statement->Accept(&block_border_visitor);
     method_statement = block_border_visitor.GetTree();
     
@@ -158,14 +163,25 @@ void Driver::Evaluate(const std::string& filename) {
       control_flow_graph.OutputGraph(method_name + "_ControlFlowGraph" + std::to_string(iteration));
       
       interference_graph.Output(method_name + "_InterferenceGraph" + std::to_string(iteration));
-    
+      
       should_retry_pipeline = interference_graph.ColorNodes();
       
       frame_size = interference_graph.GetFrameSize();
       instructions = interference_graph.GetInstructions();
       
+      // For functions separation
+      instructions.push_back(irt::Instruction("", {}, {}));
+      
       irt::PrintInstructions(method_name + std::to_string(iteration) + ".s", instructions);
       
     } while (should_retry_pipeline);
+    
+    program_instructions.insert(program_instructions.end(), instructions.begin(), instructions.end());
   }
+  
+  program_instructions.push_back(irt::Instruction(".data", {}, {}));
+  program_instructions.push_back(irt::Instruction("printf_fmt:", {}, {}));
+  program_instructions.push_back(irt::Instruction(R"(.string "%d\n")", {}, {}));
+  
+  irt::PrintInstructions("final_program.s", program_instructions);
 }
