@@ -45,12 +45,12 @@ Address* FrameTranslator::FramePointer() {
 }
 
 int FrameTranslator::GetOffset() {
-  int tmp = max_offset_;
-  max_offset_ += word_size_;
-  return tmp;
+  max_offset_ -= word_size_;
+  return max_offset_;
 }
 
 void FrameTranslator::AddArgumentAddress(const std::string& name) {
+  ++num_arguments_;
   AddVariable(name);
 }
 
@@ -76,6 +76,14 @@ void FrameTranslator::AddReturnAddress() {
 
 Address* FrameTranslator::GetReturnValueAddress() {
   return GetAddress(return_value_address_);
+}
+
+size_t FrameTranslator::GetNumArguments() const {
+  return num_arguments_;
+}
+
+size_t FrameTranslator::GetFrameSize() const {
+  return -max_offset_;
 }
 
 }

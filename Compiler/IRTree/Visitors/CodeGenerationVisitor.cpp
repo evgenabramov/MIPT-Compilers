@@ -4,6 +4,9 @@
 
 namespace irt {
 
+CodeGenerationVisitor::CodeGenerationVisitor(size_t num_arguments, size_t frame_size)
+    : num_arguments_(num_arguments), frame_size_(frame_size) {}
+
 void CodeGenerationVisitor::Visit(ExpStatement* statement) {
   statement->GetExpression()->Accept(this);
 }
@@ -117,9 +120,9 @@ void CodeGenerationVisitor::Visit(MoveStatement* move_statement) {
           Temporary rhs_temp = Accept(binop->second_);
           
           Emit(
-              "str s0, [t0, #" + std::to_string(const_lhs->Value()) + "]",
-              {rhs_temp},
-              {source_temp}
+              "str s0, [s1, #" + std::to_string(const_lhs->Value()) + "]",
+              {},
+              {source_temp, rhs_temp}
           );
         } else if (binop->second_->IsConstExpression()) {
           // MOVE(MEM(BINOP(PLUS, e1, CONST(i))), e2)
@@ -128,9 +131,9 @@ void CodeGenerationVisitor::Visit(MoveStatement* move_statement) {
           auto const_rhs = dynamic_cast<ConstExpression*>(binop->second_);
           
           Emit(
-              "str s0, [t0, #" + std::to_string(const_rhs->Value()) + "]",
-              {lhs_temp},
-              {source_temp}
+              "str s0, [s1, #" + std::to_string(const_rhs->Value()) + "]",
+              {},
+              {source_temp, lhs_temp}
           );
         } else {
           // MOVE(MEM(BINOP(PLUS, e1, e2)), e3) - trivial case
@@ -139,9 +142,9 @@ void CodeGenerationVisitor::Visit(MoveStatement* move_statement) {
           Temporary rhs_temp = Accept(binop->second_);
           
           Emit(
-              "str s0, [t0, t1]",
-              {rhs_temp, lhs_temp},
-              {source_temp}
+              "str s0, [s1, s2]",
+              {},
+              {source_temp, rhs_temp, lhs_temp}
           );
         }
       } else {
@@ -150,9 +153,9 @@ void CodeGenerationVisitor::Visit(MoveStatement* move_statement) {
         Temporary binop_temp = Accept(mem_target->expression_);
         
         Emit(
-            "str s0, [t0]",
-            {binop_temp},
-            {source_temp}
+            "str s0, [s1]",
+            {},
+            {source_temp, binop_temp}
         );
       }
     } else if (source->IsMemExpression()) {
@@ -166,9 +169,9 @@ void CodeGenerationVisitor::Visit(MoveStatement* move_statement) {
       Temporary target_temp = Accept(mem_target->expression_);
       
       Emit(
-          "str s0, [t0]",
-          {target_temp},
-          {source_temp}
+          "str s0, [s1]",
+          {},
+          {source_temp, target_temp}
       );
     }
   } else if (source->IsMemExpression()) {
@@ -329,7 +332,7 @@ void CodeGenerationVisitor::Visit(BinopExpression* binop_expression) {
         break;
       case BinaryOperatorType::MOD:
         Emit(
-            "mov t0, #" + std::to_string(const_lhs->Value()) + " mov " + std::to_string(const_rhs->Value()),
+            "mov t0, #" + std::to_string(const_lhs->Value()) + " mod " + std::to_string(const_rhs->Value()),
             {result_temp},
             {}
         );
@@ -606,7 +609,7 @@ void CodeGenerationVisitor::Visit(JumpStatement* jump_statement) {
 }
 
 void CodeGenerationVisitor::Visit(CallExpression* call_expression) {
-  Temporary result_temp;
+  Temporary result_temp("r0");
   EmitCallExpression(result_temp, call_expression);
   tos_value_ = result_temp;
 }
@@ -634,7 +637,94 @@ void CodeGenerationVisitor::Visit(EseqExpression* eseq_expression) {
 }
 
 std::vector<Instruction> CodeGenerationVisitor::GetInstructions() const {
-  return instructions_;
+  std::vector<Instruction> instructions;
+  instructions.push_back(instructions_[0]); // LabelStatement
+  
+  // Save old frame pointer on stack
+  instructions.push_back(
+      Instruction(
+          "str s0, [sp, #-4]!",
+          {},
+          {Temporary("fp")}
+      )
+  );
+  
+  // Save old stack pointer in frame pointer
+  instructions.push_back(
+      Instruction(
+          "add t0, sp, #0",
+          {Temporary("fp")},
+          {}
+      )
+  );
+  
+  // Allocate space for arguments and local variables on stack
+  instructions.push_back(
+      Instruction(
+          "sub sp, sp, #" + std::to_string(frame_size_),
+          {},
+          {}
+      )
+  );
+  
+  // Save arguments on stack
+  for (int index = 0; index < std::min(static_cast<int>(num_arguments_), 4); ++index) {
+    instructions.push_back(
+        Instruction(
+            "str s0, [s1, #" + std::to_string(4 * -(index + 1)) + "]",
+            {},
+            {Temporary("r" + std::to_string(index)), Temporary("fp")}
+        )
+    );
+  }
+  
+  // Save callee-save registers
+  instructions.push_back(Instruction("push {r4-r10, lr}", {}, {}));
+  
+  for (size_t index = 1; index < instructions_.size(); ++index) {
+    instructions.push_back(instructions_[index]);
+  }
+  
+  // Restore callee-save registers
+  instructions.push_back(
+      Instruction(
+          "pop {r4-r10, lr}",
+          {},
+          {}
+      )
+  );
+  
+  // Move return value to r0
+  instructions.push_back(
+      Instruction(
+          "mov t0, s0",
+          {Temporary("r0")},
+          {Temporary("::return_value")}
+      )
+  );
+  
+  // Restore old stack pointer
+  instructions.push_back(
+      Instruction(
+          "add sp, s0, #0",
+          {},
+          {Temporary("fp")}
+      )
+  );
+  
+  // Restore old frame pointer
+  instructions.push_back(
+      Instruction(
+          "ldr t0, [sp], #4",
+          {Temporary("fp")},
+          {}
+      )
+  );
+  
+  // Return to caller
+  instructions.push_back(Instruction("bx lr", {}, {}));
+  
+  return instructions;
 }
 
 void CodeGenerationVisitor::Emit(std::string str,
@@ -645,30 +735,65 @@ void CodeGenerationVisitor::Emit(std::string str,
 
 void CodeGenerationVisitor::PrintInstructions(const std::string& filename) const {
   std::ofstream stream(filename);
-  for (const auto& instruction: instructions_) {
+  for (const auto& instruction: GetInstructions()) {
+    if (instruction.GetStr().back() != ':') {
+      stream << "    ";
+    }
     instruction.Print(stream);
   }
 }
 
 void CodeGenerationVisitor::EmitCallExpression(const Temporary& result_temp, CallExpression* call_expression) {
-  // TODO: prepare argument registers and save necessary registers
   ExpressionList* expression_list = call_expression->args_;
   auto function_name = dynamic_cast<NameExpression*>(call_expression->function_name_);
-  
-  std::string instruction = "bl " + function_name->label_.ToString();
-  
-  // TODO: remove after register allocation stage:
-  instruction += " [argument temps:";
   
   std::vector<Temporary> args_temps;
   for (auto expression : expression_list->expressions_) {
     args_temps.push_back(Accept(expression));
-    instruction += " " + args_temps.back().ToString();
   }
   
-  instruction += "] [result temp: " + result_temp.ToString() + "]";
+  if (function_name->label_.ToString() == "printf") {
+    Emit("ldr t0, =printf_fmt", {Temporary("r0")}, {});
+    
+    Temporary arg_temp = args_temps[0];
+    Emit("mov t0, s0", {Temporary("r1")}, {arg_temp});
+    
+    Emit("bl printf", {}, {});
+    return;
+  } else if (function_name->label_.ToString() == "assert") {
+    Temporary arg_temp = args_temps[0];
+    Emit("cmp s0, #0", {}, {arg_temp});
+    Emit("swieq 0x11", {}, {});
+    return;
+  }
   
-  Emit(instruction, {}, {});
+  for (size_t index = 0; index < std::min(static_cast<int>(args_temps.size()), 4); ++index) {
+    Emit(
+        "mov t0, s0",
+        {Temporary("r" + std::to_string(index))},
+        {args_temps[index]}
+    );
+  }
+  
+  for (size_t index = 4; index < args_temps.size(); ++index) {
+    Emit(
+        "str s0, [sp, #" + std::to_string(4 * -(index + 2)),
+        {},
+        {args_temps[index]}
+    );
+  }
+  
+  Emit(
+      "bl " + function_name->label_.ToString(),
+      {},
+      {}
+  );
+  
+  Emit(
+      "mov t0, s0",
+      {result_temp},
+      {Temporary("r0")}
+  );
 }
 
 }

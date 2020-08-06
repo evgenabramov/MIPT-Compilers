@@ -299,7 +299,11 @@ void IRTreeBuildVisitor::Visit(ArrayLengthExpression* array_length_expression) {
       array_length_expression->GetExpression())->GetIdentifier();
   auto array_address = current_frame_->GetAddress(array_name)->ToExpression();
   
-  tos_value_ = new irt::ExpressionWrapper(array_address);
+  tos_value_ = new irt::ExpressionWrapper(
+      new irt::MemExpression(
+          array_address
+      )
+  );
 }
 
 // Base class
@@ -332,15 +336,21 @@ void IRTreeBuildVisitor::Visit(MethodDeclaration* method_declaration) {
   
   current_layer_ = scope_layer_tree_->GetScopeLayer(method_declaration->GetIdentifier());
   
-  std::string full_method_name = current_class_name_ + "::" + method_declaration->GetIdentifier();
+  std::string full_method_name;
+  if (method_declaration->GetIdentifier() == "main") {
+    full_method_name = current_class_name_ + "::" + method_declaration->GetIdentifier();
+  } else {
+    full_method_name = "main";
+  }
   
   current_frame_ = new irt::FrameTranslator(full_method_name);
   frame_translator_[full_method_name] = current_frame_;
   
+  current_frame_->AddArgumentAddress("this");
   if (method_declaration->GetFormalList() != nullptr) {
     method_declaration->GetFormalList()->Accept(this);
   }
-  current_frame_->AddReturnAddress();
+  // current_frame_->AddReturnAddress(); - stored in link register
   
   auto statement_list = Accept(method_declaration->GetStatementList());
   
@@ -356,7 +366,13 @@ void IRTreeBuildVisitor::Visit(MethodDeclaration* method_declaration) {
   }
   
   layer_indices_.pop();
-  method_trees_.emplace(full_method_name, tos_value_->ToStatement());
+  method_trees_.emplace(
+      full_method_name,
+      std::make_pair(
+          current_frame_,
+          tos_value_->ToStatement()
+      )
+  );
 }
 
 void IRTreeBuildVisitor::Visit(ClassDeclarationList* class_declaration_list) {
@@ -374,7 +390,6 @@ void IRTreeBuildVisitor::Visit(Formal* formal) {
 }
 
 void IRTreeBuildVisitor::Visit(FormalList* formal_list) {
-  current_frame_->AddArgumentAddress("this");
   while (formal_list != nullptr) {
     Formal* formal = formal_list->GetFirstItem();
     if (formal == nullptr) {
@@ -491,10 +506,9 @@ void IRTreeBuildVisitor::Visit(PrintStatement* print_statement) {
   auto args = new irt::ExpressionList();
   args->Add(Accept(print_statement->GetExpression())->ToExpression());
   
-  // TODO: add label 'print' and use function from standard library
   tos_value_ = new irt::ExpressionWrapper(
       new irt::CallExpression(
-          new irt::NameExpression(irt::Label("print")),
+          new irt::NameExpression(irt::Label("printf")),
           args
       )
   );
@@ -555,7 +569,7 @@ void IRTreeBuildVisitor::Visit(AssertStatement* assert_statement) {
   auto args = new irt::ExpressionList();
   args->Add(Accept(assert_statement->GetExpression())->ToExpression());
   
-  // TODO: add label 'assert' and use function from standard library
+  // TODO: add label 'assert' and use function from standard library (exit)
   tos_value_ = new irt::ExpressionWrapper(
       new irt::CallExpression(
           new irt::NameExpression(irt::Label("assert")),

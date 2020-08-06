@@ -12,6 +12,9 @@ class Temporary {
   Temporary(const Temporary& other) = default;
 
   std::string ToString() const;
+  
+  bool operator==(const Temporary& other) const;
+  bool operator!=(const Temporary& other) const;
 
  private:
   std::string name_;
@@ -19,4 +22,10 @@ class Temporary {
 };
 
 }
+
+template<> struct std::hash<irt::Temporary> {
+  std::size_t operator()(irt::Temporary const& temporary) const noexcept {
+    return std::hash<std::string>{}(temporary.ToString());
+  }
+};
 

@@ -74,4 +74,6 @@ target_sources(
         Visitors/CodeGenerationVisitor.cpp
 
         Instructions/Instruction.hpp
+        Instructions/ControlFlowGraph.hpp
+        Instructions/InterferenceGraph.hpp
 )
