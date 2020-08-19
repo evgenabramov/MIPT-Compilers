@@ -50,7 +50,7 @@ arm-linux-gnueabihf-gcc -static final_program.s -o final_program
 
 ## Описание структуры и этапов работы
 
-### [Грамматика языка](Grammar)
+### [Грамматика языка](Compiler/Grammar)
 
 Правила грамматики описаны в файле `parser.y`.
 Возможные токены - в файле `scanner.l`.
