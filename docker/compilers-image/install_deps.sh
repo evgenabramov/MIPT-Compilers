@@ -29,7 +29,10 @@ apt-get install -y \
     bison \
     flex \
     tar \
-    g++
+    g++ \
+    arm-linux-gnueabihf \
+    libc6-dev-armhf-cross \
+    qemu-user-static
 
 pip3 install \
 	click \
