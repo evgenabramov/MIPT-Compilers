@@ -132,8 +132,8 @@ arm-linux-gnueabihf-gcc -static final_program.s -o final_program
 
 Перед генерацией низкоуровневого кода построенное дерево приводится к каноническому виду за счет:
 
-- Избавления от двойного `CALL`-а — когда среди переданных аргументов есть другой `CALL` ([`DoubleCallElimminateVisitor`](Compiler/IRTree/Visitors/DoubleCallEliminateVisitor.h))
-- Поднятия вершин `ESEQ` на верхние уровни в дереве ([`ESEQElimminateVisitor`](Compiler/IRTree/Visitors/ESEQEliminateVisitor.h))
+- Избавления от двойного `CALL`-а — когда среди переданных аргументов есть другой `CALL` ([`DoubleCallEliminateVisitor`](Compiler/IRTree/Visitors/DoubleCallEliminateVisitor.h))
+- Поднятия вершин `ESEQ` на верхние уровни в дереве ([`ESEQEliminateVisitor`](Compiler/IRTree/Visitors/ESEQEliminateVisitor.h))
 - Линеаризации — расположения `SEQ` в правостороннем порядке ([`LinearizationVisitor`](Compiler/IRTree/Visitors/LinearizationVisitor.h))
 
 К построенному в результате дереву можно применить различные по уровню локальности оптимизации.
