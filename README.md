@@ -136,11 +136,49 @@ arm-linux-gnueabihf-gcc -static final_program.s -o final_program
 - Поднятия вершин `ESEQ` на верхние уровни в дереве ([`ESEQEliminateVisitor`](Compiler/IRTree/Visitors/ESEQEliminateVisitor.h))
 - Линеаризации — расположения `SEQ` в правостороннем порядке ([`LinearizationVisitor`](Compiler/IRTree/Visitors/LinearizationVisitor.h))
 
+Посмотреть IR-дерево после работы визиторов:
+
+```shell
+cat <class name>_<function name>_IRTree_raw
+cat <class name>_<function name>_IRTree_without_double_call
+cat <class name>_<function name>_IRTree_without_ESEQ
+cat <class name>_<function name>_IRTree_linearized
+```
+
 К построенному в результате дереву можно применить различные по уровню локальности оптимизации.
 
 ### [Блоки IR-дерева](Compiler/IRTree/Blocks) 
 
-...
+IR-блок — набор инструкций, которые обязаны выполниться последовательно, независимо от условий и переходов по меткам. Формально, каждый блок начинается с объявления метки и заканчивается `JUMP-` или `CJUMP-`инструкцией.
+
+Такое упрощенное представление программы позволяет провести дополнительные оптимизации, в частности более эффективно назначать регистры временным переменным во время этапа генерации кода.
+
+[`BlockBorderVisitor`](Compiler/IRTree/Visitors/BlockBorderVisitor.h) — отвечает за подготовку IR-дерева к построению IR-блоков, а именно:
+
+- Закрывает неоконченный инструкцией `JUMP` блок перед объявлением метки
+- Добавляет переход к эпилогу функции, в котором возвращается значение
+
+Посмотреть IR-дерево после преобразования:
+
+```shell
+cat <class name>_<function_name>_IRTree_with_blocks
+```
+
+Построение блоков осуществляет [`BlockBuildVisitor`](Compiler/IRTree/Visitors/BlockBuildVisitor.h).
+
+Посмотреть получившийся [граф](Compiler/IRTree/Blocks/BlockGraph.hpp) из IR-блоков:
+
+```shell
+cat <class name>_<function name>_IRTree_blocks
+```
+
+Для дополнительных оптимизаций несколько IR-блоков принято объединять в непересекающиеся следы ([Trace](Compiler/IRTree/Blocks/Trace)).
+
+Посмотреть распределение блоков по следам:
+
+```shell
+cat <class name>_<function name>_IRTree_traces
+```
 
 ### [Генерация кода (перевод в ассемблер)](Compiler/IRTree/Visitors/CodeGenerationVisitor.h)
 
