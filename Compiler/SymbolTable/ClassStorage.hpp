@@ -64,9 +64,6 @@ class ClassStorage {
     }
 
     for (auto&[class_name, class_fields] : class_fields_) {
-//      if (class_fields.empty()) {
-//        continue;
-//      }
       std::cout << "\tClass name: " << class_name.GetName() << std::endl;
       for (auto&[field_name, field_type] : class_fields) {
         std::cout << "\t\t[Field name:] " << field_name.GetName()
