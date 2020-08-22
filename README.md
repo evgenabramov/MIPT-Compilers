@@ -172,7 +172,7 @@ cat <class name>_<function_name>_IRTree_with_blocks
 cat <class name>_<function name>_IRTree_blocks
 ```
 
-Для дополнительных оптимизаций несколько IR-блоков принято объединять в непересекающиеся следы ([Trace](Compiler/IRTree/Blocks/Trace)).
+Для дополнительных оптимизаций несколько IR-блоков принято объединять в непересекающиеся следы ([Trace](Compiler/IRTree/Blocks/Trace.hpp).
 
 Посмотреть распределение блоков по следам:
 
