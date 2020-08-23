@@ -79,6 +79,13 @@ arm-linux-gnueabihf-gcc -static final_program.s -o final_program
 
 С полученным на первом этапе работы компилятора `AST` взаимодействуют несколько визиторов различного назначения: [`PrintVisitor`](Compiler/Visitors/PrintVisitor.hpp), [`SymbolTreeVisitor`](Compiler/Visitors/SymbolTreeVisitor.hpp), [`MethodCallVisitor`](Compiler/Visitors/MethodCallVisitor.h), [`TypeVisitor`](Compiler/Visitors/TypeVisitor.hpp) и [`IRTreeBuildVisitor`](Compiler/Visitors/IRTreeBuildVisitor.h). Они используются для отладки, сбора статистики, проверки типов, моделирования стековых фреймов для функций и построения дерева промежуточного представления.
 
+Посмотреть на результат работы `PrintVisitor` и `SymbolTreeVisitor`:
+
+```shell
+cat PrintVisitor_output
+cat SymbolTreeVisitor_output
+```
+
 ### [Таблица символов](Compiler/SymbolTable)
 
 `ScopeLayer` - хранит информацию об именованных сущностях в текущей области видимости (классы, методы, примитивные типы). Использует абстрактный класс [`MemberType`](Compiler/MemberType).
@@ -172,7 +179,7 @@ cat <class name>_<function_name>_IRTree_with_blocks
 cat <class name>_<function name>_IRTree_blocks
 ```
 
-Для дополнительных оптимизаций несколько IR-блоков принято объединять в непересекающиеся следы ([Trace](Compiler/IRTree/Blocks/Trace.hpp).
+Для дополнительных оптимизаций несколько IR-блоков принято объединять в непересекающиеся следы ([Trace](Compiler/IRTree/Blocks/Trace.hpp)).
 
 Посмотреть распределение блоков по следам:
 
@@ -210,7 +217,7 @@ cat <class name>_<function name>.s
 cat <class name>_<function name><iteration>.s
 ```
 
-### Полный код программы
+### [Полный код программы](Compiler/driver.cpp)
 
 Для выполнения *calling conventions* к инструкциям каждой функции добавляются пролог и эпилог.
 
@@ -231,6 +238,8 @@ cat <class name>_<function name><iteration>.s
 - Происходит переход по *Link register*
 
 Для отладки и проверки корректности использовался [Compiler Explorer](https://godbolt.org).
+
+Также добавляется `.data`-метка для корректной работы функции `printf` из библиотеки языка С.
 
 После этого в [driver.cpp](Compiler/driver.cpp) код всех функций записывается в общий файл.
 
