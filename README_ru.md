@@ -1,10 +1,16 @@
-# MiniJava language compiler
+# Компилятор языка MiniJava
 
-> ### [Русская версия](README_ru.md)
+Ветка `master` соответствует актуальной версии проекта 
+и последнему чекпоинту. 
 
-## Requirements installation
+Код старых чекпоинтов в отрыве от остальных частей проекта 
+можно посмотреть в соответствующих ветках.
 
-Option for **Ubuntu** package manager:
+---
+
+## Установка пререквизитов
+
+Вариант для пакетного менеджера **Ubuntu**:
 
 ```shell
 sudo apt-get install arm-linux-gnueabihf qemu-user-static
@@ -12,9 +18,9 @@ sudo apt-get install arm-linux-gnueabihf qemu-user-static
 
 --- 
 
-## Example of work
+## Пример работы
 
-### **Compiler build**
+### **Сборка компилятора**
 
 ```shell
 mkdir -p Compiler/build
@@ -23,15 +29,16 @@ cmake ..
 make
 ```
 
-### **Compiler launch**
+### **Запуск компилятора**
 
 ```shell
 ./Compiler --src ../examples/<example>
 ```
 
-As a result, intermediate compilation files and assembly code are generated in the current *build* directory.
+В результате в текущей директории *build* генерируются 
+промежуточные файлы компиляции и ассемблерный код.
 
-### **Assembly code execution (with ARM cross compiler)**
+### **Запуск ассемблерного кода (с кросс-компилятором ARM)**
 
 ```shell
 arm-linux-gnueabihf-gcc -static final_program.s -o final_program
@@ -40,50 +47,57 @@ arm-linux-gnueabihf-gcc -static final_program.s -o final_program
 
 ---
 
-## Description of structure and stages of work
+## Описание структуры и этапов работы компилятора
 
-[main.cpp](Compiler/main.cpp) — processes the parameters passed to the compiler input.
+[main.cpp](Compiler/main.cpp) — обрабатывает переданные на вход компилятора параметры.
 
-[driver.cpp](Compiler/driver.cpp) — links the individual compiler components together.
+[driver.cpp](Compiler/driver.cpp) — связывает между собой отдельные компоненты компилятора.
 
-### [Language grammar](Compiler/Grammar)
+### [Грамматика языка](Compiler/Grammar)
 
-The grammar rules are described in the file [`parser.y`](Compiler/Grammar/parser.y).
-Possible tokens are listed in - [`scanner.l`](Compiler/Grammar/scanner.l). Discover the [textual grammar description](Compiler/Grammar/README.md).
+Правила грамматики описаны в файле [`parser.y`](Compiler/Grammar/parser.y).
+Возможные токены - в файле [`scanner.l`](Compiler/Grammar/scanner.l). См. [текстовое описание грамматики](Compiler/Grammar/README.md).
 
-During compilation, to check the correctness of the written code and collect statistics, an abstract syntax tree (`AST`) is built, in which each node corresponds to a terminal or nonterminal symbol of the grammar.
+Во время компиляции для проверки корректности написанного кода 
+и сбора статистики строится абстрактное синтаксическое дерево (`AST`), в 
+котором каждая вершина соответствует терминальному или 
+нетерминальному символу грамматики.
 
-In particular, the following classes are used:
-- [`Declaration`](Compiler/Grammar/Declaration)
-- [`Expression`](Compiler/Grammar/Expression)
-- [`Statement`](Compiler/Grammar/Statement)
-- [`NamedEntity`](Compiler/Grammar/NamedEntity) (the same as lvalue)
-- [`Type`](Compiler/Grammar/Type)
+В частности, оформлены в виде классов и специализированы:
+- [`Declaration`](Compiler/Grammar/Declaration) (объявление)
+- [`Expression`](Compiler/Grammar/Expression) (выражение)
+- [`Statement`](Compiler/Grammar/Statement) (высказывание)
+- [`NamedEntity`](Compiler/Grammar/NamedEntity) (именованная сущность, она же lvalue)
+- [`Type`](Compiler/Grammar/Type) (тип)
 
-[Grammar/Service](Compiler/Grammar/Service) - more abstract classes for linking code together.
+[Grammar/Service](Compiler/Grammar/Service) - более абстрактные классы для связи текста программы 
+воедино.
 
-The lexical analyzer is built with [Flex](https://linux.die.net/man/1/flex), the parser with [GNU Bison](https://www.gnu.org/software/bison/).
+Лексический анализатор строится с помощью 
+[Flex](https://linux.die.net/man/1/flex), синтаксический - с помощью 
+[GNU Bison](https://www.gnu.org/software/bison/).
 
-Several visitors for various purposes interact with the AST obtained at the first stage of the compiler's work: [`PrintVisitor`](Compiler/Visitors/PrintVisitor.hpp), [`SymbolTreeVisitor`](Compiler/Visitors/SymbolTreeVisitor.hpp), [`MethodCallVisitor`](Compiler/Visitors/MethodCallVisitor.h), [`TypeVisitor`](Compiler/Visitors/TypeVisitor.hpp) and [`IRTreeBuildVisitor`](Compiler/Visitors/IRTreeBuildVisitor.h). They are used for debugging, statistics collection, type checking, modeling stack frames for functions, and building an intermediate representation tree.
+С полученным на первом этапе работы компилятора `AST` взаимодействуют несколько визиторов различного назначения: [`PrintVisitor`](Compiler/Visitors/PrintVisitor.hpp), [`SymbolTreeVisitor`](Compiler/Visitors/SymbolTreeVisitor.hpp), [`MethodCallVisitor`](Compiler/Visitors/MethodCallVisitor.h), [`TypeVisitor`](Compiler/Visitors/TypeVisitor.hpp) и [`IRTreeBuildVisitor`](Compiler/Visitors/IRTreeBuildVisitor.h). Они используются для отладки, сбора статистики, проверки типов, моделирования стековых фреймов для функций и построения дерева промежуточного представления.
 
-Discover the result of `PrintVisitor` и `SymbolTreeVisitor` work:
+Посмотреть на результат работы `PrintVisitor` и `SymbolTreeVisitor`:
 
 ```shell
 cat PrintVisitor_output
 cat SymbolTreeVisitor_output
 ```
 
-### [Symbol Table](Compiler/SymbolTable)
+### [Таблица символов](Compiler/SymbolTable)
 
-`ScopeLayer` — stores information about named entities in the current scope (classes, methods, primitive types). Uses an abstract class [`MemberType`](Compiler/MemberType).
+`ScopeLayer` - хранит информацию об именованных сущностях в текущей области видимости (классы, методы, примитивные типы). Использует абстрактный класс [`MemberType`](Compiler/MemberType).
 
-`ScopeLayerTree` — a nested-scoped tree that allows shadowing of variables and detects compilation errors such as declaring twice in the same scope and using without declaration.
+`ScopeLayerTree` - дерево, образованное вложенными областями видимости, позволяющее реализовать shadowing переменных и определять такие ошибки компиляции, как объявление дважды в одной 
+области видимости и использование без объявления.
 
-An example of traversing this tree can be found in `SymbolTreeVisitor.hpp`.
+Пример обхода этого дерева можно найти в `SymbolTreeVisitor.hpp`.
 
-`ClassStorage` — storage of fields and methods of classes in the program. Used with a generative pattern **Singleton**.
+`ClassStorage` - хранилище полей и методов классов в программе. Используется вместе с порождающим паттерном **Singleton**.
 
-### [Function call mechanisms](Compiler/MethodMechanisms)
+### [Механизмы вызова функций](Compiler/MethodMechanisms)
 
 Класс `Frame` предоставляет доступ к объектам в текущей области видимости, возвращаемому значению и родительскому фрейму.
 
