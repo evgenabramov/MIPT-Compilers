@@ -30,7 +30,6 @@ apt-get install -y \
     flex \
     tar \
     g++ \
-    arm-linux-gnueabihf \
     libc6-dev-armhf-cross \
     qemu-user-static
 

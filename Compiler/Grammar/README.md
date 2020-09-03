@@ -1,4 +1,4 @@
-# Синтаксис Mini-Java
+# MiniJava syntax
 
 Mini-Java is a simplified (and slightly modified) subset of Java. 
 
@@ -22,7 +22,7 @@ The void type can only be used as a return type for a method.
 
 Otherwise, the meaning of a Mini-Java program is given by its meaning as a Java program. 
 
-## КС-грамматика для Mini-Java
+## Context-free grammar for MiniJava
 
 The syntax definition is given in so-called Extended Backus-Naur form (EBNF). 
 In the following Mini-Java grammar, the notation n*, where n is a symbol, means 0, 1, or more repetitions of the symbol n. 
@@ -88,7 +88,7 @@ The syntax given below does not specify the precedence of operators. However, Mi
 <binary operator> ::= "&&" | "||" | "<" | ">" | "==" | "+" | "-" | "*" | "/" | "%"
 ```
 
-## Лексические особенности
+## Lexical features
 
 * Identifiers: An identifier is a sequence of letters, digits, and underscores, starting with a letter. 
 * Uppercase letters are distinguished from lowercase. 
@@ -97,23 +97,23 @@ The syntax given below does not specify the precedence of operators. However, Mi
 * There are two forms of comments: one starts with "/\*", ends with "\*/", can extend over multiple lines, and may be nested. 
 * The other comment alternative begins with "//" and goes only to the end of the line.
 
-## Пример программы
+## Program example
 ```[java]
 class Factorial {
-  public static void main () {
-   System.out.println (new Fac ().ComputeFac (10));
- }
+    public static void main() {
+        System.out.println(new Fac().ComputeFac(10));
+    }
 }
 
 class Fac {
-  public int ComputeFac(int num) {
-   assert (num > -1);
-   int num_aux;
-   if (num == 0)
-    num_aux = 1;
-   else 
-    num_aux = num * this.ComputeFac (num-1);
-   return num_aux;
- }
+    public int ComputeFac(int num) {
+        assert (num > -1);
+        int num_aux;
+        if (num == 0)
+            num_aux = 1;
+        else 
+            num_aux = num * this.ComputeFac(num-1);
+        return num_aux;
+    }
 }
 ```
