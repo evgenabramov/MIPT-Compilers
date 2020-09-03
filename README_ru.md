@@ -224,7 +224,7 @@ cat <class name>_<function name><iteration>.s
 В начале функции:
 
 - Сохраняется значение *Frame Pointer*
-- *Stack Pointer* записывается во *Stack Pointer*
+- *Stack Pointer* записывается во *Frame Pointer*
 - Аллоцируется место на стеке для аргументов и локальных переменных
 - Значения аргументов, переданных в регистрах, записываются на стек
 - Сохраняются *callee-save* регистры

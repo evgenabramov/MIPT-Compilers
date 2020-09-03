@@ -66,7 +66,7 @@ The lexical analyzer is built with [Flex](https://linux.die.net/man/1/flex), the
 
 Several visitors for various purposes interact with the AST obtained at the first stage of the compiler's work: [`PrintVisitor`](Compiler/Visitors/PrintVisitor.hpp), [`SymbolTreeVisitor`](Compiler/Visitors/SymbolTreeVisitor.hpp), [`MethodCallVisitor`](Compiler/Visitors/MethodCallVisitor.h), [`TypeVisitor`](Compiler/Visitors/TypeVisitor.hpp) and [`IRTreeBuildVisitor`](Compiler/Visitors/IRTreeBuildVisitor.h). They are used for debugging, statistics collection, type checking, modeling stack frames for functions, and building an intermediate representation tree.
 
-Discover the result of `PrintVisitor` и `SymbolTreeVisitor` work:
+Inspect the result of `PrintVisitor` и `SymbolTreeVisitor` work:
 
 ```shell
 cat PrintVisitor_output
@@ -85,51 +85,51 @@ An example of traversing this tree can be found in `SymbolTreeVisitor.hpp`.
 
 ### [Function call mechanisms](Compiler/MethodMechanisms)
 
-Класс `Frame` предоставляет доступ к объектам в текущей области видимости, возвращаемому значению и родительскому фрейму.
+The Frame class provides access to objects in the current scope, return value, and parent frame.
 
-`FunctionTable` - хранит индексы на стеке для переменных, доступных в текущей области видимости.
+`FunctionTable` - stores indexes on the stack for variables available in the current scope.
 
-Класс `FrameTranslator` моделирует состояние Frame-а во время выполнения функции, а именно:
+The FrameTranslator class simulates the state of a Frame during the execution of a function, namely:
 
-- Определяет место на стеке для:
-    - Аргументов функции
-    - Локальных переменных
-- Хранит информацию о:
-    - Числе аргументов функции
-    - Размере стекового фрейма
-- По названию переменной позволяет получать ее адрес в текущей области видимости. Адрес может быть в регистре или на стеке (см. [Address](Compiler/MethodMechanisms/Address))
+- Defines stack space for:
+    - Function arguments
+    - local variables
+- Stores information about:
+    - The number of function arguments
+    - Stack frame size
+- By the name of a variable, allows you to get its address in the current scope. The address can be in a register or on the stack (see [Address](Compiler/MethodMechanisms/Address))
 
-### [Дерево промежуточного представления (IR Tree)](Compiler/IRTree)
+### [Intermediate representation tree (IR Tree)](Compiler/IRTree)
 
-Дерево промежуточного представления позволяет  перевести инструкции исходного языка на низкоуровневый (например, ассемблер) за счет использования ограниченного набора примитивных операций. Эти операции соответствуют вершинам построенного IR-дерева:
+The intermediate representation tree allows you to translate the instructions of the source language to a low-level (for example, assembler) using a limited set of primitive operations. These operations correspond to the vertices of the constructed IR-tree:
 
 - Expression
-    - `BINOP` (бинарная операция)
-    - `CALL` (вызов функции)
-    - `CONST` (константа)
-    - `ESEQ` (последовательные *statement* и возврат значения)
-    - `MEM` (обращение к памяти)
-    - `NAME` (имя метки в другой операции)
-    - `TEMP` (временная переменная)
+    - `BINOP` (binary operation)
+    - `CALL` (function call)
+    - `CONST` (constant)
+    - `ESEQ` (sequential *statement* и value return)
+    - `MEM` (access to memory)
+    - `NAME` (label name in another operation)
+    - `TEMP` (temporary variable)
 - Statement
-    - `EXP` (выражение, значение которого игнорируется)
-    - `CJUMP` (условный переход к метке)
-    - `LABEL` (создание метки)
-    - `MOVE` (присваивание)
-    - `SEQ` (последовательное выполнение *statements*)
+    - `EXP` (expression whose value is ignored)
+    - `CJUMP` (conditional jump to label)
+    - `LABEL` (label creation)
+    - `MOVE` (assignment)
+    - `SEQ` (sequential execution of *statements*)
 - ExpressionList
 
-**IR-дерево** строится из `AST` с помощью визитора [`IRTreeBuildVisitor`](Compiler/Visitors/IRTreeBuildVisitor.h). Для корректного преобразования типов вершин IR-дерева используется обертка `SubtreeWrapper`.
+**IR-Tree** is built from `AST` using the [`IRTreeBuildVisitor`](Compiler/Visitors/IRTreeBuildVisitor.h). For correct conversion of the types of the IR-tree vertices, the `SubtreeWrapper` wrapper is used.
 
-Для вывода и отладки построенного IR-дерева есть [`PrintVisitor`](Compiler/IRTree/Visitors/PrintVisitor.h).
+To output and debug the built IR tree, there is [`PrintVisitor`](Compiler/IRTree/Visitors/PrintVisitor.h).
 
-Перед генерацией низкоуровневого кода построенное дерево приводится к каноническому виду за счет:
+Before generating the low-level code, the constructed tree is brought to a canonical form by:
 
-- Избавления от двойного `CALL`-а — когда среди переданных аргументов есть другой `CALL` ([`DoubleCallEliminateVisitor`](Compiler/IRTree/Visitors/DoubleCallEliminateVisitor.h))
-- Поднятия вершин `ESEQ` на верхние уровни в дереве ([`ESEQEliminateVisitor`](Compiler/IRTree/Visitors/ESEQEliminateVisitor.h))
-- Линеаризации — расположения `SEQ` в правостороннем порядке ([`LinearizationVisitor`](Compiler/IRTree/Visitors/LinearizationVisitor.h))
+- Getting rid of double `CALL` when there is another `CALL` among the passed arguments ([`DoubleCallEliminateVisitor`](Compiler/IRTree/Visitors/DoubleCallEliminateVisitor.h))
+- Raising the `ESEQ` vertices to the upper levels in the tree ([`ESEQEliminateVisitor`](Compiler/IRTree/Visitors/ESEQEliminateVisitor.h))
+- Linearization - Right-handed `SEQ` arrangement ([`LinearizationVisitor`](Compiler/IRTree/Visitors/LinearizationVisitor.h))
 
-Посмотреть IR-дерево после работы визиторов:
+Inspect IR tree after visitors work:
 
 ```shell
 cat <class name>_<function name>_IRTree_raw
@@ -138,98 +138,98 @@ cat <class name>_<function name>_IRTree_without_ESEQ
 cat <class name>_<function name>_IRTree_linearized
 ```
 
-К построенному в результате дереву можно применить различные по уровню локальности оптимизации.
+Optimizations of various levels of locality can be applied to the resulting tree.
 
-### [Блоки IR-дерева](Compiler/IRTree/Blocks) 
+### [IR tree blocks](Compiler/IRTree/Blocks) 
 
-IR-блок — набор инструкций, которые обязаны выполниться последовательно, независимо от условий и переходов по меткам. Формально, каждый блок начинается с объявления метки и заканчивается `JUMP-` или `CJUMP-`инструкцией.
+IR-block is a set of instructions that must be executed sequentially, regardless of conditions and label transitions. Formally, each block begins with a label declaration and ends with a `JUMP-` or `CJUMP-`instruction.
 
-Такое упрощенное представление программы позволяет провести дополнительные оптимизации, в частности более эффективно назначать регистры временным переменным во время этапа генерации кода.
+This simplified representation of the program allows additional optimizations, in particular, to more efficiently assign registers to temporary variables during the code generation phase.
 
-[`BlockBorderVisitor`](Compiler/IRTree/Visitors/BlockBorderVisitor.h) — отвечает за подготовку IR-дерева к построению IR-блоков, а именно:
+[`BlockBorderVisitor`](Compiler/IRTree/Visitors/BlockBorderVisitor.h) - is responsible for preparing the IR-tree for the construction of IR-blocks, namely:
 
-- Закрывает неоконченный инструкцией `JUMP` блок перед объявлением метки
-- Добавляет переход к эпилогу функции, в котором возвращается значение
+- Closes an incomplete `JUMP` block before a label declaration
+- Adds a transition to the function epilogue where the value is returned
 
-Посмотреть IR-дерево после преобразования:
+Inspect the IR tree after transformation:
 
 ```shell
 cat <class name>_<function_name>_IRTree_with_blocks
 ```
 
-Построение блоков осуществляет [`BlockBuildVisitor`](Compiler/IRTree/Visitors/BlockBuildVisitor.h).
+Building blocks is carried out by [`BlockBuildVisitor`](Compiler/IRTree/Visitors/BlockBuildVisitor.h).
 
-Посмотреть получившийся [граф](Compiler/IRTree/Blocks/BlockGraph.hpp) из IR-блоков:
+Inspect the resulting [graph](Compiler/IRTree/Blocks/BlockGraph.hpp) из IR-блоков:
 
 ```shell
 cat <class name>_<function name>_IRTree_blocks
 ```
 
-Для дополнительных оптимизаций несколько IR-блоков принято объединять в непересекающиеся следы ([Trace](Compiler/IRTree/Blocks/Trace.hpp)).
+For additional optimizations, it is customary to combine several IR blocks into disjoint traces ([Trace](Compiler/IRTree/Blocks/Trace.hpp)).
 
-Посмотреть распределение блоков по следам:
+Inspect block distribution by traces:
 
 ```shell
 cat <class name>_<function name>_IRTree_traces
 ```
 
-### [Генерация кода (перевод в ассемблер)](Compiler/IRTree/Visitors/CodeGenerationVisitor.h)
+### [Code generation (translation into assembler)](Compiler/IRTree/Visitors/CodeGenerationVisitor.h)
 
-За перевод в *ARM Assembly* отвечает визитор [`CodeGenerationVisitor`](Compiler/IRTree/Visitors/CodeGenerationVisitor.h).
+Translation into *ARM Assembly* is carried out by visitor [`CodeGenerationVisitor`](Compiler/IRTree/Visitors/CodeGenerationVisitor.h).
 
-Чтобы получить оптимальный по числу инструкций и промежуточных регистров код ассемблера, IR-дерево необходимо покрыть непересекающимися паттернами, состоящими из его вершин, образующих поддерево. Каждый паттерн необходимо рассматривать вручную, сопоставляя ему подходящий набор инструкций.
+To get the assembly code optimal in terms of the number of instructions and intermediate registers, the IR-tree must be covered with non-intersecting patterns consisting of its vertices that form a subtree. Each pattern must be examined manually by matching it with a suitable set of instructions.
 
-Существует два алгоритма покрытия IR-дерева паттернами: **Maximal munch** и **динамический**. В данном проекте реализован Maximal munch. Он предполагает рекурсивный обход дерева от корня к листьям, когда в текущей вершине последовательно проверяются паттерны от наибольшего по числу вершин к наименьшему. Если очередной паттерн подходит, соответствующая ему инструкция добавляется в общий список после рекурсивного обхода дочерних вершин.
+There are two algorithms for covering the IR tree with patterns: **Maximal munch** and **dynamic**. In this project Maximal munch is implemented. It assumes a recursive traversal of the tree from the root to the leaves, when patterns are sequentially checked at the current vertex from the largest number of vertices to the smallest. If the next pattern matches, the corresponding instruction is added to the general list after recursive traversal of the child vertices.
 
-Регистры на данном этапе заменены `Temporary`-переменными, т.е. считается, что в распоряжении есть бесконечное число виртуальных регистров.
+Registers at this stage are replaced by `Temporary`-variables, i.e. it is considered that there are an infinite number of virtual registers available.
 
-Посмотреть результат работы `CodeGenerationVisitor`:
+Inspect the `CodeGenerationVisitor` work result:
 
 ```shell
 cat <class name>_<function name>.s
 ```
 
-### [Аллокация регистров](Compiler/IRTree/Instructions)
+### [Register allocation](Compiler/IRTree/Instructions)
 
-В [инструкциях](Compiler/IRTree/Instructions/Instruction.hpp), полученных после генерации кода, учтены регистры, значения в которых влияют на результат и регистры, значения в которых изменяются.
+In the [instructions](Compiler/IRTree/Instructions/Instruction.hpp) received after generating the code, registers, the values of which affect the result, and registers, the values of which change, are taken into account.
 
-Для перевода виртуальных регистров в физические необходимо выделить пары виртуальных регистров, которым не может быть назначен один и тот же физический регистр (построить граф конфликтов - [`InterferenceGraph`](Compiler/IRTree/Instructions/InterferenceGraph.hpp)). Предварительно строится [`ControlFlowGraph`](Compiler/IRTree/Instructions/ControlFlowGraph.hpp), в котором каждой инструкции соответствует отдельная вершина, а две инструкции соединены ребром, если после первой при некотором исполнении (в зависимости от условий) может следовать вторая. К нему применяется алгоритм поиска *актуальных* на ребрах переменных (**Liveness analysis**, переменная считается *актуальной* на ребрах между ее определением и использованием с этим значением), в ходе которого все вершины несколько раз перебираются в порядке, обратном порядку топологической сортировки. Во время этого перебора решаются уравнения потока (**Dataflow equations**).
+To translate virtual registers into physical registers, it is necessary to select pairs of virtual registers that cannot be assigned the same physical register (build a conflict graph - [`InterferenceGraph`](Compiler/IRTree/Instructions/InterferenceGraph.hpp)). [`ControlFlowGraph`](Compiler/IRTree/Instructions/ControlFlowGraph.hpp) is preliminarily constructed, in which a separate vertex corresponds to each instruction, and two instructions are connected by an edge, if after the first one under some execution (depending on conditions) the second one can follow. An algorithm is applied to it to search for *live* variables on the edges (**Liveness analysis**, the variable is considered to be *live* on the edges between its definition and the usage of this value). During this algorithm all vertices are iterated over several times in the reverse order of the topological sorting. This iteration solves the **Dataflow equations**.
 
-Теперь исходная задача эквивалентна задаче раскраски графа конфликтов, когда связанные вершины не могут быть покрашены в один цвет. С учетом числа имеющихся в распоряжении регистров `InterferenceGraph` последовательно упрощается за счет исключения правильно подобранных вершин. Этим вершинам впоследствии можно назначить жадным образом цвета, отличные от цветов их соседей.
+Now the original problem is equivalent to the problem of coloring the conflict graph, when the connected vertices cannot be painted in the same color. Given the number of registers available, `InterferenceGraph` is consistently simplified by excluding correctly matched vertices. These vertices can subsequently be greedily assigned colors different from the colors of their neighbors.
 
-Посмотреть на ассемблерный код функций после назначения физических регистров (здесь `<iteration>` — номер итерации алгоритма покраски):
+Inspect the assembly code of the functions after assigning the physical registers (`<iteration>` here is the iteration number of the painting algorithm):
 
 ```shell
 cat <class name>_<function name><iteration>.s
 ```
 
-### [Полный код программы](Compiler/driver.cpp)
+### [Complete program code](Compiler/driver.cpp)
 
-Для выполнения *calling conventions* к инструкциям каждой функции добавляются пролог и эпилог.
+A prologue and an epilogue are added to the instructions for each function to follow the *calling conventions*.
 
-В начале функции:
+At the beginning of the function:
 
-- Сохраняется значение *Frame Pointer*
-- *Stack Pointer* записывается во *Stack Pointer*
-- Аллоцируется место на стеке для аргументов и локальных переменных
-- Значения аргументов, переданных в регистрах, записываются на стек
-- Сохраняются *callee-save* регистры
+- *Frame Pointer* value is saved
+- *Stack Pointer* is stored into *Frame Pointer*
+- Stack memory is allocated for arguments and local variable
+- The values of the arguments passed in registers are pushed onto the stack
+- *Callee-save* registers are saved
 
-В конце функции:
+At the end of the function:
 
-- Возвращаемое значение записывается в регистр `r0` 
-- Восстанавливаются значения *callee-save* регистров
-- Восстанавливается значение *Stack Pointer*
-- Восстанавливается значение *Frame pointer*
-- Происходит переход по *Link register*
+- Return value is stored into `r0` register 
+- *Callee-save* registers are restored
+- *Stack Pointer* value is restored
+- *Frame pointer* value is restored
+- *Link register* is used to return to caller
 
-Для отладки и проверки корректности использовался [Compiler Explorer](https://godbolt.org).
+For debugging and validation, I used [Compiler Explorer](https://godbolt.org).
 
-Также добавляется `.data`-метка для корректной работы функции `printf` из библиотеки языка С.
+Also a `.data`-label is added for the correct operation of the `printf` function from the C library.
 
-После этого в [driver.cpp](Compiler/driver.cpp) код всех функций записывается в общий файл.
+After that, in [driver.cpp](Compiler/driver.cpp), the code of all functions is written to a common file.
 
-Посмотреть код программы, который можно запустить через **gcc**:
+Inspect the program code that can be run through **gcc**:
 
 ```shell
 cat final_program.s
@@ -237,22 +237,22 @@ cat final_program.s
 
 ---
 
-## Использованные учебные материалы
+## Used teaching materials
 
-- Лекции и семинары по курсу **"Языки программирования и теории компиляции"** в 4 семестре на Факультете Инноваций и Высоких Технологий МФТИ (в составе ФПМИ МФТИ)
+- Lectures and seminars of **"Programming languages and compilation theory"** course in the 4th semester at the Department of Innovations and High Technologies of MIPT (as part of the PSAMI MIPT)
     
-    Лектор — [@akhtyamovpavel](https://github.com/akhtyamovpavel) 
+    Lecturer — [@akhtyamovpavel](https://github.com/akhtyamovpavel) 
 
 - Andrew W. Appel, **Modern Compiler Implementation in Java**, Cambridge University Press
 
 ---
 
-## Направления дальнейшего развития проекта
+## Directions for further development of the project
 
-- [ ] Сделать поддержку процессоров с *CISC-архитектурой* (генерация кода **x86-64 Assembly**) 
-- [ ] Проверить отсутствие утечек памяти
-- [ ] Попробовать разрешить Shift/Reduce конфликты грамматики
-- [ ] Доделать `TODO`-фичи в коде
-- [ ] Добавить тесты
-- [ ] Настроить CI с запуском тестов и примеров программ
-- [ ] Сделать подсветку синтаксиса для популярного редактора кода
+- [ ] Add support for processors with *CISC* architecture (**x86-64 Assembly** code generation) 
+- [ ] Check for memory leaks
+- [ ] Try to resolve Shift/Reduce grammar conflicts
+- [ ] Complete `TODO`-features in the code
+- [ ] Add tests
+- [ ] Set up CI with running tests and sample programs
+- [ ] Make syntax highlighting for popular code editor
